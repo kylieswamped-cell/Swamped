@@ -9,7 +9,7 @@ import { useState } from "react";
 const links = [
   { label: "HOME", href: "/" },
   { label: "ABOUT", href: "/about" },
-  { label: "CONTACT", href: "#contact" },
+  { label: "CONTACT", href: "/contact" },
 ];
 
 export default function Nav() {

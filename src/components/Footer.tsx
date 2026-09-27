@@ -1,9 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import Reveal from "./Reveal";
 
-const company = ["Home", "About", "Contact", "Pricing and Fees", "Partner Program"];
+const company = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+  { label: "Pricing and Fees", href: "#" },
+  { label: "Partner Program", href: "#" },
+];
 const account = ["Login", "Create Account"];
 
 export default function Footer() {
@@ -28,10 +35,13 @@ export default function Footer() {
             <h4 className="text-[14px] font-bold text-navy">Company</h4>
             <ul className="mt-5 flex flex-col gap-4">
               {company.map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-[12px] font-semibold text-muted-light hover:text-brand">
-                    {item}
-                  </a>
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="text-[12px] font-semibold text-muted-light hover:text-brand"
+                  >
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
