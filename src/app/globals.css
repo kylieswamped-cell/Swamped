@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0b192c;
+
+  --color-brand: #00c897;
+  --color-brand-dark: #00a67d;
+  --color-navy: #0b192c;
+  --color-navy-deep: #001e74;
+  --color-logo: #002075;
+  --color-muted: #6b7280;
+  --color-muted-light: #9ca3af;
+  --color-border: #f3f4f6;
+  --color-surface: #f8fafc;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--color-brand);
+  --color-brand-dark: var(--color-brand-dark);
+  --color-navy: var(--color-navy);
+  --color-navy-deep: var(--color-navy-deep);
+  --color-logo: var(--color-logo);
+  --color-muted: var(--color-muted);
+  --color-muted-light: var(--color-muted-light);
+  --color-border: var(--color-border);
+  --color-surface: var(--color-surface);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
