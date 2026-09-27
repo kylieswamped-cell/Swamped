@@ -2,17 +2,20 @@
 
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const links = [
-  { label: "HOME", href: "#" },
-  { label: "ABOUT", href: "#about" },
+  { label: "HOME", href: "/" },
+  { label: "ABOUT", href: "/about" },
   { label: "CONTACT", href: "#contact" },
 ];
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
+  const pathname = usePathname();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 12);
@@ -30,26 +33,29 @@ export default function Nav() {
       }`}
     >
       <nav className="mx-auto flex h-22 max-w-[1440px] items-center justify-between px-6 sm:px-16">
-        <a href="#" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <Image src="/images/logo.png" alt="Swamped" width={40} height={40} priority />
           <span className="font-extrabold text-[24px] tracking-[-0.6px] text-logo">
             SWAMPED
           </span>
-        </a>
+        </Link>
 
         <ul className="hidden gap-10 md:flex">
-          {links.map((link) => (
-            <li key={link.label}>
-              <a
-                href={link.href}
-                className={`text-[16px] tracking-[0.08px] transition-colors hover:text-brand ${
-                  link.label === "HOME" ? "text-brand" : "text-navy-deep"
-                }`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {links.map((link) => {
+            const active = link.href === pathname;
+            return (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className={`text-[16px] tracking-[0.08px] transition-colors hover:text-brand ${
+                    active ? "text-brand" : "text-navy-deep"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="flex items-center gap-6">
