@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 import Reveal, { Stagger, StaggerItem } from "./Reveal";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const badges = [
   "No monthly software fees",
@@ -13,11 +14,12 @@ const badges = [
 
 export default function Hero() {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
     <section ref={ref} className="relative overflow-hidden bg-white">
@@ -59,22 +61,20 @@ export default function Hero() {
         </div>
 
         <Reveal delay={0.2} y={40} className="relative mx-auto w-full max-w-[528px]">
-          <motion.div
-            style={{ y }}
-            animate={{ y: [0, -14, 0] }}
-            transition={{
-              y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-            }}
-            className="relative"
-          >
-            <Image
-              src="/images/dashboard-mockup.png"
-              alt="Swamped payments dashboard"
-              width={1056}
-              height={1092}
-              priority
-              className="w-full rounded-2xl"
-            />
+          <motion.div style={{ y: isMobile ? 0 : parallaxY }} className="relative">
+            <motion.div
+              animate={isMobile ? undefined : { y: [0, -14, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Image
+                src="/images/dashboard-mockup.png"
+                alt="Swamped payments dashboard"
+                width={1056}
+                height={1092}
+                priority
+                className="w-full rounded-2xl"
+              />
+            </motion.div>
           </motion.div>
         </Reveal>
       </div>

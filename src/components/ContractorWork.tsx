@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 import Reveal, { Stagger, StaggerItem } from "./Reveal";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const points = [
   {
@@ -26,11 +27,12 @@ const points = [
 
 export default function ContractorWork() {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
     <section ref={ref} className="bg-white">
@@ -65,18 +67,19 @@ export default function ContractorWork() {
         </div>
 
         <Reveal delay={0.15} y={40} className="mx-auto w-full max-w-[380px]">
-          <motion.div
-            style={{ y }}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
-          >
-            <Image
-              src="/images/phone-mockup.png"
-              alt="Swamped mobile app overview"
-              width={632}
-              height={1264}
-              className="w-full drop-shadow-2xl"
-            />
+          <motion.div style={{ y: isMobile ? 0 : parallaxY }}>
+            <motion.div
+              animate={isMobile ? undefined : { y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Image
+                src="/images/phone-mockup.png"
+                alt="Swamped mobile app overview"
+                width={632}
+                height={1264}
+                className="w-full drop-shadow-2xl"
+              />
+            </motion.div>
           </motion.div>
         </Reveal>
       </div>
