@@ -9,7 +9,7 @@ const company = [
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
   { label: "Pricing and Fees", href: "#" },
-  { label: "Partner Program", href: "#" },
+  { label: "Partner Program", href: "/partner" },
 ];
 const account = ["Login", "Create Account"];
 
