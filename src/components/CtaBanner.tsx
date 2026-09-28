@@ -20,7 +20,7 @@ export default function CtaBanner() {
           </p>
 
           <motion.a
-            href="#get-started"
+            href="/signup"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="mt-10 inline-flex h-20 w-full max-w-[291px] items-center justify-center rounded-2xl bg-brand text-[24px] font-black text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-colors hover:bg-brand-dark"

@@ -55,7 +55,7 @@ export default function HowItWorks() {
 
         <Reveal delay={0.1} className="mt-16 flex justify-center">
           <motion.a
-            href="#get-started"
+            href="/signup"
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="inline-flex h-[60px] w-full max-w-[308px] items-center justify-center rounded-xl bg-brand text-[18px] font-extrabold text-white shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark"

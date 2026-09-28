@@ -27,7 +27,7 @@ export default function ContactCta() {
           </p>
 
           <motion.a
-            href="#get-started"
+            href="/signup"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="mt-6 inline-flex h-9 items-center justify-center rounded-lg bg-white px-6 text-[14px] font-bold text-navy"

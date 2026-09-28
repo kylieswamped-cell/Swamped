@@ -63,7 +63,7 @@ export default function Pricing() {
             </ul>
 
             <motion.a
-              href="#get-started"
+              href="/signup"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="mt-10 flex h-[68px] w-full items-center justify-center rounded-2xl bg-brand text-[20px] font-black text-white shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark"

@@ -11,7 +11,10 @@ const company = [
   { label: "Pricing and Fees", href: "#" },
   { label: "Partner Program", href: "/partner" },
 ];
-const account = ["Login", "Create Account"];
+const account = [
+  { label: "Login", href: "/login" },
+  { label: "Create Account", href: "/signup" },
+];
 
 export default function Footer() {
   return (
@@ -51,10 +54,13 @@ export default function Footer() {
             <h4 className="text-[14px] font-bold text-navy">Account</h4>
             <ul className="mt-5 flex flex-col gap-4">
               {account.map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-[12px] font-semibold text-muted-light hover:text-brand">
-                    {item}
-                  </a>
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="text-[12px] font-semibold text-muted-light hover:text-brand"
+                  >
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>

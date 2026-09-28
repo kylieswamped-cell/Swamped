@@ -21,7 +21,7 @@ export default function AboutCta() {
           </h2>
 
           <motion.a
-            href="#get-started"
+            href="/signup"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="relative mt-14 inline-flex h-[59px] w-full max-w-[225px] items-center justify-center rounded-2xl bg-brand text-[18px] font-bold text-white transition-colors hover:bg-brand-dark"

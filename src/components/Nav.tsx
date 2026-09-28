@@ -60,11 +60,11 @@ export default function Nav() {
         </ul>
 
         <div className="flex items-center gap-6">
-          <a href="#login" className="hidden text-[14px] font-bold text-navy sm:inline">
+          <Link href="/login" className="hidden text-[14px] font-bold text-navy transition-colors hover:text-brand sm:inline">
             Log In
-          </a>
+          </Link>
           <motion.a
-            href="#get-started"
+            href="/signup"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             className="rounded-full bg-brand px-6 py-2.5 text-[14px] font-bold text-white shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark"
