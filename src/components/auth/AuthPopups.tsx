@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useState, useTransition, type FormEvent } from "react";
 import { requestPasswordReset, updatePassword } from "@/lib/auth/actions";
+import { EMAIL_RE, NETWORK_ERROR } from "./formUtils";
 import PasswordInput from "./PasswordInput";
 
 const popupInput =
@@ -59,10 +60,15 @@ export function ForgotPasswordCard({
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!EMAIL_RE.test(email.trim())) return setError("Please enter a valid email address.");
     startTransition(async () => {
-      const result = await requestPasswordReset(email);
-      if (result.error) setError(result.error);
-      else onSent();
+      try {
+        const result = await requestPasswordReset(email);
+        if (result.error) setError(result.error);
+        else onSent();
+      } catch {
+        setError(NETWORK_ERROR);
+      }
     });
   };
 
@@ -77,7 +83,7 @@ export function ForgotPasswordCard({
           Enter your email to receive a password reset link.
         </p>
 
-        <form onSubmit={submit} className="mt-10 flex flex-col">
+        <form onSubmit={submit} noValidate className="mt-10 flex flex-col">
           <label htmlFor="reset-email" className="text-[14px] font-medium leading-[21px] text-[#1f2937]">
             Email Address
           </label>
@@ -163,8 +169,13 @@ export function NewPasswordCard({ onBack }: { onBack: () => void }) {
     setError("");
     // On success the action signs out and redirects to /login with a notice.
     startTransition(async () => {
-      const result = await updatePassword(password);
-      if (result?.error) setError(result.error);
+      try {
+        const result = await updatePassword(password);
+        if (result?.error) setError(result.error);
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("NEXT_REDIRECT")) throw err;
+        setError(NETWORK_ERROR);
+      }
     });
   };
 
@@ -181,7 +192,7 @@ export function NewPasswordCard({ onBack }: { onBack: () => void }) {
         Please enter your new password below.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col">
         <label htmlFor="new-password" className={labelClass}>
           New password
         </label>

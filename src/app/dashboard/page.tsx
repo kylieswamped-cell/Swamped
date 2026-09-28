@@ -17,6 +17,11 @@ export default async function DashboardPage() {
   // Check here too, not just in the proxy: pages must verify auth themselves.
   const { data } = await supabase.auth.getUser();
   if (!data.user) redirect("/login?next=/dashboard");
+  // Unverified emails never get in, even with a session somehow in hand.
+  if (!data.user.email_confirmed_at) {
+    await supabase.auth.signOut();
+    redirect("/login");
+  }
 
   const { email, user_metadata: meta } = data.user;
   const name = (meta.full_name as string | undefined) || email;

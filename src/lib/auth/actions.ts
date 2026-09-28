@@ -27,28 +27,62 @@ async function siteOrigin() {
   return `${proto}://${host}`;
 }
 
+const UNVERIFIED =
+  "Your email isn't verified yet. Check your inbox for the confirmation link before logging in.";
+
 function friendlyError(message: string) {
-  if (/invalid login credentials/i.test(message)) return "Incorrect email or password.";
-  if (/email not confirmed/i.test(message))
-    return "Please verify your email first — check your inbox for the confirmation link.";
+  // Supabase deliberately returns the same error for "no such user" and
+  // "wrong password", so one message has to cover both cases.
+  if (/invalid login credentials/i.test(message))
+    return "No account found with that email and password. Check your details or sign up.";
+  if (/email not confirmed/i.test(message)) return UNVERIFIED;
+  if (/already registered|already exists/i.test(message))
+    return "An account with this email already exists. Log in instead.";
   if (/rate limit|too many/i.test(message))
     return "Too many attempts. Please wait a moment and try again.";
   return message;
+}
+
+async function confirmRedirect() {
+  return `${await siteOrigin()}/auth/confirm?next=/dashboard`;
 }
 
 export async function signIn(input: {
   email: string;
   password: string;
   next?: string | null;
-}): Promise<AuthResult> {
+}): Promise<AuthResult & { unverified?: boolean }> {
   if (!isSupabaseConfigured) return NOT_CONFIGURED;
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: input.email.trim(),
     password: input.password,
   });
-  if (error) return { error: friendlyError(error.message) };
+  if (error) {
+    return {
+      error: friendlyError(error.message),
+      unverified: /email not confirmed/i.test(error.message),
+    };
+  }
+  // Belt and braces: never keep a session for an unverified email, even if
+  // the "Confirm email" setting is ever switched off in Supabase.
+  if (!data.user?.email_confirmed_at) {
+    await supabase.auth.signOut();
+    return { error: UNVERIFIED, unverified: true };
+  }
   redirect(safeNext(input.next));
+}
+
+export async function resendConfirmation(email: string): Promise<AuthResult> {
+  if (!isSupabaseConfigured) return NOT_CONFIGURED;
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: email.trim(),
+    options: { emailRedirectTo: await confirmRedirect() },
+  });
+  if (error) return { error: friendlyError(error.message) };
+  return {};
 }
 
 export async function signUp(input: {
@@ -66,13 +100,20 @@ export async function signUp(input: {
     password: input.password,
     options: {
       data: { full_name: input.fullName.trim(), business_name: input.businessName.trim() },
-      emailRedirectTo: `${await siteOrigin()}/auth/confirm?next=/dashboard`,
+      emailRedirectTo: await confirmRedirect(),
     },
   });
   if (error) return { error: friendlyError(error.message) };
 
-  // With email confirmation turned off, Supabase signs the user in immediately.
-  if (data.session) redirect("/dashboard");
+  // Supabase returns a user with no identities when the email is already
+  // registered and confirmed (it doesn't raise an error for that case).
+  if (data.user && data.user.identities?.length === 0) {
+    return { error: "An account with this email already exists. Log in instead." };
+  }
+
+  // Email must be verified before anyone gets in: drop any session Supabase
+  // hands back (only happens if "Confirm email" is turned off).
+  if (data.session) await supabase.auth.signOut();
   return { needsVerification: true };
 }
 

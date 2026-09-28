@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 import { signUp } from "@/lib/auth/actions";
+import { EMAIL_RE, NETWORK_ERROR, useHydrated } from "./formUtils";
 import FormNotice from "./FormNotice";
 import PasswordInput from "./PasswordInput";
 
@@ -28,6 +29,7 @@ export default function SignupForm() {
     email: "",
   });
   const [password, setPassword] = useState("");
+  const hydrated = useHydrated();
   const [error, setError] = useState("");
   const [serverError, setServerError] = useState("");
   const [submitting, startTransition] = useTransition();
@@ -35,12 +37,20 @@ export default function SignupForm() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setServerError("");
-    if (password.length < 8) return setError("Password must be at least 8 characters.");
     setError("");
+    if (!values.fullName.trim()) return setServerError("Please enter your full name.");
+    if (!values.businessName.trim()) return setServerError("Please enter your business name.");
+    if (!EMAIL_RE.test(values.email.trim())) return setServerError("Please enter a valid email address.");
+    if (password.length < 8) return setError("Password must be at least 8 characters.");
+
     startTransition(async () => {
-      const result = await signUp({ ...values, password });
-      if (result?.error) return setServerError(result.error);
-      if (result?.needsVerification) router.replace("/signup?view=verify-email", { scroll: false });
+      try {
+        const result = await signUp({ ...values, password });
+        if (result?.error) return setServerError(result.error);
+        if (result?.needsVerification) router.replace("/signup?view=verify-email", { scroll: false });
+      } catch {
+        setServerError(NETWORK_ERROR);
+      }
     });
   };
 
@@ -50,7 +60,7 @@ export default function SignupForm() {
         Create Account
       </h1>
 
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-6">
         {serverError && <FormNotice tone="error" text={serverError} />}
         {fields.map((f) => (
           <div key={f.id} className="flex flex-col gap-2">
@@ -92,7 +102,7 @@ export default function SignupForm() {
 
         <motion.button
           type="submit"
-          disabled={submitting}
+          disabled={!hydrated || submitting}
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.98 }}
           className="h-16 w-full rounded-xl bg-brand text-[18px] font-bold text-white drop-shadow-[0_4px_6px_rgba(0,193,133,0.25)] transition-colors hover:bg-brand-dark disabled:opacity-70"
