@@ -2,23 +2,37 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
+import { signIn } from "@/lib/auth/actions";
+import FormNotice from "./FormNotice";
 import PasswordInput from "./PasswordInput";
 
 const inputClass =
   "h-11 w-full rounded-xl border border-[#e2e8f0] bg-white px-4 text-[14px] text-navy shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand focus:ring-2 focus:ring-brand/20";
 const labelClass = "block text-[14px] font-bold leading-[20px] text-navy";
 
-export default function LoginForm() {
+const notices: Record<string, { tone: "success" | "error"; text: string }> = {
+  "password-updated": { tone: "success", text: "Password updated. Log in with your new password." },
+  "link-expired": {
+    tone: "error",
+    text: "That link is invalid or has expired. Please request a new one.",
+  },
+};
+
+export default function LoginForm({ next, notice }: { next: string | null; notice: string | null }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [submitting, startTransition] = useTransition();
+  const banner = error ? { tone: "error" as const, text: error } : notice ? notices[notice] : null;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Auth backend not wired yet — the form only validates and shows a loading state.
-    setSubmitting(true);
-    setTimeout(() => setSubmitting(false), 800);
+    setError("");
+    startTransition(async () => {
+      const result = await signIn({ email, password, next });
+      if (result?.error) setError(result.error);
+    });
   };
 
   return (
@@ -33,6 +47,7 @@ export default function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="mt-10 flex flex-col">
+        {banner && <FormNotice tone={banner.tone} text={banner.text} className="mb-6" />}
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className={labelClass}>
             Email Address

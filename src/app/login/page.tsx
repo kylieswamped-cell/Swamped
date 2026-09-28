@@ -10,11 +10,20 @@ export const metadata: Metadata = {
   description: "Log in to access your Swamped account.",
 };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const { next, notice } = await searchParams;
+
   return (
     <>
       <AuthLayout aside={<LoginAside />}>
-        <LoginForm />
+        <LoginForm
+          next={typeof next === "string" ? next : null}
+          notice={typeof notice === "string" ? notice : null}
+        />
       </AuthLayout>
       <Suspense>
         <AuthViews />

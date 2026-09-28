@@ -51,7 +51,7 @@ export default function AuthViews() {
           onBack={toLogin}
         />
       )}
-      {view === "reset-password" && <NewPasswordCard onSaved={toLogin} onBack={toLogin} />}
+      {view === "reset-password" && <NewPasswordCard onBack={toLogin} />}
     </AuthModal>
   );
 }

@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { useState, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
+import { requestPasswordReset, updatePassword } from "@/lib/auth/actions";
 import PasswordInput from "./PasswordInput";
 
 const popupInput =
@@ -36,18 +37,12 @@ function BackToLogin({ onClick, color }: { onClick: () => void; color: string })
   );
 }
 
-/** Fake async submit until the auth backend is connected. */
-function useFakeSubmit(onDone: () => void) {
-  const [submitting, setSubmitting] = useState(false);
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      onDone();
-    }, 600);
-  };
-  return { submitting, submit };
+function ErrorText({ text }: { text: string }) {
+  return (
+    <p role="alert" className="mt-2 min-h-5 text-[13px] text-red-500">
+      {text}
+    </p>
+  );
 }
 
 export function ForgotPasswordCard({
@@ -58,7 +53,18 @@ export function ForgotPasswordCard({
   onBack: () => void;
 }) {
   const [email, setEmail] = useState("");
-  const { submitting, submit } = useFakeSubmit(onSent);
+  const [error, setError] = useState("");
+  const [submitting, startTransition] = useTransition();
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+    startTransition(async () => {
+      const result = await requestPasswordReset(email);
+      if (result.error) setError(result.error);
+      else onSent();
+    });
+  };
 
   return (
     <div className="mx-auto max-w-[400px] overflow-hidden rounded-xl border border-[#e5e7eb]/50 bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
@@ -86,11 +92,12 @@ export function ForgotPasswordCard({
             placeholder="name@company.com"
             className={`${popupInput} mt-1.5 h-[46.5px] text-[15px]`}
           />
+          <ErrorText text={error} />
           <motion.button
             type="submit"
             disabled={submitting}
             whileTap={{ scale: 0.98 }}
-            className={`${greenButton} mt-6 h-[47px]`}
+            className={`${greenButton} mt-2 h-[47px]`}
           >
             {submitting ? "Sending…" : "Send Reset Link"}
           </motion.button>
@@ -143,24 +150,22 @@ export function CheckEmailCard({
   );
 }
 
-export function NewPasswordCard({
-  onSaved,
-  onBack,
-}: {
-  onSaved: () => void;
-  onBack: () => void;
-}) {
+export function NewPasswordCard({ onBack }: { onBack: () => void }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
-  const { submitting, submit } = useFakeSubmit(onSaved);
+  const [submitting, startTransition] = useTransition();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (password.length < 8) return setError("Password must be at least 8 characters.");
     if (password !== confirm) return setError("Passwords do not match.");
     setError("");
-    submit(e);
+    // On success the action signs out and redirects to /login with a notice.
+    startTransition(async () => {
+      const result = await updatePassword(password);
+      if (result?.error) setError(result.error);
+    });
   };
 
   const inputClass = `${popupInput} h-12 text-[16px]`;
@@ -208,9 +213,7 @@ export function NewPasswordCard({
           />
         </div>
 
-        <p role="alert" className="mt-2 min-h-5 text-[13px] text-red-500">
-          {error}
-        </p>
+        <ErrorText text={error} />
 
         <motion.button
           type="submit"

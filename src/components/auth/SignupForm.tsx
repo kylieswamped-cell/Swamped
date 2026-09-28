@@ -3,7 +3,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
+import { signUp } from "@/lib/auth/actions";
+import FormNotice from "./FormNotice";
 import PasswordInput from "./PasswordInput";
 
 const inputClass =
@@ -27,18 +29,19 @@ export default function SignupForm() {
   });
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const [submitting, startTransition] = useTransition();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setServerError("");
     if (password.length < 8) return setError("Password must be at least 8 characters.");
     setError("");
-    // Auth backend not wired yet — simulate the request, then show the verify-email popup.
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      router.replace("/signup?view=verify-email", { scroll: false });
-    }, 800);
+    startTransition(async () => {
+      const result = await signUp({ ...values, password });
+      if (result?.error) return setServerError(result.error);
+      if (result?.needsVerification) router.replace("/signup?view=verify-email", { scroll: false });
+    });
   };
 
   return (
@@ -48,6 +51,7 @@ export default function SignupForm() {
       </h1>
 
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
+        {serverError && <FormNotice tone="error" text={serverError} />}
         {fields.map((f) => (
           <div key={f.id} className="flex flex-col gap-2">
             <label htmlFor={f.id} className={labelClass}>
