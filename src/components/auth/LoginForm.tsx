@@ -14,6 +14,11 @@ const labelClass = "block text-[14px] font-bold leading-[20px] text-navy";
 
 const notices: Record<string, { tone: "success" | "error"; text: string }> = {
   "password-updated": { tone: "success", text: "Password updated. Log in with your new password." },
+  "email-confirmed": { tone: "success", text: "Email confirmed. Log in to continue." },
+  "reset-other-browser": {
+    tone: "error",
+    text: "Open the reset link in the same browser you requested it from, or request a new one here.",
+  },
   "link-expired": {
     tone: "error",
     text: "That link is invalid or has expired. Please request a new one.",

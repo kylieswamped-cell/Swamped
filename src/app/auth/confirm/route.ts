@@ -15,17 +15,25 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type") as EmailOtpType | null;
   const nextParam = searchParams.get("next") ?? "/dashboard";
   const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/dashboard";
+  const isReset = next === "/reset-password";
 
-  let ok = false;
+  let target = "/login?notice=link-expired";
   const supabase = isSupabaseConfigured ? await createClient() : null;
 
-  if (!supabase) {
-    // Not configured: fall through to the expired-link notice.
+  if (!supabase || searchParams.has("error")) {
+    // Not configured, or Supabase already rejected the link (expired/used).
   } else if (code) {
-    ok = !(await supabase.auth.exchangeCodeForSession(code)).error;
+    if (!(await supabase.auth.exchangeCodeForSession(code)).error) {
+      target = next;
+    } else {
+      // PKCE codes only exchange in the browser that made the request. For a
+      // sign-up, Supabase has already verified the email by this point, so the
+      // user just needs to log in; a reset has to be finished in that browser.
+      target = isReset ? "/login?notice=reset-other-browser" : "/login?notice=email-confirmed";
+    }
   } else if (tokenHash && type) {
-    ok = !(await supabase.auth.verifyOtp({ type, token_hash: tokenHash })).error;
+    if (!(await supabase.auth.verifyOtp({ type, token_hash: tokenHash })).error) target = next;
   }
 
-  return NextResponse.redirect(new URL(ok ? next : "/login?notice=link-expired", origin));
+  return NextResponse.redirect(new URL(target, origin));
 }
