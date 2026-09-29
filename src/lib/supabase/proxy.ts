@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured, supabaseKey, supabaseUrl } from "./config";
 
-const PROTECTED_PREFIXES = ["/dashboard"];
+const PROTECTED_PREFIXES = ["/dashboard", "/onboarding"];
 const GUEST_ONLY = ["/login", "/signup"];
 
 /**
@@ -51,7 +51,7 @@ export async function updateSession(request: NextRequest) {
     return redirectTo("/login");
   }
   if (signedIn && GUEST_ONLY.includes(pathname) && !searchParams.has("view")) {
-    return redirectTo("/dashboard");
+    return redirectTo("/onboarding");
   }
 
   return response;

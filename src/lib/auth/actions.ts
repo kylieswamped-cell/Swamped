@@ -12,7 +12,7 @@ const NOT_CONFIGURED: AuthResult = {
 };
 
 /** Only allow same-site relative paths, so `?next=` can't redirect off-site. */
-function safeNext(next: unknown, fallback = "/dashboard") {
+function safeNext(next: unknown, fallback = "/onboarding") {
   return typeof next === "string" && next.startsWith("/") && !next.startsWith("//")
     ? next
     : fallback;
@@ -44,7 +44,7 @@ function friendlyError(message: string) {
 }
 
 async function confirmRedirect() {
-  return `${await siteOrigin()}/auth/confirm?next=/dashboard`;
+  return `${await siteOrigin()}/auth/confirm?next=/onboarding`;
 }
 
 export async function signIn(input: {
