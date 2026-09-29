@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { homePathFor } from "@/lib/onboarding/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
@@ -12,10 +13,8 @@ const NOT_CONFIGURED: AuthResult = {
 };
 
 /** Only allow same-site relative paths, so `?next=` can't redirect off-site. */
-function safeNext(next: unknown, fallback = "/onboarding") {
-  return typeof next === "string" && next.startsWith("/") && !next.startsWith("//")
-    ? next
-    : fallback;
+function safeNext(next: unknown) {
+  return typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : null;
 }
 
 async function siteOrigin() {
@@ -70,7 +69,9 @@ export async function signIn(input: {
     await supabase.auth.signOut();
     return { error: UNVERIFIED, unverified: true };
   }
-  redirect(safeNext(input.next));
+  // Finished onboarding → the app; otherwise back to the step they left off on.
+  // A `next` page still gates itself the same way.
+  redirect(safeNext(input.next) ?? (await homePathFor(supabase, data.user.id)));
 }
 
 export async function resendConfirmation(email: string): Promise<AuthResult> {

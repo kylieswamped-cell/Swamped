@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Stagger, StaggerItem } from "@/components/Reveal";
+import { formatMoney } from "@/lib/quotes/totals";
 
-const stats = [
-  { label: "Active Jobs", value: "0", icon: "stat-jobs", w: 18, bg: "bg-[#eff6ff]" },
-  { label: "Awaiting Payment", value: "0", icon: "stat-awaiting", w: 16, bg: "bg-[#fff7ed]" },
-  { label: "Quotes Sent (30d)", value: "0", icon: "stat-quotes", w: 16, bg: "bg-[#eef2ff]" },
-  { label: "Revenue (30d)", value: "$0.00", icon: "stat-revenue", w: 18, bg: "" },
+export type DashboardStats = {
+  activeJobs: number;
+  awaitingPayment: number;
+  quotesSent30d: number;
+  revenue30d: number;
+};
+
+const statCards = (stats: DashboardStats) => [
+  { label: "Active Jobs", value: String(stats.activeJobs), icon: "stat-jobs", w: 18, bg: "bg-[#eff6ff]" },
+  { label: "Awaiting Payment", value: String(stats.awaitingPayment), icon: "stat-awaiting", w: 16, bg: "bg-[#fff7ed]" },
+  { label: "Quotes Sent (30d)", value: String(stats.quotesSent30d), icon: "stat-quotes", w: 16, bg: "bg-[#eef2ff]" },
+  { label: "Revenue (30d)", value: formatMoney(stats.revenue30d), icon: "stat-revenue", w: 18, bg: "" },
 ];
 
 const actions = [
@@ -16,11 +24,11 @@ const actions = [
   { label: "Create Invoice", icon: "action-invoice", w: 12, href: "#" },
 ];
 
-export default function DashboardOverview() {
+export default function DashboardOverview({ stats }: { stats: DashboardStats }) {
   return (
     <div className="flex flex-col gap-6 px-6 py-8 sm:px-10 sm:py-12">
       <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-4" stagger={0.08}>
-        {stats.map((stat) => (
+        {statCards(stats).map((stat) => (
           <StaggerItem
             key={stat.label}
             className="rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-[0_1px_1px_rgba(0,0,0,0.05)]"

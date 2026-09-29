@@ -51,7 +51,8 @@ export async function updateSession(request: NextRequest) {
     return redirectTo("/login");
   }
   if (signedIn && GUEST_ONLY.includes(pathname) && !searchParams.has("view")) {
-    return redirectTo("/onboarding");
+    // The dashboard sends anyone mid-onboarding on to /onboarding.
+    return redirectTo("/dashboard");
   }
 
   return response;

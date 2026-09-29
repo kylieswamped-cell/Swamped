@@ -10,7 +10,7 @@ import { signOut } from "@/lib/auth/actions";
 
 // Only the dashboard exists so far; the rest point at "#" until their pages land.
 const mainLinks = [
-  { label: "Dashboard", href: "/onboarding", icon: "nav-dashboard", w: 16 },
+  { label: "Dashboard", href: "/dashboard", icon: "nav-dashboard", w: 16 },
   { label: "Customers", href: "#", icon: "nav-customers", w: 20 },
   { label: "Jobs", href: "#", icon: "nav-jobs", w: 16 },
   { label: "Quotes", href: "#", icon: "nav-quotes", w: 12 },
@@ -42,6 +42,10 @@ function NavLink({ link, active }: { link: (typeof mainLinks)[number]; active: b
   );
 }
 
+// Onboarding happens on top of the dashboard, so both count as "Dashboard".
+const isActive = (href: string, pathname: string) =>
+  href === pathname || (href === "/dashboard" && pathname === "/onboarding");
+
 function SidebarContent({ pathname }: { pathname: string }) {
   return (
     <div className="flex h-full flex-col">
@@ -54,14 +58,14 @@ function SidebarContent({ pathname }: { pathname: string }) {
         <ul className="flex flex-col gap-1 px-4">
           {mainLinks.map((link) => (
             <li key={link.label}>
-              <NavLink link={link} active={link.href === pathname} />
+              <NavLink link={link} active={isActive(link.href, pathname)} />
             </li>
           ))}
         </ul>
         <ul className="mt-1 border-t border-[#e2e8f0] px-4 pt-1">
           {footerLinks.map((link) => (
             <li key={link.label}>
-              <NavLink link={link} active={link.href === pathname} />
+              <NavLink link={link} active={isActive(link.href, pathname)} />
             </li>
           ))}
         </ul>
