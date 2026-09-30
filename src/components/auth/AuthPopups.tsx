@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { useState, useTransition, type FormEvent } from "react";
+import { useEffect, useState, useTransition, type FormEvent } from "react";
 import { requestPasswordReset, updatePassword } from "@/lib/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 import { EMAIL_RE, NETWORK_ERROR } from "./formUtils";
 import PasswordInput from "./PasswordInput";
 
@@ -156,7 +157,55 @@ export function CheckEmailCard({
   );
 }
 
-export function NewPasswordCard({ onBack }: { onBack: () => void }) {
+/**
+ * Signs in from the reset link. The email link carries the session in its
+ * #fragment (never sent to a server); older links arrive already signed in
+ * via /auth/confirm. Returns "invalid" when neither yields a session.
+ */
+function useRecoverySession() {
+  const [state, setState] = useState<"checking" | "ready" | "invalid">("checking");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const supabase = createClient();
+      const hash = new URLSearchParams(window.location.hash.slice(1));
+      // Drop the tokens from the address bar (and history) right away.
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+
+      let ok = false;
+      const accessToken = hash.get("access_token");
+      const refreshToken = hash.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        ok = !error;
+      } else if (!hash.has("error")) {
+        const { data } = await supabase.auth.getUser();
+        ok = Boolean(data.user);
+      }
+      if (!cancelled) setState(ok ? "ready" : "invalid");
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return state;
+}
+
+export function NewPasswordCard({
+  onBack,
+  onRequestNew,
+}: {
+  onBack: () => void;
+  onRequestNew: () => void;
+}) {
+  const session = useRecoverySession();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
@@ -181,9 +230,46 @@ export function NewPasswordCard({ onBack }: { onBack: () => void }) {
 
   const inputClass = `${popupInput} h-12 text-[16px]`;
   const labelClass = "text-[14px] font-medium leading-[20px] text-[#374151]";
+  const card =
+    "mx-auto max-w-[418px] rounded-2xl bg-white px-6 py-8 drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)] sm:px-8";
+
+  if (session === "checking") {
+    return (
+      <div className={`${card} text-center`}>
+        <PopupLogo size={56} />
+        <p className="mt-4 text-[14px] text-[#64748b]">Checking your reset link…</p>
+      </div>
+    );
+  }
+
+  if (session === "invalid") {
+    return (
+      <div className={`${card} text-center`}>
+        <PopupLogo size={56} />
+        <h2 className="mt-2 text-[24px] font-bold leading-[30px] tracking-[-0.6px] text-[#000080]">
+          Link expired
+        </h2>
+        <p className="mt-2 text-[14px] leading-[20px] text-[#1f2937]">
+          This reset link is invalid, expired, or has already been used. Each link works once —
+          request a new one to continue.
+        </p>
+        <motion.button
+          type="button"
+          onClick={onRequestNew}
+          whileTap={{ scale: 0.98 }}
+          className={`${greenButton} mt-8 h-[47px]`}
+        >
+          Request a New Link
+        </motion.button>
+        <div className="mt-8 flex">
+          <BackToLogin onClick={onBack} color="text-[#000080]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto max-w-[418px] rounded-2xl bg-white px-6 py-8 drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)] sm:px-8">
+    <div className={card}>
       <PopupLogo size={56} />
       <h2 className="mt-2 text-center text-[24px] font-bold leading-[30px] tracking-[-0.6px] text-[#000080]">
         Create new password

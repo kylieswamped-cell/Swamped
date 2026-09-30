@@ -1,9 +1,10 @@
 "use server";
 
+import { createClient as createStatelessClient } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { homePathFor } from "@/lib/onboarding/server";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { isSupabaseConfigured, supabaseKey, supabaseUrl } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthResult = { error?: string; needsVerification?: boolean };
@@ -120,9 +121,14 @@ export async function signUp(input: {
 
 export async function requestPasswordReset(email: string): Promise<AuthResult> {
   if (!isSupabaseConfigured) return NOT_CONFIGURED;
-  const supabase = await createClient();
+  // Implicit flow, not PKCE: the link carries the session in its #fragment,
+  // so it works in any browser or mail app. A PKCE link only works in the
+  // browser holding the code-verifier cookie from this request.
+  const supabase = createStatelessClient(supabaseUrl!, supabaseKey!, {
+    auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false },
+  });
   const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-    redirectTo: `${await siteOrigin()}/auth/confirm?next=/reset-password`,
+    redirectTo: `${await siteOrigin()}/login?view=reset-password`,
   });
   // Only surface rate limiting — never reveal whether the email has an account.
   if (error && /rate limit|too many/i.test(error.message)) {
