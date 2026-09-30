@@ -49,12 +49,18 @@ const isActive = (href: string, pathname: string) =>
 function SidebarContent({ pathname }: { pathname: string }) {
   return (
     <div className="flex h-full flex-col">
-      <Link href="/" className="flex h-[104px] shrink-0 items-center gap-2 px-8">
-        <Image src="/images/logo.png" alt="Swamped" width={32} height={32} />
-        <span className="text-[20px] font-bold tracking-[-0.6px] text-logo">SWAMPED</span>
+      {/* 83px tall so its bottom border lines up with the page header's. */}
+      <Link
+        href="/"
+        className="flex h-[83px] shrink-0 items-center justify-center border-b border-[#e2e8f0]"
+      >
+        <Image src="/images/logo.png" alt="Swamped" width={40} height={40} className="mix-blend-multiply" />
+        <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-[#001e74]">
+          Swamped
+        </span>
       </Link>
 
-      <nav className="flex flex-1 flex-col">
+      <nav className="mt-5 flex flex-1 flex-col">
         <ul className="flex flex-col gap-1 px-4">
           {mainLinks.map((link) => (
             <li key={link.label}>
@@ -62,7 +68,7 @@ function SidebarContent({ pathname }: { pathname: string }) {
             </li>
           ))}
         </ul>
-        <ul className="mt-1 border-t border-[#e2e8f0] px-4 pt-1">
+        <ul className="mt-[5px] border-t border-[#e2e8f0] px-4">
           {footerLinks.map((link) => (
             <li key={link.label}>
               <NavLink link={link} active={isActive(link.href, pathname)} />
