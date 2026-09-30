@@ -181,6 +181,15 @@ export async function createFirstCustomer(
     .single();
   if (error) return { error: "Couldn't create the customer. Please try again." };
 
+  const attachmentPath = ownPath(input.attachmentPath, ctx.userId);
+  if (attachmentPath) {
+    await ctx.supabase.from("customer_attachments").insert({
+      customer_id: data.id,
+      path: attachmentPath,
+      name: clean(input.attachmentName) ?? attachmentPath.split("/").pop()!,
+    });
+  }
+
   const result = await advance(ctx.supabase, ctx.userId, "customer");
   return result.error ? result : { customer: data };
 }

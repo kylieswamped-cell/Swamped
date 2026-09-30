@@ -11,6 +11,7 @@ function initials(name: string) {
 
 type DashboardShellProps = {
   name: string;
+  title?: string;
   subtitle?: string;
   /** Shows the Getting Started column (used during onboarding). */
   checklist?: ChecklistStatus;
@@ -19,7 +20,14 @@ type DashboardShellProps = {
   overlay?: ReactNode;
 };
 
-export default function DashboardShell({ name, subtitle, checklist, children, overlay }: DashboardShellProps) {
+export default function DashboardShell({
+  name,
+  title = "Welcome Back",
+  subtitle,
+  checklist,
+  children,
+  overlay,
+}: DashboardShellProps) {
   return (
     <div className="flex min-h-screen flex-1 bg-surface">
       <Sidebar />
@@ -29,7 +37,7 @@ export default function DashboardShell({ name, subtitle, checklist, children, ov
           <header className="flex h-[83px] items-center justify-between border-b border-[#e2e8f0] bg-white pl-16 pr-6 sm:pr-10 lg:pl-10">
             <div className="min-w-0">
               <h1 className="text-[20px] font-bold leading-8 tracking-[0.047px] text-[#0f172a] sm:text-[24px]">
-                Welcome Back
+                {title}
               </h1>
               {subtitle && (
                 <p className="hidden truncate text-[14px] leading-5 text-[#64748b] sm:block">{subtitle}</p>

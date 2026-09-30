@@ -8,10 +8,10 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "@/lib/auth/actions";
 
-// Only the dashboard exists so far; the rest point at "#" until their pages land.
+// Pages that don't exist yet point at "#" until they land.
 const mainLinks = [
   { label: "Dashboard", href: "/dashboard", icon: "nav-dashboard", w: 16 },
-  { label: "Customers", href: "#", icon: "nav-customers", w: 20 },
+  { label: "Customers", href: "/customers", icon: "nav-customers", w: 20 },
   { label: "Jobs", href: "#", icon: "nav-jobs", w: 16 },
   { label: "Quotes", href: "#", icon: "nav-quotes", w: 12 },
   { label: "Invoices", href: "#", icon: "nav-invoices", w: 12 },
@@ -35,7 +35,7 @@ function NavLink({ link, active }: { link: (typeof mainLinks)[number]; active: b
       }`}
     >
       <span className="flex w-6 shrink-0">
-        <Image src={`/onboarding/${link.icon}.svg`} alt="" width={link.w} height={16} />
+        <Image src={`/onboarding/${link.icon}${active ? "-active" : ""}.svg`} alt="" width={link.w} height={16} />
       </span>
       {link.label}
     </Link>
@@ -44,7 +44,10 @@ function NavLink({ link, active }: { link: (typeof mainLinks)[number]; active: b
 
 // Onboarding happens on top of the dashboard, so both count as "Dashboard".
 const isActive = (href: string, pathname: string) =>
-  href === pathname || (href === "/dashboard" && pathname === "/onboarding");
+  href !== "#" &&
+  (pathname === href ||
+    pathname.startsWith(`${href}/`) ||
+    (href === "/dashboard" && pathname === "/onboarding"));
 
 function SidebarContent({ pathname }: { pathname: string }) {
   return (

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// These screens don't exist yet; the links go live as each one lands.
+// Screens that don't exist yet point at "#" until they land.
 const actions = [
-  { label: "Add Customer", icon: "action-customer", w: 20, href: "#" },
+  { label: "Add Customer", icon: "action-customer", w: 20, href: "/customers?new=1" },
   { label: "Create Quote", icon: "action-quote", w: 18, href: "#" },
   { label: "Create Job", icon: "action-job", w: 16, href: "#" },
   { label: "Create Invoice", icon: "action-invoice", w: 12, href: "#" },

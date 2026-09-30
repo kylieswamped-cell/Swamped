@@ -42,7 +42,7 @@ export default function CustomerStep({ onDone }: { onDone: (customer: CustomerOp
                   return { error: (err as Error).message };
                 }
               }
-              return createFirstCustomer({ ...values, attachmentPath });
+              return createFirstCustomer({ ...values, attachmentPath, attachmentName: file?.name ?? "" });
             },
             (result) => result.customer && onDone(result.customer),
           );
