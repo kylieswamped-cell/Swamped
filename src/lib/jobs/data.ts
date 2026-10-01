@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { AmountType } from "@/lib/quotes/totals";
 
 export type JobStatus = "unscheduled" | "scheduled" | "in_progress" | "completed";
 
@@ -137,17 +138,63 @@ export type JobDetail = {
   terms: string | null;
   internalNotes: string | null;
   sentAt: string | null;
+  completedAt: string | null;
+  archived: boolean;
+  createdAt: string;
+  updatedAt: string;
+  customer: { name: string; email: string | null; phone: string | null } | null;
+  quote: { id: string; number: string; date: string; total: number; status: string } | null;
+  totals: {
+    subtotal: number;
+    discountValue: number;
+    discountType: AmountType;
+    discountAmount: number;
+    taxValue: number;
+    taxType: AmountType;
+    taxAmount: number;
+    total: number;
+  };
   items: JobItem[];
   attachments: JobAttachment[];
+};
+
+type JobDetailRow = {
+  id: string;
+  job_number: string;
+  customer_id: string;
+  title: string;
+  status: JobStatus;
+  starts_at: string | null;
+  ends_at: string | null;
+  notes: string | null;
+  terms: string | null;
+  internal_notes: string | null;
+  sent_at: string | null;
+  completed_at: string | null;
+  archived_at: string | null;
+  created_at: string;
+  updated_at: string;
+  subtotal: number;
+  discount_value: number;
+  discount_type: AmountType;
+  discount_amount: number;
+  tax_rate: number;
+  tax_type: AmountType;
+  tax_amount: number;
+  total: number;
+  customers: { name: string; email: string | null; phone: string | null } | null;
+  quotes: { id: string; quote_number: string; quote_date: string; total: number; status: string } | null;
 };
 
 export async function getJob(supabase: SupabaseClient, id: string): Promise<JobDetail | null> {
   const [{ data: j }, { data: items }, { data: files }] = await Promise.all([
     supabase
       .from("jobs")
-      .select("id, job_number, customer_id, title, status, starts_at, ends_at, notes, terms, internal_notes, sent_at")
+      .select(
+        "id, job_number, customer_id, title, status, starts_at, ends_at, notes, terms, internal_notes, sent_at, completed_at, archived_at, created_at, updated_at, subtotal, discount_value, discount_type, discount_amount, tax_rate, tax_type, tax_amount, total, customers(name, email, phone), quotes(id, quote_number, quote_date, total, status)",
+      )
       .eq("id", id)
-      .maybeSingle(),
+      .maybeSingle<JobDetailRow>(),
     supabase
       .from("job_items")
       .select("description, quantity, unit_price, taxable")
@@ -173,6 +220,30 @@ export async function getJob(supabase: SupabaseClient, id: string): Promise<JobD
     terms: j.terms,
     internalNotes: j.internal_notes,
     sentAt: j.sent_at,
+    completedAt: j.completed_at,
+    archived: Boolean(j.archived_at),
+    createdAt: j.created_at,
+    updatedAt: j.updated_at,
+    customer: j.customers,
+    quote: j.quotes
+      ? {
+          id: j.quotes.id,
+          number: j.quotes.quote_number,
+          date: j.quotes.quote_date,
+          total: Number(j.quotes.total),
+          status: j.quotes.status,
+        }
+      : null,
+    totals: {
+      subtotal: Number(j.subtotal),
+      discountValue: Number(j.discount_value),
+      discountType: j.discount_type,
+      discountAmount: Number(j.discount_amount),
+      taxValue: Number(j.tax_rate),
+      taxType: j.tax_type,
+      taxAmount: Number(j.tax_amount),
+      total: Number(j.total),
+    },
     items: (items ?? []).map((i) => ({
       description: i.description,
       quantity: Number(i.quantity),
@@ -201,3 +272,6 @@ export async function countActiveJobs(supabase: SupabaseClient, customerId?: str
   const { count } = await query;
   return count ?? 0;
 }
+
+/** Reference time for "updated 2 hours ago", taken once on the server so render stays pure. */
+export const referenceTime = () => Date.now();

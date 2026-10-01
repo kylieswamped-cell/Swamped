@@ -12,7 +12,7 @@ type JobEmail = {
   notes: string | null;
   terms: string | null;
   items: { description: string; quantity: number; unitPrice: number }[];
-  totals: { subtotal: number; tax: number; total: number };
+  totals: { subtotal: number; discount: number; tax: number; total: number };
 };
 
 const escape = (s: string) =>
@@ -84,6 +84,7 @@ function renderHtml(j: JobEmail) {
           </table>
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px">
             ${row("Subtotal", formatMoney(j.totals.subtotal))}
+            ${j.totals.discount ? row("Discount", `-${formatMoney(j.totals.discount)}`) : ""}
             ${j.totals.tax ? row("Tax", formatMoney(j.totals.tax)) : ""}
             ${row("Total", formatMoney(j.totals.total), true)}
           </table>`

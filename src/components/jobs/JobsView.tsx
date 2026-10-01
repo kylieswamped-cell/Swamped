@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { loadJob } from "@/lib/jobs/actions";
-import { JOB_STATUSES, type JobCustomerOption, type JobDetail, type JobRow, type JobStats, type JobStatus } from "@/lib/jobs/data";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { JOB_STATUSES, type JobCustomerOption, type JobRow, type JobStats, type JobStatus } from "@/lib/jobs/data";
 import { formatMoney } from "@/lib/quotes/totals";
 import { shortDate, useLocalTime } from "./format";
 import JobFormModal from "./JobFormModal";
@@ -142,11 +142,7 @@ export default function JobsView({
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [creating, setCreating] = useState(openNew);
-  const [editing, setEditing] = useState<JobDetail | null>(null);
-  const [loadError, setLoadError] = useState<string>();
   const [notice, setNotice] = useState<string>();
-  const [loadingId, setLoadingId] = useState<string>();
-  const [, startTransition] = useTransition();
 
   const toggle = <T,>(list: T[], value: T) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
   const single = (current: string, value: string) => (current === value ? "" : value);
@@ -163,17 +159,6 @@ export default function JobsView({
       return [j.number, j.customer, j.title, j.total.toFixed(2), j.quoteNumber].some((v) => v?.toLowerCase().includes(q));
     });
   }, [jobs, query, statuses, states, created, start, end, now]);
-
-  const view = (id: string) => {
-    setLoadError(undefined);
-    setLoadingId(id);
-    startTransition(async () => {
-      const result = await loadJob(id);
-      setLoadingId(undefined);
-      if (result.job) setEditing(result.job);
-      else setLoadError(result.error);
-    });
-  };
 
   const label = (ranges: { value: string; label: string }[], v: string) => ranges.find((r) => r.value === v)?.label ?? "";
   const chips = [
@@ -265,12 +250,6 @@ export default function JobsView({
         </p>
       )}
 
-      {loadError && (
-        <p role="alert" className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-3 py-2.5 text-[13px] text-[#b91c1c]">
-          {loadError}
-        </p>
-      )}
-
       <section className={`${chips.length ? "mt-[23px]" : "mt-[19px]"} overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
@@ -323,9 +302,9 @@ export default function JobsView({
                     <td className="pl-6 pr-2 text-[14px] font-medium leading-[21px] text-[#475569]">{j.number}</td>
                     <td className="truncate px-2 text-[14px] leading-[21px] text-[#475569]" title={j.customer}>{j.customer}</td>
                     <td className="px-2">
-                      <button type="button" onClick={() => view(j.id)} className="line-clamp-2 text-left text-[14px] font-semibold leading-[21px] text-[#334155] hover:text-[#00c185]">
+                      <Link href={`/jobs/${j.id}`} className="line-clamp-2 text-[14px] font-semibold leading-[21px] text-[#334155] hover:text-[#00c185]">
                         {j.title}
-                      </button>
+                      </Link>
                     </td>
                     <td className="text-center">
                       <JobStatusBadge status={j.status} />
@@ -339,15 +318,9 @@ export default function JobsView({
                     {/* Invoices link here once they're built. */}
                     <td className="px-1 text-center">—</td>
                     <td className="text-center">
-                      <button
-                        type="button"
-                        onClick={() => view(j.id)}
-                        disabled={loadingId === j.id}
-                        aria-label={`View ${j.number}`}
-                        className="rounded p-1 transition-opacity hover:opacity-70 disabled:opacity-40"
-                      >
+                      <Link href={`/jobs/${j.id}`} aria-label={`View ${j.number}`} className="inline-block rounded p-1 transition-opacity hover:opacity-70">
                         <Image src="/customers/eye.svg" alt="" width={23} height={23} />
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -357,23 +330,19 @@ export default function JobsView({
         )}
       </section>
 
-      {(creating || editing) && (
+      {creating && (
         <JobFormModal
-          key={editing?.id ?? "new"}
-          job={editing ?? undefined}
           customers={customers}
           nextNumber={nextNumber}
           defaultTerms={defaultTerms}
           defaultCustomer={newForCustomer}
           onClose={() => {
             setCreating(false);
-            setEditing(null);
             if (openNew) router.replace("/jobs", { scroll: false });
           }}
           onSaved={(message) => {
             setNotice(message);
             setCreating(false);
-            setEditing(null);
             if (openNew) router.replace("/jobs", { scroll: false });
             router.refresh();
           }}

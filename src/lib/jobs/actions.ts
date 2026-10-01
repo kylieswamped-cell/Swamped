@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { sendJobEmail } from "@/lib/email/jobEmail";
 import { getProfile } from "@/lib/onboarding/server";
-import { quoteTotals } from "@/lib/quotes/totals";
+import { quoteTotals, type AmountType } from "@/lib/quotes/totals";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
-import { getJob, JOB_STATUSES, nextJobNumber, type JobDetail, type JobStatus } from "./data";
+import { JOB_STATUSES, nextJobNumber, type JobStatus } from "./data";
 
 export type JobResult = { error?: string; fieldErrors?: Record<string, string>; id?: string; notice?: string };
 
@@ -24,6 +24,9 @@ export type JobInput = {
   internalNotes: string;
   items: JobItemInput[];
 };
+
+/** The discount and tax on the job totals card. */
+export type JobAdjustments = { discountValue: number; discountType: AmountType; taxValue: number; taxType: AmountType };
 
 export type UploadedJobFile = { path: string; name: string; size: number; type: string; internal: boolean };
 
@@ -43,6 +46,13 @@ const toDate = (v: string) => {
   return d && !Number.isNaN(d.getTime()) ? d : null;
 };
 
+function itemsError(items: JobItemInput[]) {
+  if (items.some((i) => !clean(i.description))) return "Every line item needs a description.";
+  if (items.some((i) => !(Number(i.quantity) > 0))) return "Line item quantities must be more than 0.";
+  if (items.some((i) => !(Number(i.unitPrice) >= 0))) return "Line item prices can't be negative.";
+  return null;
+}
+
 function validate(input: JobInput) {
   const fieldErrors: Record<string, string> = {};
   if (!UUID_RE.test(input.customerId ?? "")) fieldErrors.customerId = "Select a customer.";
@@ -54,25 +64,42 @@ function validate(input: JobInput) {
   if (input.endsAt && !end) fieldErrors.endsAt = "Enter a valid end date.";
   if (start && end && end < start) fieldErrors.endsAt = "The end can't be before the start.";
   if (input.status !== "unscheduled" && !start) fieldErrors.startsAt = "Add a start date to schedule this job.";
-  const items = input.items ?? [];
-  if (items.some((i) => !clean(i.description))) fieldErrors.items = "Every line item needs a description.";
-  else if (items.some((i) => !(Number(i.quantity) > 0))) fieldErrors.items = "Line item quantities must be more than 0.";
-  else if (items.some((i) => !(Number(i.unitPrice) >= 0))) fieldErrors.items = "Line item prices can't be negative.";
+  const itemProblem = itemsError(input.items ?? []);
+  if (itemProblem) fieldErrors.items = itemProblem;
   return fieldErrors;
 }
 
-function toRow(input: JobInput, taxRate: number) {
-  const items = (input.items ?? []).map((i, position) => ({
+const toItemRows = (items: JobItemInput[]) =>
+  (items ?? []).map((i, position) => ({
     position,
     description: i.description.trim().slice(0, 500),
     quantity: Number(i.quantity),
     unit_price: Number(i.unitPrice),
     taxable: Boolean(i.taxable),
   }));
+
+type ItemRow = ReturnType<typeof toItemRows>[number];
+
+/** Totals columns for a job, from its items and adjustments. */
+function totalsFor(items: ItemRow[], adj: JobAdjustments) {
   const totals = quoteTotals(
     items.map((i) => ({ quantity: i.quantity, unitPrice: i.unit_price, taxable: i.taxable })),
-    { discountValue: 0, discountType: "fixed", taxValue: taxRate, taxType: "percent", depositValue: 0, depositType: "fixed" },
+    { ...adj, depositValue: 0, depositType: "fixed" },
   );
+  return {
+    discount_value: adj.discountValue,
+    discount_type: adj.discountType,
+    tax_rate: adj.taxValue,
+    tax_type: adj.taxType,
+    subtotal: totals.subtotal,
+    discount_amount: totals.discount,
+    tax_amount: totals.tax,
+    total: totals.total,
+  };
+}
+
+function toRow(input: JobInput, adj: JobAdjustments) {
+  const items = toItemRows(input.items);
   return {
     items,
     job: {
@@ -84,10 +111,7 @@ function toRow(input: JobInput, taxRate: number) {
       notes: clean(input.notes),
       terms: clean(input.terms),
       internal_notes: clean(input.internalNotes),
-      tax_rate: taxRate,
-      subtotal: totals.subtotal,
-      tax_amount: totals.tax,
-      total: totals.total,
+      ...totalsFor(items, adj),
     },
   };
 }
@@ -118,7 +142,7 @@ async function send(supabase: Supabase, userId: string, jobId: string): Promise<
   const [{ data: job }, { data: items }, profile] = await Promise.all([
     supabase
       .from("jobs")
-      .select("job_number, title, starts_at, ends_at, notes, terms, subtotal, tax_amount, total, customers(name, email)")
+      .select("job_number, title, starts_at, ends_at, notes, terms, subtotal, discount_amount, tax_amount, total, customers(name, email)")
       .eq("id", jobId)
       .maybeSingle<{
         job_number: string;
@@ -128,6 +152,7 @@ async function send(supabase: Supabase, userId: string, jobId: string): Promise<
         notes: string | null;
         terms: string | null;
         subtotal: number;
+        discount_amount: number;
         tax_amount: number;
         total: number;
         customers: { name: string; email: string | null } | null;
@@ -154,11 +179,43 @@ async function send(supabase: Supabase, userId: string, jobId: string): Promise<
       quantity: Number(i.quantity),
       unitPrice: Number(i.unit_price),
     })),
-    totals: { subtotal: Number(job.subtotal), tax: Number(job.tax_amount), total: Number(job.total) },
+    totals: {
+      subtotal: Number(job.subtotal),
+      discount: Number(job.discount_amount),
+      tax: Number(job.tax_amount),
+      total: Number(job.total),
+    },
   });
   if (!sent.ok) return `Job saved, but the email wasn't sent: ${sent.reason}`;
   await supabase.from("jobs").update({ sent_at: new Date().toISOString() }).eq("id", jobId);
   return undefined;
+}
+
+async function adjustmentsOf(supabase: Supabase, id: string): Promise<JobAdjustments | null> {
+  const { data } = await supabase
+    .from("jobs")
+    .select("discount_value, discount_type, tax_rate, tax_type")
+    .eq("id", id)
+    .maybeSingle();
+  if (!data) return null;
+  return {
+    discountValue: Number(data.discount_value),
+    discountType: data.discount_type,
+    taxValue: Number(data.tax_rate),
+    taxType: data.tax_type,
+  };
+}
+
+/** Adds the new items before removing the old ones, so a failure never leaves the job empty. */
+async function replaceItems(supabase: Supabase, id: string, items: ItemRow[]) {
+  const { data: old } = await supabase.from("job_items").select("id").eq("job_id", id);
+  if (items.length) {
+    const { error } = await supabase.from("job_items").insert(items.map((i) => ({ ...i, job_id: id })));
+    if (error) return false;
+  }
+  const oldIds = (old ?? []).map((i) => i.id);
+  if (oldIds.length) await supabase.from("job_items").delete().in("id", oldIds);
+  return true;
 }
 
 function revalidate(id?: string) {
@@ -175,7 +232,12 @@ export async function createJob(input: JobInput, files: UploadedJobFile[], sendN
   if (Object.keys(fieldErrors).length) return { fieldErrors };
 
   const profile = await getProfile(ctx.supabase, ctx.userId);
-  const { job, items } = toRow(input, Number(profile.tax_rate) || 0);
+  const { job, items } = toRow(input, {
+    discountValue: 0,
+    discountType: "fixed",
+    taxValue: Number(profile.tax_rate) || 0,
+    taxType: "percent",
+  });
 
   // Two jobs saved at once can race for a number; retry once with a fresh one.
   let created: { id: string } | null = null;
@@ -219,22 +281,17 @@ export async function updateJob(
   const fieldErrors = validate(input);
   if (Object.keys(fieldErrors).length) return { fieldErrors };
 
-  // Keep the tax rate the job was created with.
-  const { data: existing } = await ctx.supabase.from("jobs").select("tax_rate").eq("id", id).maybeSingle();
-  if (!existing) return { error: "Couldn't find this job." };
-  const { job, items } = toRow(input, Number(existing.tax_rate));
+  // Keep the discount and tax already set on the job.
+  const adj = await adjustmentsOf(ctx.supabase, id);
+  if (!adj) return { error: "Couldn't find this job." };
+  const { job, items } = toRow(input, adj);
 
   const { data, error } = await ctx.supabase.from("jobs").update(job).eq("id", id).select("id");
   if (error || !data?.length) return { error: "Couldn't save the changes. Please try again." };
 
-  // Add the new items before removing the old ones, so a failure never leaves the job empty.
-  const { data: old } = await ctx.supabase.from("job_items").select("id").eq("job_id", id);
-  if (items.length) {
-    const { error: itemsError } = await ctx.supabase.from("job_items").insert(items.map((i) => ({ ...i, job_id: id })));
-    if (itemsError) return { id, error: "The job was saved, but its line items couldn't be. Please try again." };
+  if (!(await replaceItems(ctx.supabase, id, items))) {
+    return { id, error: "The job was saved, but its line items couldn't be. Please try again." };
   }
-  const oldIds = (old ?? []).map((i) => i.id);
-  if (oldIds.length) await ctx.supabase.from("job_items").delete().in("id", oldIds);
 
   const attachError = await attach(ctx.supabase, ctx.userId, id, files);
   const notice = sendNow ? await send(ctx.supabase, ctx.userId, id) : undefined;
@@ -295,11 +352,91 @@ export async function jobFileUrl(attachmentId: string): Promise<{ url?: string; 
   return { url: data.signedUrl };
 }
 
-/** The full job, for opening it in the job form. */
-export async function loadJob(id: string): Promise<{ job?: JobDetail; error?: string }> {
+
+/** Saves the line items edited on the job detail page and refreshes the totals. */
+export async function saveJobItems(id: string, input: JobItemInput[]): Promise<JobResult> {
   const ctx = await signedInUser();
   if ("error" in ctx) return { error: ctx.error };
-  if (!UUID_RE.test(id)) return { error: "Couldn't find this job." };
-  const job = await getJob(ctx.supabase, id);
-  return job ? { job } : { error: "Couldn't find this job." };
+  const problem = itemsError(input ?? []);
+  if (problem) return { error: problem };
+
+  const adj = await adjustmentsOf(ctx.supabase, id);
+  if (!adj) return { error: "Couldn't find this job." };
+  const items = toItemRows(input);
+  if (!(await replaceItems(ctx.supabase, id, items))) return { error: "Couldn't save the line items. Please try again." };
+  const { error } = await ctx.supabase.from("jobs").update(totalsFor(items, adj)).eq("id", id);
+  if (error) return { error: "Couldn't update the totals. Please try again." };
+  revalidate(id);
+  return { id };
+}
+
+/** Saves the discount and tax from the totals card. */
+export async function setJobAdjustments(id: string, adj: JobAdjustments): Promise<JobResult> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  const types: AmountType[] = ["percent", "fixed"];
+  const discountValue = Number(adj.discountValue);
+  const taxValue = Number(adj.taxValue);
+  if (!types.includes(adj.discountType) || !types.includes(adj.taxType)) return { error: "Choose $ or %." };
+  if (!(discountValue >= 0) || !(taxValue >= 0)) return { error: "Amounts can't be negative." };
+  if (adj.discountType === "percent" && discountValue > 100) return { error: "A discount can't be over 100%." };
+  if (adj.taxType === "percent" && taxValue > 100) return { error: "Tax can't be over 100%." };
+
+  const { data: rows } = await ctx.supabase
+    .from("job_items")
+    .select("description, quantity, unit_price, taxable")
+    .eq("job_id", id)
+    .order("position");
+  const items = toItemRows(
+    (rows ?? []).map((r) => ({
+      description: r.description,
+      quantity: Number(r.quantity),
+      unitPrice: Number(r.unit_price),
+      taxable: r.taxable,
+    })),
+  );
+  const { data, error } = await ctx.supabase
+    .from("jobs")
+    .update(totalsFor(items, { discountValue, discountType: adj.discountType, taxValue, taxType: adj.taxType }))
+    .eq("id", id)
+    .select("id");
+  if (error || !data?.length) return { error: "Couldn't update the totals. Please try again." };
+  revalidate(id);
+  return { id };
+}
+
+export async function setJobStatus(id: string, status: JobStatus): Promise<JobResult> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  if (!JOB_STATUSES.some((s) => s.value === status)) return { error: "Choose a valid status." };
+  if (status === "scheduled") {
+    const { data: job } = await ctx.supabase.from("jobs").select("starts_at").eq("id", id).maybeSingle();
+    if (job && !job.starts_at) return { error: "Add a start date (Edit) before marking this job scheduled." };
+  }
+  const { data, error } = await ctx.supabase.from("jobs").update({ status }).eq("id", id).select("id");
+  if (error || !data?.length) return { error: "Couldn't update the status. Please try again." };
+  revalidate(id);
+  return { id };
+}
+
+export async function saveInternalNotes(id: string, notes: string): Promise<JobResult> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  const { data, error } = await ctx.supabase
+    .from("jobs")
+    .update({ internal_notes: clean(notes) })
+    .eq("id", id)
+    .select("id");
+  if (error || !data?.length) return { error: "Couldn't save the internal notes. Please try again." };
+  revalidate(id);
+  return { id };
+}
+
+export async function addJobFiles(id: string, files: UploadedJobFile[]): Promise<JobResult> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  const error = await attach(ctx.supabase, ctx.userId, id, files);
+  if (error) return { error: "Couldn't save the files. Please try again." };
+  revalidate(id);
+  return { id };
 }

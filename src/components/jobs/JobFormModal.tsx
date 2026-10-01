@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Download, FileImage, FileSpreadsheet, FileText, Info, LockKeyhole, PencilLine, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
+import { CalendarDays, Download, Info, LockKeyhole, PencilLine, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
 import Modal from "@/components/customers/Modal";
@@ -8,7 +8,8 @@ import { ACCEPTED_UPLOADS, MAX_UPLOAD_BYTES, uploadAttachment } from "@/componen
 import { createJob, deleteJobFile, jobFileUrl, updateJob, type JobInput, type UploadedJobFile } from "@/lib/jobs/actions";
 import { JOB_STATUSES, type JobCustomerOption, type JobDetail, type JobStatus } from "@/lib/jobs/data";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
-import { dateTime, fileSize, toLocalInput } from "./format";
+import { dateTime, fileSize, shortDay, toLocalInput } from "./format";
+import FileCard from "./JobFileCard";
 import JobLineItemModal, { type LineDraft } from "./JobLineItemModal";
 
 type Saved = { id: string; name: string; sizeBytes: number | null; contentType: string | null; createdAt: string };
@@ -19,40 +20,6 @@ const fieldClass =
 const sectionLabel = "text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#64748b]";
 
 const ACCEPTS = `${ACCEPTED_UPLOADS},.doc,.docx,.xls,.xlsx,.csv,.txt`;
-
-function fileKind(name: string, type: string | null) {
-  if (type?.startsWith("image/") || /\.(png|jpe?g|gif|webp|heic)$/i.test(name)) return "image";
-  if (/sheet|excel|csv/.test(type ?? "") || /\.(xlsx?|csv)$/i.test(name)) return "sheet";
-  if (type === "application/pdf" || /\.pdf$/i.test(name)) return "pdf";
-  return "doc";
-}
-
-const KIND = {
-  pdf: { bg: "bg-[#fef2f2]", Icon: FileText, color: "text-[#ef4444]" },
-  image: { bg: "bg-[#eff6ff]", Icon: FileImage, color: "text-[#3b82f6]" },
-  sheet: { bg: "bg-[#f0fdf4]", Icon: FileSpreadsheet, color: "text-[#22c55e]" },
-  doc: { bg: "bg-[#f1f5f9]", Icon: FileText, color: "text-[#64748b]" },
-};
-
-const shortDay = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-
-function FileCard({ name, meta, type, action }: { name: string; meta: string; type: string | null; action: ReactNode }) {
-  const { bg, Icon, color } = KIND[fileKind(name, type)];
-  return (
-    <li className="flex h-[74px] items-center justify-between gap-3 rounded-xl border border-[#e2e8f0] bg-white px-4">
-      <div className="flex min-w-0 items-center gap-4">
-        <span className={`flex size-10 shrink-0 items-center justify-center rounded ${bg}`}>
-          <Icon className={`size-5 ${color}`} />
-        </span>
-        <div className="min-w-0">
-          <p className="truncate text-[14px] font-bold leading-5 text-[#0a1b2f]" title={name}>{name}</p>
-          <p className="truncate text-[12px] leading-4 text-[#64748b]">{meta}</p>
-        </div>
-      </div>
-      <div className="flex shrink-0 items-center gap-1">{action}</div>
-    </li>
-  );
-}
 
 /** One half of the Scheduling box. The native picker sits invisibly over the formatted value. */
 function ScheduleField({ label, value, onChange, invalid }: { label: string; value: string; onChange: (v: string) => void; invalid: boolean }) {
