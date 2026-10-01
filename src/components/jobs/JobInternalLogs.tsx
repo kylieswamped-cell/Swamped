@@ -75,16 +75,16 @@ export default function JobInternalLogs({
 
   return (
     <section className="mt-8 overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white">
-      <div className="mt-[18px] flex h-[78px] items-center justify-center gap-3 border-b border-[#e2e8f0] bg-[#f8fafc]/50">
+      <div className="flex h-[78px] items-center justify-center gap-3 border-b border-[#e2e8f0] bg-[#f8fafc]/50">
         <span className="flex size-8 items-center justify-center rounded-full bg-[#f1f5f9]">
           <LockKeyhole className="size-3.5 text-[#0a1b2f]" />
         </span>
         <h3 className="text-[18px] font-bold leading-7 text-[#0a1b2f]">Internal Logs (Private)</h3>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 px-6 pb-8 pt-6 lg:grid-cols-[minmax(0,552px)_minmax(0,415px)] lg:justify-between lg:px-8">
-        <div className="lg:pt-[22px]">
-          <label htmlFor="job-internal-log" className="text-[12px] font-bold uppercase leading-5 tracking-[0.6px] text-[#64748b]">
+      <div className="grid grid-cols-1 gap-8 px-6 pb-8 pt-7 lg:grid-cols-2 lg:gap-12 lg:px-8">
+        <div>
+          <label htmlFor="job-internal-log" className="flex h-5 items-center text-[12px] font-bold uppercase leading-5 tracking-[0.6px] text-[#64748b]">
             Internal Notes
           </label>
           <textarea
@@ -93,13 +93,13 @@ export default function JobInternalLogs({
             onChange={(e) => setValue(e.target.value)}
             onBlur={saveNotes}
             placeholder="Private team notes about this job (visible only to you)"
-            className="mt-[30px] h-[136px] w-full resize-y rounded-xl border border-[#1e293b] bg-[#f8fafc] px-6 py-6 text-[16px] leading-[26px] text-[#0a1b2f] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#00c185] lg:max-w-[420px]"
+            className="mt-4 h-[136px] w-full resize-y rounded-xl border border-[#1e293b] bg-[#f8fafc] px-6 py-6 text-[16px] leading-[26px] text-[#0a1b2f] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#00c185]"
           />
           <p className="mt-1 h-4 text-[12px] text-[#94a3b8]">{pending ? "Saving…" : value !== saved ? "Unsaved changes" : ""}</p>
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
+          <div className="flex h-5 items-center justify-between">
             <span className="text-[12px] font-bold uppercase leading-5 tracking-[0.6px] text-[#64748b]">Internal Attachments</span>
             <button type="button" onClick={() => picker.current?.click()} disabled={pending} className="flex items-center gap-1 text-[12px] font-semibold text-[#00c185] hover:text-[#00a873] disabled:opacity-50">
               <Plus className="size-3.5" strokeWidth={2.5} />
@@ -107,7 +107,7 @@ export default function JobInternalLogs({
             </button>
           </div>
           <input ref={picker} type="file" multiple accept={ACCEPTS} className="sr-only" onChange={(e) => { upload(e.target.files); e.target.value = ""; }} />
-          <ul className="mt-8 flex flex-col gap-6">
+          <ul className="mt-4 flex flex-col gap-3">
             {files.map((f) => (
               <JobFileCard
                 key={f.id}

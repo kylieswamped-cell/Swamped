@@ -63,13 +63,20 @@ export async function requireOnboardingUser(returnTo: string): Promise<{
 }> {
   if (!isSupabaseConfigured) redirect("/login");
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  // Fetch the profile alongside the user check (RLS returns only the caller's
+  // row), so each page waits on one round trip instead of two.
+  const [{ data }, { data: profile }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from("profiles").select("*").maybeSingle<Profile>(),
+  ]);
   if (!data.user) redirect(`/login?next=${returnTo}`);
   // Unverified emails never get in, even with a session somehow in hand.
   if (!data.user.email_confirmed_at) {
     await supabase.auth.signOut();
     redirect("/login");
   }
-  const profile = await getProfile(supabase, data.user.id);
+  if (!profile || profile.id !== data.user.id) {
+    return { supabase, user: data.user, profile: await getProfile(supabase, data.user.id) };
+  }
   return { supabase, user: data.user, profile };
 }
