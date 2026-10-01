@@ -11,8 +11,9 @@ import CustomerFormModal, { type CustomerFormValues } from "./CustomerFormModal"
 
 type Dialog = "archive" | "unarchive" | "delete" | null;
 
-// Quotes, invoices, and jobs get their own create screens later.
+// Quotes and invoices get their own create screens later.
 const createItems = ["Create Quote", "Create Invoice", "Create Job"];
+const COMING_SOON = new Set(["Create Quote", "Create Invoice"]);
 
 export default function CustomerHeader({
   id,
@@ -109,22 +110,33 @@ export default function CustomerHeader({
 
             {menuOpen && (
               <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-[#f1f5f9] bg-white py-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
-                {createItems.map((label, i) => (
-                  <div key={label}>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      aria-disabled="true"
-                      title="Coming soon"
-                      onClick={() => setMenuOpen(false)}
-                      className={`${itemClass} h-[55px] cursor-not-allowed text-[#1e293b]`}
-                    >
-                      <Plus className="size-5 text-[#3b82f6]" />
-                      {label}
-                    </button>
-                    {i === 0 && <div className="mx-2 h-px bg-[#f1f5f9]" />}
-                  </div>
-                ))}
+                {createItems.map((label, i) => {
+                  // Jobs can only be created for customers who aren't archived.
+                  const available = label === "Create Job" ? !archived : !COMING_SOON.has(label);
+                  return (
+                    <div key={label}>
+                      {available ? (
+                        <Link href={`/jobs?new=1&customer=${id}`} role="menuitem" onClick={() => setMenuOpen(false)} className={`${itemClass} h-[55px] text-[#1e293b]`}>
+                          <Plus className="size-5 text-[#3b82f6]" />
+                          {label}
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          aria-disabled="true"
+                          title={label === "Create Job" ? "Unarchive this customer to create a job" : "Coming soon"}
+                          onClick={() => setMenuOpen(false)}
+                          className={`${itemClass} h-[55px] cursor-not-allowed text-[#1e293b]`}
+                        >
+                          <Plus className="size-5 text-[#3b82f6]" />
+                          {label}
+                        </button>
+                      )}
+                      {i === 0 && <div className="mx-2 h-px bg-[#f1f5f9]" />}
+                    </div>
+                  );
+                })}
                 <div className="mx-2 h-px bg-[#f1f5f9]" />
                 {archived ? (
                   <button type="button" role="menuitem" onClick={() => open("unarchive")} className={`${itemClass} h-[45px] text-[#64748b]`}>

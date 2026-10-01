@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import type { CustomerDetail as Customer, CustomerQuote } from "@/lib/customers/data";
+import { ACTIVE_JOB_STATUSES, jobStatusLabel } from "@/lib/jobs/data";
 import { formatMoney } from "@/lib/quotes/totals";
 import CustomerFiles from "./CustomerFiles";
 import CustomerHeader from "./CustomerHeader";
@@ -18,6 +19,13 @@ const QUOTE_DOT: Record<string, string> = {
   declined: "bg-[#ef4444]",
 };
 const QUOTE_LABEL: Record<string, string> = { draft: "Draft", sent: "Sent", accepted: "Accepted", declined: "Declined" };
+
+const JOB_DOT: Record<string, string> = {
+  unscheduled: "bg-[#94a3b8]",
+  scheduled: "bg-[#f59e0b]",
+  in_progress: "bg-[#3b82f6]",
+  completed: "bg-[#10b981]",
+};
 
 function InfoCard({ icon, iconBg, w, title, children }: { icon: string; iconBg: string; w: number; title: string; children: ReactNode }) {
   return (
@@ -85,6 +93,7 @@ function quoteSubtitle(q: CustomerQuote) {
 
 export default function CustomerDetail({ customer }: { customer: Customer }) {
   const pendingQuotes = customer.quotes.filter((q) => q.status === "sent").length;
+  const activeJobs = customer.jobs.filter((j) => ACTIVE_JOB_STATUSES.includes(j.status)).length;
 
   return (
     <div className="px-4 pb-12 pt-6 sm:pl-[45px] sm:pr-8 sm:pt-5">
@@ -124,7 +133,27 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
       </div>
 
       <div className="mt-[18px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">
-        <HistorySection title="Job History" badge="0 Active Jobs" badgeClass="bg-[#eff6ff] text-[#1d4ed8]" empty="No jobs yet." />
+        <HistorySection
+          title="Job History"
+          badge={`${activeJobs} Active Job${activeJobs === 1 ? "" : "s"}`}
+          badgeClass="bg-[#eff6ff] text-[#1d4ed8]"
+          empty="No jobs yet."
+        >
+          {customer.jobs.length > 0 &&
+            customer.jobs.map((j) => (
+              <HistoryRow
+                key={j.id}
+                dot={JOB_DOT[j.status] ?? "bg-[#94a3b8]"}
+                title={j.title}
+                subtitle={[
+                  `Job #${j.number}`,
+                  jobStatusLabel(j.status),
+                  j.startsAt ? `Starts ${longDate(j.startsAt)}` : `Created ${longDate(j.createdAt)}`,
+                ].join(" • ")}
+                amount={j.total}
+              />
+            ))}
+        </HistorySection>
         <HistorySection
           title="Quote History"
           badge={pendingQuotes ? `${pendingQuotes} Pending Approval` : `${customer.quotes.length} Quote${customer.quotes.length === 1 ? "" : "s"}`}

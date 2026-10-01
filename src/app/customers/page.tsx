@@ -20,7 +20,7 @@ export default async function CustomersPage({
 
   const params = await searchParams;
   const archived = params.tab === "archived";
-  const { customers, now } = await listCustomers(supabase, archived);
+  const [{ customers, now }, stats] = await Promise.all([listCustomers(supabase, archived), customerStats(supabase)]);
 
   return (
     <DashboardShell
@@ -29,7 +29,7 @@ export default async function CustomersPage({
       subtitle="View and manage your customer information."
     >
       <div className="px-4 pb-12 pt-6 sm:pl-10 sm:pr-8 sm:pt-[55px]">
-        <CustomerStatCards stats={customerStats()} />
+        <CustomerStatCards stats={stats} />
         <div className="mt-[34px]">
           <CustomersView
             key={archived ? "archived" : "active"}

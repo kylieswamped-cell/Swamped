@@ -5,7 +5,7 @@ import Link from "next/link";
 const actions = [
   { label: "Add Customer", icon: "action-customer", w: 20, href: "/customers?new=1" },
   { label: "Create Quote", icon: "action-quote", w: 18, href: "#" },
-  { label: "Create Job", icon: "action-job", w: 16, href: "#" },
+  { label: "Create Job", icon: "action-job", w: 16, href: "/jobs?new=1" },
   { label: "Create Invoice", icon: "action-invoice", w: 12, href: "#" },
 ];
 

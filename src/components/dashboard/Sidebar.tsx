@@ -12,7 +12,7 @@ import { signOut } from "@/lib/auth/actions";
 const mainLinks = [
   { label: "Dashboard", href: "/dashboard", icon: "nav-dashboard", w: 16 },
   { label: "Customers", href: "/customers", icon: "nav-customers", w: 20 },
-  { label: "Jobs", href: "#", icon: "nav-jobs", w: 16 },
+  { label: "Jobs", href: "/jobs", icon: "nav-jobs", w: 16 },
   { label: "Quotes", href: "#", icon: "nav-quotes", w: 12 },
   { label: "Invoices", href: "#", icon: "nav-invoices", w: 12 },
   { label: "Payments", href: "#", icon: "nav-payments", w: 18 },

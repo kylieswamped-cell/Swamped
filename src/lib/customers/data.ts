@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { countActiveJobs, type JobStatus } from "@/lib/jobs/data";
 
 export type CustomerStatus = "Active" | "Pending" | "Completed";
 
@@ -54,10 +55,20 @@ export async function listCustomers(
   return { customers: rows, now: Date.now() };
 }
 
-/** Jobs, invoices, and payments aren't built yet, so these start at zero. */
-export function customerStats() {
-  return { totalRevenue: 0, outstandingBalance: 0, activeJobs: 0 };
+/** Invoices and payments aren't built yet, so revenue and balance start at zero. */
+export async function customerStats(supabase: SupabaseClient) {
+  return { totalRevenue: 0, outstandingBalance: 0, activeJobs: await countActiveJobs(supabase) };
 }
+
+export type CustomerJob = {
+  id: string;
+  number: string;
+  title: string;
+  status: JobStatus;
+  total: number;
+  startsAt: string | null;
+  createdAt: string;
+};
 
 export type CustomerQuote = {
   id: string;
@@ -88,11 +99,12 @@ export type CustomerDetail = {
   archived: boolean;
   createdAt: string;
   quotes: CustomerQuote[];
+  jobs: CustomerJob[];
   attachments: CustomerAttachment[];
 };
 
 export async function getCustomer(supabase: SupabaseClient, id: string): Promise<CustomerDetail | null> {
-  const [{ data: c }, { data: quotes }, { data: files }] = await Promise.all([
+  const [{ data: c }, { data: quotes }, { data: jobs }, { data: files }] = await Promise.all([
     supabase
       .from("customers")
       .select("id, name, email, phone, street_address, notes, archived_at, created_at")
@@ -102,6 +114,12 @@ export async function getCustomer(supabase: SupabaseClient, id: string): Promise
       .from("quotes")
       .select("id, quote_number, title, status, total, expires_on, created_at")
       .eq("customer_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("jobs")
+      .select("id, job_number, title, status, total, starts_at, created_at")
+      .eq("customer_id", id)
+      .is("archived_at", null)
       .order("created_at", { ascending: false }),
     supabase
       .from("customer_attachments")
@@ -128,6 +146,15 @@ export async function getCustomer(supabase: SupabaseClient, id: string): Promise
       total: Number(q.total),
       expiresOn: q.expires_on,
       createdAt: q.created_at,
+    })),
+    jobs: (jobs ?? []).map((j) => ({
+      id: j.id,
+      number: j.job_number,
+      title: j.title,
+      status: j.status,
+      total: Number(j.total),
+      startsAt: j.starts_at,
+      createdAt: j.created_at,
     })),
     attachments: (files ?? []).map((f) => ({
       id: f.id,
