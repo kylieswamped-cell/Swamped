@@ -260,7 +260,7 @@ export default function QuoteFormModal({
             </div>
           </div>
 
-          <div className="mt-[18px] grid grid-cols-1 items-end gap-5 sm:grid-cols-3 lg:grid-cols-[212px_305px_307px_minmax(0,1fr)] lg:gap-x-[15px]">
+          <div className="mt-[18px] grid grid-cols-1 items-end gap-5 sm:grid-cols-3 lg:grid-cols-[212px_minmax(0,305px)_minmax(0,307px)_auto] lg:gap-x-[15px]">
             <div>
               <span className={labelClass}>Quote Number</span>
               <p className="mt-[9px] flex h-11 items-center rounded-lg border border-[#e5e7eb] bg-[#f3f4f6] px-4 text-[16px] text-[#374151]">{quote?.number ?? defaults.number}</p>
@@ -282,7 +282,7 @@ export default function QuoteFormModal({
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
-              className="flex h-[42px] items-center justify-center gap-2 rounded-[5px] bg-[#01c185] px-4 text-[14px] leading-6 text-white transition-colors hover:bg-[#00a873] sm:col-span-3 lg:col-span-1 lg:mb-px lg:ml-auto lg:w-[168px] lg:px-0"
+              className="flex h-[42px] items-center justify-center gap-2 whitespace-nowrap rounded-[5px] bg-[#01c185] px-5 text-[14px] leading-6 text-white transition-colors hover:bg-[#00a873] sm:col-span-3 lg:col-span-1 lg:mb-px lg:ml-auto"
             >
               <Plus className="size-4" strokeWidth={2.5} />
               Create New Line Item

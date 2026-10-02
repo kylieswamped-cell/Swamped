@@ -245,7 +245,7 @@ export default function JobFormModal({
             </div>
           </div>
 
-          <div className="mt-[18px] grid grid-cols-1 items-end gap-5 lg:grid-cols-[210px_minmax(0,1fr)_168px] lg:gap-x-[44px]">
+          <div className="mt-[18px] grid grid-cols-1 items-end gap-5 lg:grid-cols-[210px_minmax(0,1fr)_auto] lg:gap-x-[44px]">
             <div className="lg:mb-[14px]">
               <span className={labelClass}>Job Number</span>
               <p className="mt-2 flex h-[42px] items-center rounded-lg border border-[#e5e7eb] bg-[#f3f4f6] px-4 text-[14px] font-medium leading-[21px] text-[#475569]">
@@ -265,7 +265,7 @@ export default function JobFormModal({
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
-              className="flex h-[42px] items-center justify-center gap-2 rounded-[5px] bg-[#01c185] text-[14px] leading-6 tracking-[-0.2px] text-white transition-colors hover:bg-[#00a873] lg:mb-[18px]"
+              className="flex h-[42px] items-center justify-center gap-2 whitespace-nowrap rounded-[5px] bg-[#01c185] px-5 text-[14px] leading-6 tracking-[-0.2px] text-white transition-colors hover:bg-[#00a873] lg:mb-[18px]"
             >
               <Plus className="size-4" strokeWidth={2.5} />
               Create Line Item
