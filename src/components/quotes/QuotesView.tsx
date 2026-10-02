@@ -111,9 +111,9 @@ export default function QuotesView({
           />
         </label>
         <div className="flex flex-wrap gap-[13px] xl:ml-[7px]">
-          <FilterMenu label="Status" options={QUOTE_FILTERS} selected={states} onToggle={(v) => setStates(toggle(states, v))} width="w-[93px]" />
-          <FilterMenu label="Created Date" options={RANGES} selected={created ? [created] : []} onToggle={(v) => setCreated(single(created, v))} width="w-[139px]" />
-          <FilterMenu label="Sent Date" options={RANGES} selected={sent ? [sent] : []} onToggle={(v) => setSent(single(sent, v))} width="w-[118px]" />
+          <FilterMenu label="Status" options={QUOTE_FILTERS} selected={states} onToggle={(v) => setStates(toggle(states, v))} width="min-w-[93px]" />
+          <FilterMenu label="Created Date" options={RANGES} selected={created ? [created] : []} onToggle={(v) => setCreated(single(created, v))} width="min-w-[139px]" />
+          <FilterMenu label="Sent Date" options={RANGES} selected={sent ? [sent] : []} onToggle={(v) => setSent(single(sent, v))} width="min-w-[118px]" />
         </div>
         <button
           type="button"
@@ -167,22 +167,22 @@ export default function QuotesView({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1040px] table-fixed text-left">
+            <table className="w-full min-w-[1100px] table-fixed text-left">
               <colgroup>
-                {["w-[10.7%]", "w-[8.6%]", "w-[8.6%]", "w-[12.8%]", "w-[6.2%]", "w-[10.3%]", "w-[8.6%]", "w-[13.4%]", "w-[9.2%]", "w-[11.6%]"].map((c, i) => (
+                {["w-[12.4%]", "w-[9.9%]", "w-[8.6%]", "w-[13.1%]", "w-[8.1%]", "w-[10.7%]", "w-[9%]", "w-[12.5%]", "w-[9.2%]", "w-[6.5%]"].map((c, i) => (
                   <col key={i} className={c} />
                 ))}
               </colgroup>
-              <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase leading-[18px] tracking-[0.6px] text-[#64748b]">
+              <thead className="whitespace-nowrap bg-[#f8fafc] text-[12px] font-bold uppercase leading-[18px] tracking-[0.6px] text-[#64748b]">
                 <tr className="h-[60px] border-b border-[#e2e8f0]">
                   <th className="pl-6">Quote Number</th>
                   <th className="pl-3">Customer</th>
                   <th className="pl-3">Amount</th>
-                  <th className="pl-6">Required Deposit</th>
+                  <th className="pl-3">Required Deposit</th>
                   <th className="text-center">Status</th>
-                  <th className="pl-6">Created Date</th>
+                  <th className="pl-3">Created Date</th>
                   <th className="pl-3">Sent Date</th>
-                  <th className="pl-8">Expiration Date</th>
+                  <th className="pl-3">Expiration Date</th>
                   <th className="pl-3">Linked Job</th>
                   <th className="text-center">Actions</th>
                 </tr>
@@ -197,13 +197,13 @@ export default function QuotesView({
                     </td>
                     <td className="truncate px-3 text-[15px]" title={q.customer}>{q.customer}</td>
                     <td className="px-3 text-[15px]">{formatMoney(q.total)}</td>
-                    <td className="pl-6 pr-3 text-[15px]">{formatMoney(q.deposit)}</td>
+                    <td className="px-3 text-[15px]">{formatMoney(q.deposit)}</td>
                     <td className="text-center">
                       <QuoteStatusBadge state={q.state} />
                     </td>
-                    <td className="pl-6 pr-2">{day(q.createdAt)}</td>
+                    <td className="px-3">{day(q.createdAt)}</td>
                     <td className="px-3">{day(q.sentAt)}</td>
-                    <td className="pl-8 pr-2">{q.state === "draft" ? "—" : dateOnly(q.expiresOn)}</td>
+                    <td className="px-3">{q.state === "draft" ? "—" : dateOnly(q.expiresOn)}</td>
                     <td className="px-3 text-[#64748b]">
                       {q.job ? (
                         <Link href={`/jobs/${q.job.id}`} className="hover:text-[#00c185]">{q.job.number}</Link>

@@ -43,7 +43,7 @@ export function FilterMenu<T extends string>({
           selected.length ? "border-[#00c185] bg-[#ecfdf5] text-[#0f172a]" : "border-[#e2e8f0] bg-[#f9fafb] text-[#475569] hover:bg-white"
         } ${width}`}
       >
-        <span className="truncate">{label}</span>
+        <span className="whitespace-nowrap">{label}</span>
         <Image src="/jobs/chevron.svg" alt="" width={9} height={5} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (

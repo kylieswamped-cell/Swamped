@@ -150,11 +150,11 @@ export default function JobsView({
           />
         </label>
         <div className="flex flex-wrap gap-[13px] xl:ml-4">
-          <FilterMenu label="Status" options={JOB_STATUSES} selected={statuses} onToggle={(v) => setStatuses(toggle(statuses, v))} width="w-[93px]" />
-          <FilterMenu label="State" options={STATES} selected={states} onToggle={(v) => setStates(toggle(states, v))} width="w-[85px]" />
-          <FilterMenu label="Created Date" options={PAST_RANGES} selected={created ? [created] : []} onToggle={(v) => setCreated(single(created, v))} width="w-[139px]" />
-          <FilterMenu label="Start Date" options={SCHEDULE_RANGES} selected={start ? [start] : []} onToggle={(v) => setStart(single(start, v))} width="w-[118px]" />
-          <FilterMenu label="End Date" options={SCHEDULE_RANGES} selected={end ? [end] : []} onToggle={(v) => setEnd(single(end, v))} width="w-[111px]" />
+          <FilterMenu label="Status" options={JOB_STATUSES} selected={statuses} onToggle={(v) => setStatuses(toggle(statuses, v))} width="min-w-[93px]" />
+          <FilterMenu label="State" options={STATES} selected={states} onToggle={(v) => setStates(toggle(states, v))} width="min-w-[85px]" />
+          <FilterMenu label="Created Date" options={PAST_RANGES} selected={created ? [created] : []} onToggle={(v) => setCreated(single(created, v))} width="min-w-[139px]" />
+          <FilterMenu label="Start Date" options={SCHEDULE_RANGES} selected={start ? [start] : []} onToggle={(v) => setStart(single(start, v))} width="min-w-[118px]" />
+          <FilterMenu label="End Date" options={SCHEDULE_RANGES} selected={end ? [end] : []} onToggle={(v) => setEnd(single(end, v))} width="min-w-[111px]" />
         </div>
       </div>
 
