@@ -11,9 +11,9 @@ import CustomerFormModal, { type CustomerFormValues } from "./CustomerFormModal"
 
 type Dialog = "archive" | "unarchive" | "delete" | null;
 
-// Quotes and invoices get their own create screens later.
+// Invoices get their own create screen later.
 const createItems = ["Create Quote", "Create Invoice", "Create Job"];
-const COMING_SOON = new Set(["Create Quote", "Create Invoice"]);
+const CREATE_HREF: Record<string, string> = { "Create Quote": "/quotes", "Create Job": "/jobs" };
 
 export default function CustomerHeader({
   id,
@@ -111,12 +111,13 @@ export default function CustomerHeader({
             {menuOpen && (
               <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-[#f1f5f9] bg-white py-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
                 {createItems.map((label, i) => {
-                  // Jobs can only be created for customers who aren't archived.
-                  const available = label === "Create Job" ? !archived : !COMING_SOON.has(label);
+                  // Quotes and jobs can only be created for customers who aren't archived.
+                  const base = CREATE_HREF[label];
+                  const available = Boolean(base) && !archived;
                   return (
                     <div key={label}>
                       {available ? (
-                        <Link href={`/jobs?new=1&customer=${id}`} role="menuitem" onClick={() => setMenuOpen(false)} className={`${itemClass} h-[55px] text-[#1e293b]`}>
+                        <Link href={`${base}?new=1&customer=${id}`} role="menuitem" onClick={() => setMenuOpen(false)} className={`${itemClass} h-[55px] text-[#1e293b]`}>
                           <Plus className="size-5 text-[#3b82f6]" />
                           {label}
                         </Link>
@@ -125,7 +126,7 @@ export default function CustomerHeader({
                           type="button"
                           role="menuitem"
                           aria-disabled="true"
-                          title={label === "Create Job" ? "Unarchive this customer to create a job" : "Coming soon"}
+                          title={base ? "Unarchive this customer first" : "Coming soon"}
                           onClick={() => setMenuOpen(false)}
                           className={`${itemClass} h-[55px] cursor-not-allowed text-[#1e293b]`}
                         >

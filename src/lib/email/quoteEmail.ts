@@ -1,4 +1,5 @@
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
+import { escapeHtml as escape, formatMessage, sendEmail, type EmailAttachment, type EmailResult } from "./send";
 
 type QuoteEmail = {
   to: string;
@@ -8,16 +9,20 @@ type QuoteEmail = {
   quoteNumber: string;
   title: string | null;
   expiresOn: string;
+  /** The message body; supports the light formatting in formatMessage. */
   message: string | null;
   terms: string | null;
   items: { description: string; quantity: number; unitPrice: number }[];
   totals: { subtotal: number; discount: number; tax: number; total: number; deposit: number };
+  /** Defaults to "Quote Q-1001 from Business". */
+  subject?: string;
+  attachments?: EmailAttachment[];
 };
 
-const escape = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-
 const paragraphs = (s: string) => escape(s).replace(/\n/g, "<br>");
+
+const longDate = (isoDate: string) =>
+  new Date(`${isoDate}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 
 function renderHtml(q: QuoteEmail) {
   const row = (label: string, value: string, strong = false) => `
@@ -50,8 +55,11 @@ function renderHtml(q: QuoteEmail) {
           ${q.title ? `<p style="margin:8px 0 0;color:#cbd5e1;font-size:15px">${escape(q.title)}</p>` : ""}
         </td></tr>
         <tr><td style="padding:32px">
-          <p style="margin:0 0 16px;font-size:15px;color:#0f172a">Hi ${escape(q.customerName)},</p>
-          ${q.message ? `<p style="margin:0 0 24px;font-size:15px;line-height:24px;color:#475569">${paragraphs(q.message)}</p>` : ""}
+          ${
+            q.message
+              ? `<div style="margin:0 0 24px;font-size:15px;line-height:24px;color:#475569">${formatMessage(q.message)}</div>`
+              : `<p style="margin:0 0 24px;font-size:15px;color:#0f172a">Hi ${escape(q.customerName)},</p>`
+          }
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <th style="text-align:left;font-size:11px;color:#94a3b8;letter-spacing:.6px;text-transform:uppercase;padding-bottom:8px">Item</th>
@@ -67,7 +75,7 @@ function renderHtml(q: QuoteEmail) {
             ${row("Grand Total", formatMoney(q.totals.total), true)}
             ${q.totals.deposit ? row("Required Deposit", formatMoney(q.totals.deposit)) : ""}
           </table>
-          <p style="margin:24px 0 0;font-size:13px;color:#64748b">This quote is valid until ${escape(q.expiresOn)}. Reply to this email with any questions.</p>
+          <p style="margin:24px 0 0;font-size:13px;color:#64748b">This quote is valid until ${escape(longDate(q.expiresOn))}. Reply to this email to approve it or ask any questions.</p>
           ${
             q.terms
               ? `<div style="margin-top:24px;padding:16px;background:#f8fafc;border-radius:12px;font-size:12px;line-height:18px;color:#64748b"><strong style="color:#0f172a">Terms and Conditions</strong><br>${paragraphs(q.terms)}</div>`
@@ -81,31 +89,53 @@ function renderHtml(q: QuoteEmail) {
 </body></html>`;
 }
 
-/** Sends a quote through Resend. Needs RESEND_API_KEY and EMAIL_FROM. */
-export async function sendQuoteEmail(q: QuoteEmail): Promise<{ ok: true } | { ok: false; reason: string }> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM;
-  if (!apiKey || !from) return { ok: false, reason: "email sending isn't set up yet." };
+export function sendQuoteEmail(q: QuoteEmail): Promise<EmailResult> {
+  return sendEmail({
+    to: q.to,
+    replyTo: q.replyTo,
+    subject: q.subject || `Quote ${q.quoteNumber} from ${q.businessName}`,
+    html: renderHtml(q),
+    attachments: q.attachments,
+  });
+}
 
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from,
-        to: [q.to],
-        reply_to: q.replyTo || undefined,
-        subject: `Quote ${q.quoteNumber} from ${q.businessName}`,
-        html: renderHtml(q),
-      }),
-    });
-    if (!res.ok) {
-      console.error("Resend error", res.status, await res.text());
-      return { ok: false, reason: "the email service rejected it." };
-    }
-    return { ok: true };
-  } catch (err) {
-    console.error("Resend request failed", err);
-    return { ok: false, reason: "the email service couldn't be reached." };
-  }
+/** Receipt for a deposit recorded against a quote. */
+export function sendDepositReceipt(r: {
+  to: string;
+  customerName: string;
+  businessName: string;
+  replyTo: string;
+  quoteNumber: string;
+  amount: number;
+  paidOn: string;
+  method: string;
+  reference: string | null;
+  remaining: number;
+}): Promise<EmailResult> {
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding:6px 0;color:#64748b;font-size:14px">${label}</td><td style="padding:6px 0;text-align:right;font-size:14px;color:#0f172a">${value}</td></tr>`;
+  const html = `<!doctype html>
+<html><body style="margin:0;background:#f8fafc;font-family:Inter,Arial,Helvetica,sans-serif">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px"><tr><td align="center">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0">
+      <tr><td style="background:#0b192c;padding:28px 32px">
+        <p style="margin:0;color:#00c9a7;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Deposit Receipt</p>
+        <h1 style="margin:8px 0 0;color:#ffffff;font-size:22px">${escape(r.businessName)} received your deposit</h1>
+      </td></tr>
+      <tr><td style="padding:28px 32px">
+        <p style="margin:0 0 16px;font-size:15px;color:#0f172a">Hi ${escape(r.customerName)}, thank you for your payment.</p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${row("Quote", escape(r.quoteNumber))}
+          ${row("Amount received", `<strong style="color:#059669">${formatMoney(r.amount)}</strong>`)}
+          ${row("Date", escape(r.paidOn))}
+          ${row("Method", escape(r.method))}
+          ${r.reference ? row("Reference", escape(r.reference)) : ""}
+          ${row("Remaining balance", formatMoney(r.remaining))}
+        </table>
+      </td></tr>
+    </table>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8">Sent with Swamped</p>
+  </td></tr></table>
+</body></html>`;
+  return sendEmail({ to: r.to, replyTo: r.replyTo, subject: `Deposit received for quote ${r.quoteNumber}`, html });
 }

@@ -174,10 +174,10 @@ export default function JobDetailView({
           <div className="mt-6 flex flex-col gap-3">
             <LinkedRow label="Linked Quote">
               {job.quote ? (
-                <span className="flex items-center gap-2 text-[12px] font-semibold text-[#2dd4bf]">
+                <Link href={`/quotes/${job.quote.id}`} className="flex items-center gap-2 text-[12px] font-semibold text-[#2dd4bf] hover:text-[#14b8a6]">
                   {job.quote.number}
                   <ExternalLink className="size-2.5" />
-                </span>
+                </Link>
               ) : (
                 <span className="text-[12px] text-[#94a3b8]">—</span>
               )}
@@ -266,7 +266,9 @@ export default function JobDetailView({
         >
           {job.quote && quotePill && (
             <tr className="h-[60px]">
-              <td className="pl-8 text-[16px] font-semibold text-[#2dd4bf]">{job.quote.number}</td>
+              <td className="pl-8 text-[16px] font-semibold text-[#2dd4bf]">
+                <Link href={`/quotes/${job.quote.id}`} className="hover:text-[#14b8a6]">{job.quote.number}</Link>
+              </td>
               <td className="pl-8 text-[16px] text-[#475569]">{shortDate(job.quote.date, false)}</td>
               <td className="pr-8 text-right text-[16px] font-bold text-[#0f172a]">{formatMoney(job.quote.total)}</td>
               <td className="text-center">

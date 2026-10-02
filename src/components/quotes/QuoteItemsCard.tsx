@@ -5,90 +5,60 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import ConfirmDialog from "@/components/customers/ConfirmDialog";
-import { saveJobItems, setJobAdjustments, type JobAdjustments } from "@/lib/jobs/actions";
-import type { JobDetail } from "@/lib/jobs/data";
-import { formatMoney, lineTotal, quoteTotals, type AmountType } from "@/lib/quotes/totals";
-import JobLineItemModal, { type LineDraft } from "./JobLineItemModal";
+import JobLineItemModal, { type LineDraft } from "@/components/jobs/JobLineItemModal";
+import { saveQuoteItems } from "@/lib/quotes/actions";
+import type { QuoteDetail } from "@/lib/quotes/data";
+import { formatMoney, lineTotal, quoteTotals } from "@/lib/quotes/totals";
 
-const toDraft = (job: JobDetail): LineDraft[] =>
-  job.items.map((i) => ({ description: i.description, quantity: String(i.quantity), unitPrice: i.unitPrice.toFixed(2), taxable: i.taxable }));
+const toDraft = (quote: QuoteDetail): LineDraft[] =>
+  quote.items.map((i) => ({ description: i.description, quantity: String(i.quantity), unitPrice: i.unitPrice.toFixed(2), taxable: i.taxable }));
 
-const toInput = (lines: LineDraft[]) =>
-  lines.map((l) => ({ description: l.description, quantity: Number(l.quantity), unitPrice: Number(l.unitPrice), taxable: l.taxable }));
+const pct = (type: string, value: number) => (type === "percent" ? ` (${value}%)` : "");
 
-/** Amount input with the Figma $ / % switch beside it. */
-export function AdjustmentInput({
-  label,
-  value,
-  type,
-  onValue,
-  onType,
-  onCommit,
-}: {
-  label: string;
-  value: string;
-  type: AmountType;
-  onValue: (v: string) => void;
-  onType: (t: AmountType) => void;
-  onCommit: () => void;
-}) {
-  const option = (t: AmountType, text: string) => (
-    <button
-      type="button"
-      aria-pressed={type === t}
-      aria-label={`${label} as ${t === "fixed" ? "dollars" : "percent"}`}
-      onClick={() => onType(t)}
-      className={`h-7 rounded px-2.5 text-[12px] font-semibold leading-4 transition-colors ${
-        type === t ? "bg-white text-[#111827] shadow-[0_1px_2px_rgba(0,0,0,0.05)]" : "text-[#6b7280] hover:text-[#111827]"
-      }`}
-    >
-      {text}
-    </button>
+/** Payment Summary card, shown once a deposit is recorded. */
+function PaymentSummary({ deposit }: { deposit: NonNullable<QuoteDetail["depositReceived"]> }) {
+  const when = new Date(deposit.at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  const row = (label: string, value: React.ReactNode) => (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-[13px] leading-5 text-[#94a3b8]">{label}</span>
+      <span className="truncate text-right text-[13px] font-medium leading-5 text-[#0a192f]">{value}</span>
+    </div>
   );
   return (
-    <div className="ml-3 flex h-8 overflow-hidden rounded-lg border border-[#e5e7eb] bg-[#f9fafb]">
-      <input
-        aria-label={`${label} amount`}
-        type="number"
-        inputMode="decimal"
-        min={0}
-        step="0.01"
-        value={value}
-        onChange={(e) => onValue(e.target.value)}
-        onBlur={onCommit}
-        onKeyDown={(e) => e.key === "Enter" && (e.currentTarget as HTMLInputElement).blur()}
-        className="w-16 bg-transparent px-2 text-center text-[14px] font-medium text-[#111827] outline-none"
-      />
-      <div className="flex items-center border-l border-[#e5e7eb] bg-[#f3f4f6]/50 p-0.5">
-        {option("fixed", "$")}
-        <span className="mx-px h-4 w-px bg-[#d1d5db]" />
-        {option("percent", "%")}
+    <div className="w-full rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] p-6 lg:w-[288px]">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-bold uppercase leading-[17px] text-[#64748b]">Payment Summary</span>
+        <span className="rounded-full border border-[#059669]/20 bg-[#ecfdf5] px-3 py-[7px] text-[11px] font-bold leading-[17px] text-[#059669]">Received</span>
+      </div>
+      <div className="mt-6 flex flex-col gap-3">
+        {row("Amount", <span className="text-[18px] font-bold leading-[27px]">{formatMoney(deposit.amount)}</span>)}
+        {row("Date", when)}
+        {row("Method", deposit.method ?? "—")}
+        {row("Reference", <span className="font-normal">{deposit.reference ?? "—"}</span>)}
       </div>
     </div>
   );
 }
 
-export default function JobItemsCard({ job }: { job: JobDetail }) {
+export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
   const router = useRouter();
-  const [lines, setLines] = useState<LineDraft[]>(() => toDraft(job));
+  const [lines, setLines] = useState<LineDraft[]>(() => toDraft(quote));
   const [dirty, setDirty] = useState(false);
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [deleting, setDeleting] = useState<number | null>(null);
-  const [adj, setAdj] = useState({
-    discountValue: job.totals.discountValue.toFixed(2),
-    discountType: job.totals.discountType,
-    taxValue: String(job.totals.taxValue),
-    taxType: job.totals.taxType,
-  });
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
 
   const save = (next: LineDraft[]) => {
+    if (!next.length) return setError("A quote needs at least one line item.");
     setLines(next);
     setDirty(false);
     setError(undefined);
     startTransition(async () => {
-      const result = await saveJobItems(job.id, toInput(next));
+      const result = await saveQuoteItems(
+        quote.id,
+        next.map((l) => ({ description: l.description, quantity: Number(l.quantity), unitPrice: Number(l.unitPrice), taxable: l.taxable })),
+      );
       if (result.error) {
         setError(result.error);
         setDirty(true);
@@ -103,41 +73,16 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
     setDirty(true);
   };
 
-  // Inline edits save when the field loses focus.
-  const commitIfDirty = () => dirty && save(lines);
-
-  const saveAdjustments = (next = adj) => {
-    setAdj(next);
-    setError(undefined);
-    const payload: JobAdjustments = {
-      discountValue: Number(next.discountValue) || 0,
-      discountType: next.discountType,
-      taxValue: Number(next.taxValue) || 0,
-      taxType: next.taxType,
-    };
-    startTransition(async () => {
-      const result = await setJobAdjustments(job.id, payload);
-      if (result.error) return setError(result.error);
-      router.refresh();
-    });
-  };
-
-  // Live preview while editing; the server stores the same math.
+  const a = quote.adjustments;
   const totals = quoteTotals(
     lines.map((l) => ({ quantity: Number(l.quantity), unitPrice: Number(l.unitPrice), taxable: l.taxable })),
-    {
-      discountValue: Number(adj.discountValue) || 0,
-      discountType: adj.discountType,
-      taxValue: Number(adj.taxValue) || 0,
-      taxType: adj.taxType,
-      depositValue: 0,
-      depositType: "fixed",
-    },
+    a,
   );
+  const deposit = quote.depositReceived;
 
   return (
     <>
-      <div className="mt-[25px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <div className="mt-[17px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] table-fixed text-left">
             <colgroup>
@@ -155,18 +100,18 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
                 <th className="text-center">Actions</th>
               </tr>
             </thead>
-            <tbody onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && commitIfDirty()}>
+            <tbody onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && dirty && save(lines)}>
               {lines.map((l, i) => (
                 <tr key={i} className="h-[77px]">
-                  <td className="pl-7 pr-3">
+                  <td className="pl-[31px] pr-3">
                     <input
                       aria-label={`Line ${i + 1} description`}
                       value={l.description}
                       onChange={(e) => update(i, { description: e.target.value })}
-                      className="h-[35px] w-full rounded-md border border-[#e2e8f0] px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185]"
+                      className="h-[27px] w-full rounded-md border border-[#e2e8f0] px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185]"
                     />
                   </td>
-                  <td className="pl-12">
+                  <td className="pl-6">
                     <input
                       aria-label={`Line ${i + 1} quantity`}
                       type="number"
@@ -225,12 +170,8 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
           </table>
         </div>
 
-        {lines.length === 0 && (
-          <p className="px-6 py-10 text-center text-[14px] text-[#94a3b8]">No line items on this job yet.</p>
-        )}
-
         <div className="flex flex-col gap-4 border-t border-[#f1f5f9] p-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 print:hidden">
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
@@ -243,48 +184,33 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
             {error && <p role="alert" className="max-w-[380px] text-[12px] text-[#ef4444]">{error}</p>}
           </div>
 
-          <div className="w-full rounded-[20px] border border-black/10 bg-white p-6 lg:w-[418px]">
-            <div className="flex items-center justify-between text-[14px] leading-5">
-              <span className="font-medium text-[#4b5563]">Subtotal</span>
-              <span className="font-semibold text-[#111827]">{formatMoney(totals.subtotal)}</span>
-            </div>
-            <div className="mt-5 flex items-center justify-between text-[14px] leading-5">
-              <div className="flex items-center">
-                <span className="w-16 font-medium text-[#4b5563]">Discount</span>
-                <AdjustmentInput
-                  label="Discount"
-                  value={adj.discountValue}
-                  type={adj.discountType}
-                  onValue={(v) => setAdj({ ...adj, discountValue: v })}
-                  onType={(t) => saveAdjustments({ ...adj, discountType: t })}
-                  onCommit={() => saveAdjustments()}
-                />
+          <div className="flex w-full flex-col gap-4 lg:w-auto lg:flex-row lg:items-start">
+            {deposit && <PaymentSummary deposit={deposit} />}
+            <div className="w-full rounded-3xl border border-[#e2e8f0] bg-white p-8 lg:w-[336px]">
+              {[
+                ["Subtotal", formatMoney(totals.subtotal), "text-[#0a1b33]"],
+                [`Discount${pct(a.discountType, a.discountValue)}`, `-${formatMoney(totals.discount)}`, "text-[#ef4444]"],
+                [`Tax${pct(a.taxType, a.taxValue)}`, formatMoney(totals.tax), "text-[#0a1b33]"],
+              ].map(([label, value, color], i) => (
+                <div key={label} className={`flex items-center justify-between text-[14px] leading-5 ${i ? "mt-4" : ""}`}>
+                  <span className="text-[#64748b]">{label}</span>
+                  <span className={`font-bold ${color}`}>{value}</span>
+                </div>
+              ))}
+              <div className="mt-[26px] flex items-center justify-between">
+                <span className="text-[14px] font-bold leading-5 text-[#0a1b33]">Grand Total</span>
+                <span className="text-[24px] font-extrabold leading-8 text-[#0a1b33]">{formatMoney(totals.total)}</span>
               </div>
-              <span className="font-medium text-[#6b7280]">-{formatMoney(totals.discount)}</span>
-            </div>
-            <div className="mt-5 flex items-center justify-between text-[14px] leading-5">
-              <div className="flex items-center">
-                <span className="w-16 font-medium text-[#4b5563]">Tax</span>
-                <AdjustmentInput
-                  label="Tax"
-                  value={adj.taxValue}
-                  type={adj.taxType}
-                  onValue={(v) => setAdj({ ...adj, taxValue: v })}
-                  onType={(t) => saveAdjustments({ ...adj, taxType: t })}
-                  onCommit={() => saveAdjustments()}
-                />
+              {deposit && (
+                <div className="mt-4 flex h-8 items-center justify-between rounded-lg border border-[#d6f3ea] bg-[#edf9f5] px-3">
+                  <span className="text-[12px] font-medium text-[#059669]">Deposit Received</span>
+                  <span className="text-[12px] font-semibold text-[#059669]">{formatMoney(deposit.amount)}</span>
+                </div>
+              )}
+              <div className={`${deposit ? "mt-2.5" : "mt-4"} flex h-[41px] items-center justify-between rounded-lg border border-[#cbd5e1] bg-white/50 px-3`}>
+                <span className="text-[11px] leading-[17px] text-[#64748b]">Required Deposit{pct(a.depositType, a.depositValue)}</span>
+                <span className="text-[11px] font-bold leading-[17px] text-[#64748b]">{formatMoney(totals.deposit)}</span>
               </div>
-              <span className="font-medium text-[#4b5563]">{formatMoney(totals.tax)}</span>
-            </div>
-            <div className="my-5 h-px bg-[#f3f4f6]" />
-            <div className="flex items-center justify-between">
-              <span className="text-[16px] font-bold leading-6 text-[#111827]">Grand Total</span>
-              <span className="text-[18px] font-bold leading-7 text-[#059669]">{formatMoney(totals.total)}</span>
-            </div>
-            {/* Deposits arrive with payments; until then the whole total is outstanding. */}
-            <div className="mt-5 flex items-center justify-between border-t border-[#111827]/20 pt-4">
-              <span className="text-[16px] font-bold leading-6 text-[#111827]">Remaining Balance</span>
-              <span className="text-[24px] font-extrabold leading-8 text-[#059669]">{formatMoney(totals.total)}</span>
             </div>
           </div>
         </div>

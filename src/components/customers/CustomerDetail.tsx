@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import type { CustomerDetail as Customer, CustomerQuote } from "@/lib/customers/data";
 import { ACTIVE_JOB_STATUSES, jobStatusLabel } from "@/lib/jobs/data";
@@ -69,9 +70,9 @@ function HistorySection({
   );
 }
 
-function HistoryRow({ dot, title, subtitle, amount }: { dot: string; title: string; subtitle: string; amount: number }) {
+function HistoryRow({ dot, title, subtitle, amount, href }: { dot: string; title: string; subtitle: string; amount: number; href: string }) {
   return (
-    <div className="flex min-h-[74px] items-center justify-between gap-4 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] px-[15px] py-3">
+    <Link href={href} className="flex min-h-[74px] items-center justify-between gap-4 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] px-[15px] py-3 transition-colors hover:border-[#e2e8f0] hover:bg-white">
       <div className="flex min-w-0 items-center gap-4">
         <span className={`size-2.5 shrink-0 rounded-full ${dot}`} />
         <div className="min-w-0">
@@ -80,7 +81,7 @@ function HistoryRow({ dot, title, subtitle, amount }: { dot: string; title: stri
         </div>
       </div>
       <p className="shrink-0 pr-[18px] text-[14px] font-medium leading-[21px] text-[#475569]">{formatMoney(amount)}</p>
-    </div>
+    </Link>
   );
 }
 
@@ -143,6 +144,7 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
             customer.jobs.map((j) => (
               <HistoryRow
                 key={j.id}
+                href={`/jobs/${j.id}`}
                 dot={JOB_DOT[j.status] ?? "bg-[#94a3b8]"}
                 title={j.title}
                 subtitle={[
@@ -164,6 +166,7 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
             customer.quotes.map((q) => (
               <HistoryRow
                 key={q.id}
+                href={`/quotes/${q.id}`}
                 dot={QUOTE_DOT[q.status] ?? "bg-[#94a3b8]"}
                 title={q.title || `Quote ${q.number}`}
                 subtitle={quoteSubtitle(q)}
