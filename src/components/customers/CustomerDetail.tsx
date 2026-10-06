@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { CustomerDetail as Customer, CustomerQuote } from "@/lib/customers/data";
+import { invoiceStateLabel } from "@/lib/invoices/data";
 import { ACTIVE_JOB_STATUSES, jobStatusLabel } from "@/lib/jobs/data";
 import { formatMoney } from "@/lib/quotes/totals";
 import CustomerFiles from "./CustomerFiles";
@@ -20,6 +21,16 @@ const QUOTE_DOT: Record<string, string> = {
   declined: "bg-[#ef4444]",
 };
 const QUOTE_LABEL: Record<string, string> = { draft: "Draft", sent: "Sent", accepted: "Accepted", declined: "Declined" };
+
+const INVOICE_DOT: Record<string, string> = {
+  draft: "bg-[#94a3b8]",
+  sent: "bg-[#f59e0b]",
+  partially_paid: "bg-[#3b82f6]",
+  paid: "bg-[#10b981]",
+  overdue: "bg-[#ef4444]",
+  void: "bg-[#cbd5e1]",
+  archived: "bg-[#cbd5e1]",
+};
 
 const JOB_DOT: Record<string, string> = {
   unscheduled: "bg-[#94a3b8]",
@@ -174,7 +185,27 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
               />
             ))}
         </HistorySection>
-        <HistorySection title="Invoice History" badge="0 Past Invoices" badgeClass="bg-[#f8fafc] text-[#64748b]" empty="No invoices yet." />
+        <HistorySection
+          title="Invoice History"
+          badge={`${customer.invoices.length} Past Invoice${customer.invoices.length === 1 ? "" : "s"}`}
+          badgeClass="bg-[#f8fafc] text-[#64748b]"
+          empty="No invoices yet."
+        >
+          {customer.invoices.length === 0
+            ? undefined
+            : customer.invoices.map((inv) => (
+              <HistoryRow
+                key={inv.id}
+                href={`/invoices/${inv.id}`}
+                dot={INVOICE_DOT[inv.state] ?? "bg-[#94a3b8]"}
+                title={`Invoice ${inv.number}`}
+                subtitle={[invoiceStateLabel(inv.state), `Due ${longDate(`${inv.dueOn}T00:00:00Z`)}`, inv.balance > 0 && inv.state !== "void" ? `${formatMoney(inv.balance)} owed` : null]
+                  .filter(Boolean)
+                  .join(" • ")}
+                amount={inv.total}
+              />
+            ))}
+        </HistorySection>
       </div>
 
       <section className="mt-4 overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">

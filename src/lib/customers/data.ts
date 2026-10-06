@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { balanceOf, linkedInvoices, stateOf, todayIso, type LinkedInvoice } from "@/lib/invoices/data";
 import { countActiveJobs, type JobStatus } from "@/lib/jobs/data";
 
 export type CustomerStatus = "Active" | "Pending" | "Completed";
@@ -55,9 +56,28 @@ export async function listCustomers(
   return { customers: rows, now: Date.now() };
 }
 
-/** Invoices and payments aren't built yet, so revenue and balance start at zero. */
+/**
+ * Revenue is what's been collected (invoice payments plus quote deposits);
+ * the balance is what sent, unpaid invoices still owe.
+ */
 export async function customerStats(supabase: SupabaseClient) {
-  return { totalRevenue: 0, outstandingBalance: 0, activeJobs: await countActiveJobs(supabase) };
+  const [{ data: payments }, { data: deposits }, { data: invoices }, activeJobs] = await Promise.all([
+    supabase.from("invoice_payments").select("amount"),
+    supabase.from("quotes").select("deposit_received_amount").gt("deposit_received_amount", 0),
+    supabase.from("invoices").select("status, archived_at, due_on, total, deposit_credit, amount_paid").eq("status", "sent").is("archived_at", null),
+    countActiveJobs(supabase),
+  ]);
+  const sum = (ns: number[]) => Math.round(ns.reduce((a, n) => a + n, 0) * 100) / 100;
+  const today = todayIso();
+  return {
+    totalRevenue: sum([...(payments ?? []).map((p) => Number(p.amount)), ...(deposits ?? []).map((q) => Number(q.deposit_received_amount))]),
+    outstandingBalance: sum(
+      (invoices ?? [])
+        .filter((i) => stateOf(i, today) !== "paid")
+        .map((i) => balanceOf({ total: Number(i.total), depositCredit: Number(i.deposit_credit), amountPaid: Number(i.amount_paid) })),
+    ),
+    activeJobs,
+  };
 }
 
 export type CustomerJob = {
@@ -100,11 +120,12 @@ export type CustomerDetail = {
   createdAt: string;
   quotes: CustomerQuote[];
   jobs: CustomerJob[];
+  invoices: LinkedInvoice[];
   attachments: CustomerAttachment[];
 };
 
 export async function getCustomer(supabase: SupabaseClient, id: string): Promise<CustomerDetail | null> {
-  const [{ data: c }, { data: quotes }, { data: jobs }, { data: files }] = await Promise.all([
+  const [{ data: c }, { data: quotes }, { data: jobs }, { data: files }, invoices] = await Promise.all([
     supabase
       .from("customers")
       .select("id, name, email, phone, street_address, notes, archived_at, created_at")
@@ -126,6 +147,7 @@ export async function getCustomer(supabase: SupabaseClient, id: string): Promise
       .select("id, name, path, size_bytes, content_type, created_at")
       .eq("customer_id", id)
       .order("created_at", { ascending: false }),
+    linkedInvoices(supabase, { customerId: id }),
   ]);
   if (!c) return null;
 
@@ -156,6 +178,7 @@ export async function getCustomer(supabase: SupabaseClient, id: string): Promise
       startsAt: j.starts_at,
       createdAt: j.created_at,
     })),
+    invoices,
     attachments: (files ?? []).map((f) => ({
       id: f.id,
       name: f.name,

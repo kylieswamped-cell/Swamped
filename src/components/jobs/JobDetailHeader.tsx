@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import ConfirmDialog from "@/components/customers/ConfirmDialog";
 import Modal from "@/components/customers/Modal";
+import { createInvoiceFromJob } from "@/lib/invoices/actions";
 import { deleteJob, setJobArchived, setJobStatus } from "@/lib/jobs/actions";
 import { JOB_STATUSES, type JobCustomerOption, type JobDetail, type JobStatus } from "@/lib/jobs/data";
 import JobFormModal from "./JobFormModal";
 
 type Dialog = "archive" | "unarchive" | "delete" | "completed" | null;
 
-function CompletedDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function CompletedDialog({ open, onClose, onInvoice, busy }: { open: boolean; onClose: () => void; onInvoice: () => void; busy: boolean }) {
   return (
     <Modal open={open} onClose={onClose} label="Job Completed Successfully!" className="max-w-[520px]">
       <div className="rounded-3xl bg-white p-10 shadow-2xl">
@@ -30,9 +31,8 @@ function CompletedDialog({ open, onClose }: { open: boolean; onClose: () => void
           <button type="button" onClick={onClose} className="h-[45px] w-[140px] rounded-xl border border-[#e2e8f0] bg-white text-[14px] font-bold text-[#64748b] transition-colors hover:bg-[#f8fafc]">
             Return to Job
           </button>
-          {/* Invoices aren't built yet. */}
-          <button type="button" disabled title="Invoices are coming soon" className="h-[45px] w-[147px] cursor-not-allowed rounded-xl bg-[#02c185] text-[14px] font-bold text-white opacity-60">
-            Create Invoice
+          <button type="button" onClick={onInvoice} disabled={busy} className="h-[45px] w-[147px] rounded-xl bg-[#02c185] text-[14px] font-bold text-white transition-colors hover:bg-[#00a873] disabled:opacity-60">
+            {busy ? "Creating…" : "Create Invoice"}
           </button>
         </div>
       </div>
@@ -83,6 +83,19 @@ export default function JobDetailHeader({
       if (result.error) return setError(result.error);
       router.refresh();
       if (status === "completed") setDialog("completed");
+    });
+  };
+
+  const createInvoice = () => {
+    setMenuOpen(false);
+    setError(undefined);
+    startTransition(async () => {
+      const result = await createInvoiceFromJob(job.id);
+      if (!result.id) {
+        setDialog(null);
+        return setError(result.error ?? "Couldn't create the invoice. Please try again.");
+      }
+      router.push(`/invoices/${result.id}`);
     });
   };
 
@@ -178,7 +191,7 @@ export default function JobDetailHeader({
                         {i === 0 && divider}
                       </div>
                     ))}
-                    <button type="button" role="menuitem" disabled title="Invoices are coming soon" className={`${itemClass} h-[55px] gap-[5px] text-[#0a192f] opacity-60`}>
+                    <button type="button" role="menuitem" onClick={createInvoice} className={`${itemClass} h-[55px] gap-[5px] text-[#0a192f]`}>
                       <Plus className="mx-1 size-4 text-[#2563eb]" strokeWidth={2.5} />
                       Create Invoice
                     </button>
@@ -255,7 +268,7 @@ export default function JobDetailHeader({
         message="Are you sure you want to delete this Job ? This action cannot be undone."
         confirmLabel="Delete"
       />
-      <CompletedDialog open={dialog === "completed"} onClose={() => setDialog(null)} />
+      <CompletedDialog open={dialog === "completed"} onClose={() => setDialog(null)} onInvoice={createInvoice} busy={pending} />
     </>
   );
 }

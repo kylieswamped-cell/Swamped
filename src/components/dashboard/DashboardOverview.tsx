@@ -8,7 +8,7 @@ const actions = [
   { label: "Add Customer", icon: "action-customer", w: 20, href: "#" },
   { label: "Create Quote", icon: "action-quote", w: 18, href: "#" },
   { label: "Create Job", icon: "action-job", w: 16, href: "#" },
-  { label: "Create Invoice", icon: "action-invoice", w: 12, href: "#" },
+  { label: "Create Invoice", icon: "action-invoice", w: 12, href: "/invoices?new=1" },
 ];
 
 export default function DashboardOverview({ stats }: { stats: DashboardStats }) {

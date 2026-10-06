@@ -28,6 +28,7 @@ export type JobRow = {
   endsAt: string | null;
   total: number;
   quoteNumber: string | null;
+  invoice: { id: string; number: string } | null;
 };
 
 export type JobStats = {
@@ -51,7 +52,15 @@ type JobQueryRow = {
   total: number;
   customers: { name: string } | null;
   quotes: { quote_number: string } | null;
+  invoices: { id: string; invoice_number: string; status: string; created_at: string }[] | null;
 };
+
+/** The job's newest invoice, preferring one that isn't void. */
+function latestInvoice(rows: JobQueryRow["invoices"]) {
+  const sorted = [...(rows ?? [])].sort((a, b) => b.created_at.localeCompare(a.created_at));
+  const pick = sorted.find((i) => i.status !== "void") ?? sorted[0];
+  return pick ? { id: pick.id, number: pick.invoice_number } : null;
+}
 
 /**
  * Every job, active and archived: the page filters by state in the browser.
@@ -61,7 +70,7 @@ export async function listJobs(supabase: SupabaseClient): Promise<{ jobs: JobRow
   const { data, error } = await supabase
     .from("jobs")
     .select(
-      "id, job_number, customer_id, title, status, archived_at, created_at, starts_at, ends_at, completed_at, total, customers(name), quotes(quote_number)",
+      "id, job_number, customer_id, title, status, archived_at, created_at, starts_at, ends_at, completed_at, total, customers(name), quotes(quote_number), invoices(id, invoice_number, status, created_at)",
     )
     .order("created_at", { ascending: false })
     .returns<JobQueryRow[]>();
@@ -93,6 +102,7 @@ export async function listJobs(supabase: SupabaseClient): Promise<{ jobs: JobRow
       endsAt: j.ends_at,
       total: Number(j.total),
       quoteNumber: j.quotes?.quote_number ?? null,
+      invoice: latestInvoice(j.invoices),
     })),
   };
 }

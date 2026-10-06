@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import JobDetailView from "@/components/jobs/JobDetailView";
+import { linkedInvoices } from "@/lib/invoices/data";
 import { getJob, listJobCustomers, referenceTime } from "@/lib/jobs/data";
 import { requireOnboardingUser } from "@/lib/onboarding/server";
 
@@ -17,7 +18,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   if (!profile.onboarding_completed_at) redirect("/onboarding");
   if (!UUID_RE.test(id)) notFound();
 
-  const [job, customers] = await Promise.all([getJob(supabase, id), listJobCustomers(supabase)]);
+  const [job, customers, invoices] = await Promise.all([getJob(supabase, id), listJobCustomers(supabase), linkedInvoices(supabase, { jobId: id })]);
   if (!job) notFound();
 
   // The job's own customer stays selectable when editing, even if archived since.
@@ -28,7 +29,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
   return (
     <DashboardShell name={profile.contact_name || user.email || ""} title="Jobs">
-      <JobDetailView job={job} customers={options} defaultTerms={profile.quote_terms ?? ""} now={referenceTime()} />
+      <JobDetailView job={job} invoices={invoices} customers={options} defaultTerms={profile.quote_terms ?? ""} now={referenceTime()} />
     </DashboardShell>
   );
 }

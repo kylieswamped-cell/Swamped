@@ -181,6 +181,7 @@ async function attach(supabase: Supabase, userId: string, quoteId: string, files
 function revalidate(id?: string) {
   revalidatePath("/quotes");
   revalidatePath("/dashboard");
+  revalidatePath("/payments", "layout");
   revalidatePath("/customers", "layout");
   revalidatePath("/jobs", "layout");
   if (id) revalidatePath(`/quotes/${id}`);
@@ -586,7 +587,9 @@ export async function recordDeposit(id: string, input: DepositInput, emailReceip
     reference: clean(input.reference),
     remaining: Math.max(0, Number(q.total) - amount),
   });
-  return sent.ok ? { id } : { id, notice: `Deposit recorded, but the receipt wasn't sent: ${sent.reason}` };
+  if (!sent.ok) return { id, notice: `Deposit recorded, but the receipt wasn't sent: ${sent.reason}` };
+  await ctx.supabase.from("quotes").update({ deposit_receipt_sent_at: new Date().toISOString() }).eq("id", id);
+  return { id };
 }
 
 export async function addQuoteFiles(id: string, files: UploadedQuoteFile[]): Promise<QuoteResult> {

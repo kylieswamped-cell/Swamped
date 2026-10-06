@@ -3,6 +3,8 @@
 import { CalendarDays, CircleCheck, Download, ExternalLink, Link2, Mail, Phone, UserRound, UserRoundCheck } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition, type ReactNode } from "react";
+import InvoiceStatusBadge from "@/components/invoices/InvoiceStatusBadge";
+import type { LinkedInvoice } from "@/lib/invoices/data";
 import { jobFileUrl } from "@/lib/jobs/actions";
 import { jobStatusLabel, type JobCustomerOption, type JobDetail, type JobStatus } from "@/lib/jobs/data";
 import { formatMoney } from "@/lib/quotes/totals";
@@ -99,11 +101,13 @@ function latestActivity(job: JobDetail, local: boolean) {
 
 export default function JobDetailView({
   job,
+  invoices,
   customers,
   defaultTerms,
   now,
 }: {
   job: JobDetail;
+  invoices: LinkedInvoice[];
   customers: JobCustomerOption[];
   defaultTerms: string;
   now: number;
@@ -182,10 +186,17 @@ export default function JobDetailView({
                 <span className="text-[12px] text-[#94a3b8]">—</span>
               )}
             </LinkedRow>
-            {/* Invoices and payments link here once they're built. */}
             <LinkedRow label="Linked Invoice">
-              <span className="text-[12px] text-[#94a3b8]">—</span>
+              {invoices[0] ? (
+                <Link href={`/invoices/${invoices[0].id}`} className="flex items-center gap-2 text-[12px] font-semibold text-[#2dd4bf] hover:text-[#14b8a6]">
+                  {invoices[0].number}
+                  <ExternalLink className="size-2.5" />
+                </Link>
+              ) : (
+                <span className="text-[12px] text-[#94a3b8]">—</span>
+              )}
             </LinkedRow>
+            {/* Payments link here once they're built. */}
             <LinkedRow label="Linked Payment">
               <span className="rounded bg-[#f1f5f9] px-2 py-1 text-[10px] font-bold uppercase text-[#64748b]">None</span>
             </LinkedRow>
@@ -277,7 +288,27 @@ export default function JobDetailView({
             </tr>
           )}
         </RefTable>
-        <RefTable title="Linked Invoice" count="0 References" columns={["Invoice ID", "Due Date", "Amount", "Status"]} empty="No invoices for this job yet." />
+        <RefTable
+          title="Linked Invoice"
+          count={`${invoices.length} Reference${invoices.length === 1 ? "" : "s"}`}
+          columns={["Invoice ID", "Due Date", "Amount", "Status"]}
+          empty="No invoices for this job yet."
+        >
+          {invoices.length === 0
+            ? undefined
+            : invoices.map((inv) => (
+              <tr key={inv.id} className="h-[60px]">
+                <td className="pl-8 text-[16px] font-semibold text-[#2dd4bf]">
+                  <Link href={`/invoices/${inv.id}`} className="hover:text-[#14b8a6]">{inv.number}</Link>
+                </td>
+                <td className="pl-8 text-[16px] text-[#475569]">{shortDate(`${inv.dueOn}T00:00:00Z`, false)}</td>
+                <td className="pr-8 text-right text-[16px] font-bold text-[#0f172a]">{formatMoney(inv.total)}</td>
+                <td className="text-center">
+                  <InvoiceStatusBadge state={inv.state} />
+                </td>
+              </tr>
+            ))}
+        </RefTable>
         <RefTable title="Linked Payment" count="0 References" columns={["Transaction ID", "Method", "Amount", "Date"]} empty="No payments recorded for this job yet." />
       </div>
     </div>

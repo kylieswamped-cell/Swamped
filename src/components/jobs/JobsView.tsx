@@ -243,8 +243,13 @@ export default function JobsView({
                     <td className="px-2">{dateCell(j.endsAt)}</td>
                     <td className="px-2 text-center text-[14px] font-semibold leading-[21px] text-[#334155]">{formatMoney(j.total)}</td>
                     <td className="px-1 text-center">{j.quoteNumber ?? "—"}</td>
-                    {/* Invoices link here once they're built. */}
-                    <td className="px-1 text-center">—</td>
+                    <td className="px-1 text-center">
+                      {j.invoice ? (
+                        <Link href={`/invoices/${j.invoice.id}`} className="hover:text-[#00c185]">{j.invoice.number}</Link>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
                     <td className="text-center">
                       <Link href={`/jobs/${j.id}`} aria-label={`View ${j.number}`} className="inline-block rounded p-1 transition-opacity hover:opacity-70">
                         <Image src="/customers/eye.svg" alt="" width={23} height={23} />

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import ConfirmDialog from "@/components/customers/ConfirmDialog";
 import type { JobCustomerOption } from "@/lib/jobs/data";
+import { createInvoiceFromQuote } from "@/lib/invoices/actions";
 import { convertQuoteToJob, deleteQuote, duplicateQuote, setQuoteArchived, setQuoteStatus } from "@/lib/quotes/actions";
 import type { QuoteDetail } from "@/lib/quotes/data";
 import QuoteFormModal, { type QuoteDefaults } from "./QuoteFormModal";
@@ -146,7 +147,7 @@ export default function QuoteDetailHeader({
               quote.job
                 ? item(<BriefcaseBusiness className={gray} />, `View Job ${quote.job.number}`, () => router.push(`/jobs/${quote.job!.id}`))
                 : item(<BriefcaseBusiness className={gray} />, "Convert to Job", () => run(() => convertQuoteToJob(quote.id), (id) => id && router.push(`/jobs/${id}`))),
-              item(<FileText className={gray} />, "Convert to Invoice", () => {}, { disabled: "Invoices are coming soon" }),
+              item(<FileText className={gray} />, "Convert to Invoice", () => run(() => createInvoiceFromQuote(quote.id), (id) => id && router.push(`/invoices/${id}`))),
               ...(quote.depositReceived ? [] : [item(<HandCoins className={gray} />, "Record Deposit", () => open("deposit"))]),
               divider("d2"),
               archive,

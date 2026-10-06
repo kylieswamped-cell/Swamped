@@ -11,9 +11,8 @@ import CustomerFormModal, { type CustomerFormValues } from "./CustomerFormModal"
 
 type Dialog = "archive" | "unarchive" | "delete" | null;
 
-// Invoices get their own create screen later.
 const createItems = ["Create Quote", "Create Invoice", "Create Job"];
-const CREATE_HREF: Record<string, string> = { "Create Quote": "/quotes", "Create Job": "/jobs" };
+const CREATE_HREF: Record<string, string> = { "Create Quote": "/quotes", "Create Invoice": "/invoices", "Create Job": "/jobs" };
 
 export default function CustomerHeader({
   id,
@@ -111,7 +110,7 @@ export default function CustomerHeader({
             {menuOpen && (
               <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-[#f1f5f9] bg-white py-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
                 {createItems.map((label, i) => {
-                  // Quotes and jobs can only be created for customers who aren't archived.
+                  // Quotes, invoices, and jobs can only be created for customers who aren't archived.
                   const base = CREATE_HREF[label];
                   const available = Boolean(base) && !archived;
                   return (
