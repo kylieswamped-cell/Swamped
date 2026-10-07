@@ -43,13 +43,15 @@ export const escapeHtml = (s: string) =>
 
 /**
  * The message box's light formatting, as email HTML: **bold**, _italic_,
- * "- " bullets, and "1. " numbered lines. Text is escaped first, so nothing
- * typed can inject markup.
+ * ++underline++, [links](https://…), "- " bullets, and "1. " numbered lines.
+ * Text is escaped first, so nothing typed can inject markup.
  */
 export function formatMessage(text: string) {
   const inline = (s: string) =>
     escapeHtml(s)
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" style="color:#059669">$1</a>')
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\+\+(.+?)\+\+/g, "<u>$1</u>")
       .replace(/(^|[^\w])_(.+?)_(?=[^\w]|$)/g, "$1<em>$2</em>");
 
   const out: string[] = [];

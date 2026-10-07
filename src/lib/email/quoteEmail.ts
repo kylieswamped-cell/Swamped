@@ -1,4 +1,5 @@
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
+import type { EmailTemplate } from "@/lib/settings/templates";
 import { escapeHtml as escape, formatMessage, sendEmail, type EmailAttachment, type EmailResult } from "./send";
 
 type QuoteEmail = {
@@ -111,6 +112,8 @@ export function sendDepositReceipt(r: {
   method: string;
   reference: string | null;
   remaining: number;
+  /** The saved Settings template, already filled in; replaces the greeting and subject. */
+  template?: EmailTemplate;
 }): Promise<EmailResult> {
   const row = (label: string, value: string) =>
     `<tr><td style="padding:6px 0;color:#64748b;font-size:14px">${label}</td><td style="padding:6px 0;text-align:right;font-size:14px;color:#0f172a">${value}</td></tr>`;
@@ -123,7 +126,11 @@ export function sendDepositReceipt(r: {
         <h1 style="margin:8px 0 0;color:#ffffff;font-size:22px">${escape(r.businessName)} received your deposit</h1>
       </td></tr>
       <tr><td style="padding:28px 32px">
-        <p style="margin:0 0 16px;font-size:15px;color:#0f172a">Hi ${escape(r.customerName)}, thank you for your payment.</p>
+        ${
+          r.template
+            ? `<div style="margin:0 0 16px;font-size:15px;line-height:24px;color:#0f172a">${formatMessage(r.template.body)}</div>`
+            : `<p style="margin:0 0 16px;font-size:15px;color:#0f172a">Hi ${escape(r.customerName)}, thank you for your payment.</p>`
+        }
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
           ${row("Quote", escape(r.quoteNumber))}
           ${row("Amount received", `<strong style="color:#059669">${formatMoney(r.amount)}</strong>`)}
@@ -137,5 +144,5 @@ export function sendDepositReceipt(r: {
     <p style="margin:16px 0 0;font-size:12px;color:#94a3b8">Sent with Swamped</p>
   </td></tr></table>
 </body></html>`;
-  return sendEmail({ to: r.to, replyTo: r.replyTo, subject: `Deposit received for quote ${r.quoteNumber}`, html });
+  return sendEmail({ to: r.to, replyTo: r.replyTo, subject: r.template?.subject || `Deposit received for quote ${r.quoteNumber}`, html });
 }

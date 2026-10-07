@@ -29,6 +29,32 @@ export type Profile = {
   invoice_terms: string | null;
   tax_rate: number;
   stripe_connected_at: string | null;
+  // Settings (see supabase/migrations/20261007120000_settings.sql).
+  first_name: string | null;
+  last_name: string | null;
+  personal_phone: string | null;
+  avatar_path: string | null;
+  logo_path: string | null;
+  show_contact_on_docs: boolean;
+  show_website_on_docs: boolean;
+  show_address_on_docs: boolean;
+  time_zone: string;
+  operating_hours: unknown;
+  show_hours_on_docs: boolean;
+  tax_rates: number[] | null;
+  quote_reminder_enabled: boolean;
+  quote_reminder_days: number;
+  invoice_reminder_enabled: boolean;
+  invoice_reminder_days: number;
+  past_due_notice_enabled: boolean;
+  past_due_reminder_enabled: boolean;
+  past_due_reminder_days: number;
+  email_templates: unknown;
+  notification_prefs: unknown;
+  communication_prefs: unknown;
+  payout_schedule: string;
+  payout_minimum: number;
+  updated_at: string;
 };
 
 export async function getProfile(supabase: SupabaseClient, userId: string) {

@@ -1,5 +1,6 @@
 import { formatMoney } from "@/lib/quotes/totals";
-import { escapeHtml as escape, sendEmail, type EmailResult } from "./send";
+import type { EmailTemplate } from "@/lib/settings/templates";
+import { escapeHtml as escape, formatMessage, sendEmail, type EmailResult } from "./send";
 
 /** Receipt for money returned to a customer outside Swamped. */
 export function sendRefundReceipt(r: {
@@ -14,6 +15,8 @@ export function sendRefundReceipt(r: {
   refundedOn: string;
   method: string;
   reference: string | null;
+  /** The saved Settings template, already filled in; replaces the greeting and subject. */
+  template?: EmailTemplate;
 }): Promise<EmailResult> {
   const row = (label: string, value: string) =>
     `<tr><td style="padding:6px 0;color:#64748b;font-size:14px">${label}</td><td style="padding:6px 0;text-align:right;font-size:14px;color:#0f172a">${value}</td></tr>`;
@@ -26,7 +29,11 @@ export function sendRefundReceipt(r: {
         <h1 style="margin:8px 0 0;color:#ffffff;font-size:22px">${escape(r.businessName)} sent you a refund</h1>
       </td></tr>
       <tr><td style="padding:28px 32px">
-        <p style="margin:0 0 16px;font-size:15px;color:#0f172a">Hi ${escape(r.customerName)}, here are the details of your refund.</p>
+        ${
+          r.template
+            ? `<div style="margin:0 0 16px;font-size:15px;line-height:24px;color:#0f172a">${formatMessage(r.template.body)}</div>`
+            : `<p style="margin:0 0 16px;font-size:15px;color:#0f172a">Hi ${escape(r.customerName)}, here are the details of your refund.</p>`
+        }
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
           ${row("Refund", escape(r.refundNumber))}
           ${row("For", escape(r.regarding))}
@@ -40,5 +47,5 @@ export function sendRefundReceipt(r: {
     <p style="margin:16px 0 0;font-size:12px;color:#94a3b8">Sent with Swamped</p>
   </td></tr></table>
 </body></html>`;
-  return sendEmail({ to: r.to, replyTo: r.replyTo, subject: `Refund ${r.refundNumber} from ${r.businessName}`, html });
+  return sendEmail({ to: r.to, replyTo: r.replyTo, subject: r.template?.subject || `Refund ${r.refundNumber} from ${r.businessName}`, html });
 }

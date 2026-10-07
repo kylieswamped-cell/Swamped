@@ -6,6 +6,8 @@ import { sendRefundReceipt } from "@/lib/email/paymentEmail";
 import { sendDepositReceipt } from "@/lib/email/quoteEmail";
 import { PAYMENT_METHODS } from "@/lib/invoices/data";
 import { getProfile } from "@/lib/onboarding/server";
+import { firstNameOf, profileTemplate, type MergeValues, type TemplateKey } from "@/lib/settings/templates";
+import { formatMoney } from "@/lib/quotes/totals";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { getPayment, paymentHref, REFUND_METHODS, refundNumber, type PaymentDetail } from "./data";
@@ -57,7 +59,12 @@ function validate(input: LedgerInput, methods: string[], what: string) {
 
 async function sender(ctx: { supabase: Supabase; userId: string; email: string }) {
   const profile = await getProfile(ctx.supabase, ctx.userId);
-  return { businessName: profile.legal_business_name || "Your contractor", replyTo: profile.business_email || ctx.email };
+  const businessName = profile.legal_business_name || "Your contractor";
+  return {
+    from: { businessName, replyTo: profile.business_email || ctx.email },
+    template: (key: TemplateKey, values: MergeValues) =>
+      profileTemplate(profile.email_templates, key, { businessName, senderName: profile.contact_name || businessName, ...values }),
+  };
 }
 
 /** Edits a recorded payment or deposit. */
@@ -125,7 +132,14 @@ export async function sendReceipt(slug: string): Promise<PaymentActionResult & {
   if (!p) return { error: "Couldn't find this payment." };
   if (!p.customer?.email) return { error: "This customer has no email address. Add one on their profile first." };
 
-  const from = await sender(ctx);
+  const { from, template } = await sender(ctx);
+  const merge = {
+    customerFirstName: firstNameOf(p.customer.name),
+    customerName: p.customer.name,
+    paymentAmount: formatMoney(p.amount),
+    paymentDate: longDate(p.paidOn),
+    transactionId: p.reference ?? p.number,
+  };
   const common = {
     to: p.customer.email,
     customerName: p.customer.name,
@@ -137,8 +151,18 @@ export async function sendReceipt(slug: string): Promise<PaymentActionResult & {
   };
   const sent =
     p.kind === "payment"
-      ? await sendPaymentReceipt({ ...common, invoiceNumber: p.invoice?.number ?? "", remaining: p.invoice?.balance ?? 0 })
-      : await sendDepositReceipt({ ...common, quoteNumber: p.quote?.number ?? "", remaining: Math.max(0, round((p.quote?.total ?? 0) - p.amount)) });
+      ? await sendPaymentReceipt({
+          ...common,
+          invoiceNumber: p.invoice?.number ?? "",
+          remaining: p.invoice?.balance ?? 0,
+          template: template("invoice_receipt", { ...merge, invoiceNumber: p.invoice?.number ?? "" }),
+        })
+      : await sendDepositReceipt({
+          ...common,
+          quoteNumber: p.quote?.number ?? "",
+          remaining: Math.max(0, round((p.quote?.total ?? 0) - p.amount)),
+          template: template("deposit", { ...merge, quoteNumber: p.quote?.number ?? "" }),
+        });
   if (!sent.ok) return { error: `The receipt wasn't sent: ${sent.reason}`, code: sent.code };
 
   const now = new Date().toISOString();
@@ -243,10 +267,17 @@ export async function sendRefundReceiptEmail(refundId: string): Promise<PaymentA
   if (!refund) return { error: "Couldn't find this refund." };
   if (!p.customer?.email) return { error: "This customer has no email address. Add one on their profile first." };
 
+  const { from, template } = await sender(ctx);
   const sent = await sendRefundReceipt({
     to: p.customer.email,
     customerName: p.customer.name,
-    ...(await sender(ctx)),
+    ...from,
+    template: template("refund", {
+      customerFirstName: firstNameOf(p.customer.name),
+      customerName: p.customer.name,
+      refundAmount: formatMoney(refund.amount),
+      originalPaymentAmount: formatMoney(p.amount),
+    }),
     refundNumber: refund.number,
     regarding: p.kind === "payment" ? `Invoice ${p.invoice?.number ?? ""}`.trim() : `Deposit on quote ${p.quote?.number ?? ""}`.trim(),
     amount: refund.amount,

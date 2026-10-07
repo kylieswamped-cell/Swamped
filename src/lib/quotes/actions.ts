@@ -5,10 +5,11 @@ import { sendDepositReceipt, sendQuoteEmail } from "@/lib/email/quoteEmail";
 import type { EmailAttachment } from "@/lib/email/send";
 import { nextJobNumber } from "@/lib/jobs/data";
 import { getProfile } from "@/lib/onboarding/server";
+import { firstNameOf, profileTemplate } from "@/lib/settings/templates";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { DEPOSIT_METHODS, nextQuoteNumber } from "./data";
-import { quoteTotals, type AmountType } from "./totals";
+import { formatMoney, quoteTotals, type AmountType } from "./totals";
 
 export type QuoteResult = { error?: string; fieldErrors?: Record<string, string>; id?: string; notice?: string };
 
@@ -442,14 +443,18 @@ export async function quoteEmailDraft(id: string): Promise<{ to?: string; subjec
     getProfile(ctx.supabase, ctx.userId),
   ]);
   if (!q) return { error: "Couldn't find this quote." };
-  const business = profile.legal_business_name || "us";
-  const firstName = q.customers?.name.split(/\s+/)[0] ?? "there";
+  const business = profile.legal_business_name || "Swamped";
+  const email = profileTemplate(profile.email_templates, "quote", {
+    customerFirstName: firstNameOf(q.customers?.name),
+    customerName: q.customers?.name ?? "there",
+    businessName: business,
+    senderName: profile.contact_name || business,
+    quoteNumber: q.quote_number,
+  });
   return {
     to: q.customers?.email ?? "",
-    subject: `Your Quote #${q.quote_number} from ${profile.legal_business_name || "Swamped"}`,
-    message:
-      q.customer_message ??
-      `Hi ${firstName},\n\nPlease find your quote${q.title ? ` for ${q.title}` : ""} below. Review the details and terms, and reply to this email to approve it or ask any questions.\n\nThank you,\n${business}`,
+    subject: email.subject,
+    message: q.customer_message ?? email.body,
     files: (files ?? []).map((f) => ({ name: f.name, sizeBytes: f.size_bytes })),
   };
 }
@@ -575,10 +580,20 @@ export async function recordDeposit(id: string, input: DepositInput, emailReceip
   if (!emailReceipt) return { id };
   if (!q.customers?.email) return { id, notice: "Deposit recorded. The customer has no email address, so no receipt was sent." };
   const profile = await getProfile(ctx.supabase, ctx.userId);
+  const businessName = profile.legal_business_name || "Your contractor";
   const sent = await sendDepositReceipt({
     to: q.customers.email,
     customerName: q.customers.name,
-    businessName: profile.legal_business_name || "Your contractor",
+    businessName,
+    template: profileTemplate(profile.email_templates, "deposit", {
+      customerFirstName: firstNameOf(q.customers.name),
+      customerName: q.customers.name,
+      businessName,
+      senderName: profile.contact_name || businessName,
+      quoteNumber: q.quote_number,
+      paymentAmount: formatMoney(amount),
+      transactionId: clean(input.reference) ?? "N/A",
+    }),
     replyTo: profile.business_email || ctx.email,
     quoteNumber: q.quote_number,
     amount,

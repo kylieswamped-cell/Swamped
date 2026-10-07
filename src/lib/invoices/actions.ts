@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { sendInvoiceEmail, sendPaymentReceipt } from "@/lib/email/invoiceEmail";
 import type { EmailAttachment } from "@/lib/email/send";
 import { getProfile } from "@/lib/onboarding/server";
-import { quoteTotals, type AmountType } from "@/lib/quotes/totals";
+import { firstNameOf, profileTemplate } from "@/lib/settings/templates";
+import { formatMoney, quoteTotals, type AmountType } from "@/lib/quotes/totals";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { balanceOf, nextInvoiceNumber, PAYMENT_METHODS } from "./data";
@@ -449,10 +450,11 @@ export async function invoiceEmailDraft(id: string): Promise<{ to?: string; subj
   const ctx = await signedInUser();
   if ("error" in ctx) return { error: ctx.error };
   const [{ data: i }, { data: files }, profile] = await Promise.all([
-    ctx.supabase.from("invoices").select("invoice_number, title, due_on, customer_message, customers(name, email)").eq("id", id).maybeSingle<{
+    ctx.supabase.from("invoices").select("invoice_number, title, due_on, total, customer_message, customers(name, email)").eq("id", id).maybeSingle<{
       invoice_number: string;
       title: string | null;
       due_on: string;
+      total: number;
       customer_message: string | null;
       customers: { name: string; email: string | null } | null;
     }>(),
@@ -460,14 +462,20 @@ export async function invoiceEmailDraft(id: string): Promise<{ to?: string; subj
     getProfile(ctx.supabase, ctx.userId),
   ]);
   if (!i) return { error: "Couldn't find this invoice." };
-  const business = profile.legal_business_name || "us";
-  const firstName = i.customers?.name.split(/\s+/)[0] ?? "there";
+  const business = profile.legal_business_name || "Swamped";
+  const email = profileTemplate(profile.email_templates, "invoice", {
+    customerFirstName: firstNameOf(i.customers?.name),
+    customerName: i.customers?.name ?? "there",
+    businessName: business,
+    senderName: profile.contact_name || business,
+    invoiceNumber: i.invoice_number,
+    invoiceTotal: formatMoney(Number(i.total)),
+    dueDate: longDate(i.due_on),
+  });
   return {
     to: i.customers?.email ?? "",
-    subject: `Your Invoice #${i.invoice_number} from ${profile.legal_business_name || "Swamped"}`,
-    message:
-      i.customer_message ??
-      `Hi ${firstName},\n\nPlease find your invoice${i.title ? ` for ${i.title}` : ""} below. Payment is due by ${longDate(i.due_on)}. Let us know if you have any questions.\n\nThank you,\n${business}`,
+    subject: email.subject,
+    message: i.customer_message ?? email.body,
     files: (files ?? []).map((f) => ({ name: f.name, sizeBytes: f.size_bytes })),
   };
 }
@@ -600,10 +608,20 @@ export async function recordInvoicePayment(
   if (!emailReceipt) return done;
   if (!i.customers?.email) return { ...done, notice: "Payment recorded. The customer has no email address, so no receipt was sent." };
   const profile = await getProfile(ctx.supabase, ctx.userId);
+  const businessName = profile.legal_business_name || "Your contractor";
   const sent = await sendPaymentReceipt({
     to: i.customers.email,
     customerName: i.customers.name,
-    businessName: profile.legal_business_name || "Your contractor",
+    businessName,
+    template: profileTemplate(profile.email_templates, "invoice_receipt", {
+      customerFirstName: firstNameOf(i.customers.name),
+      customerName: i.customers.name,
+      businessName,
+      senderName: profile.contact_name || businessName,
+      invoiceNumber: i.invoice_number,
+      paymentAmount: formatMoney(amount),
+      paymentDate: longDate(input.paidOn),
+    }),
     replyTo: profile.business_email || ctx.email,
     invoiceNumber: i.invoice_number,
     amount,

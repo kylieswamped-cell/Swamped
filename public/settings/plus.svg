@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ant-design--plus-outlined 1" clip-path="url(#clip0_0_7)">
+<g id="Vector">
+</g>
+<path id="Vector_2" d="M9.88477 3.11719H11.1152C11.2246 3.11719 11.2793 3.17187 11.2793 3.28125V17.7188C11.2793 17.8281 11.2246 17.8828 11.1152 17.8828H9.88477C9.77539 17.8828 9.7207 17.8281 9.7207 17.7188V3.28125C9.7207 3.17187 9.77539 3.11719 9.88477 3.11719Z" fill="white"/>
+<path id="Vector_3" d="M3.9375 9.7207H17.7188C17.8281 9.7207 17.8828 9.77539 17.8828 9.88477V11.1152C17.8828 11.2246 17.8281 11.2793 17.7188 11.2793H3.28125C3.17187 11.2793 3.11719 11.2246 3.11719 11.1152V9.88477C3.11719 9.77539 3.17187 9.7207 3.28125 9.7207H3.9375Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_0_7">
+<rect width="21" height="21" fill="white"/>
+</clipPath>
+</defs>
+</svg>

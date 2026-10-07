@@ -19,7 +19,7 @@ const mainLinks = [
 ];
 
 const footerLinks = [
-  { label: "Settings", href: "#", icon: "nav-settings", w: 16 },
+  { label: "Settings", href: "/settings", icon: "nav-settings", w: 16 },
   { label: "Support", href: "/contact", icon: "nav-support", w: 16 },
 ];
 
