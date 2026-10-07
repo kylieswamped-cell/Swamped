@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured, supabaseKey, supabaseUrl } from "./config";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/onboarding", "/customers", "/jobs", "/quotes", "/invoices", "/payments", "/settings"];
+const PROTECTED_PREFIXES = ["/dashboard", "/onboarding", "/customers", "/jobs", "/quotes", "/invoices", "/payments", "/settings", "/support"];
 const GUEST_ONLY = ["/login", "/signup"];
 
 /**

@@ -20,7 +20,7 @@ const mainLinks = [
 
 const footerLinks = [
   { label: "Settings", href: "/settings", icon: "nav-settings", w: 16 },
-  { label: "Support", href: "/contact", icon: "nav-support", w: 16 },
+  { label: "Support", href: "/support", icon: "nav-support", w: 16 },
 ];
 
 function NavLink({ link, active }: { link: (typeof mainLinks)[number]; active: boolean }) {
