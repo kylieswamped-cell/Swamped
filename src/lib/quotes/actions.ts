@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { sendDepositReceipt, sendQuoteEmail } from "@/lib/email/quoteEmail";
 import type { EmailAttachment } from "@/lib/email/send";
 import { nextJobNumber } from "@/lib/jobs/data";
@@ -46,6 +47,15 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TYPES: AmountType[] = ["percent", "fixed"];
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
+
+async function siteOrigin() {
+  const h = await headers();
+  const origin = h.get("origin");
+  if (origin) return origin;
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  return `${proto}://${host}`;
+}
 
 async function signedInUser() {
   if (!isSupabaseConfigured) return { error: "Quotes aren't available right now." } as const;
@@ -475,7 +485,7 @@ export async function sendQuote(
   const [{ data: q }, { data: items }, { data: files }, profile] = await Promise.all([
     ctx.supabase
       .from("quotes")
-      .select("quote_number, title, expires_on, terms, subtotal, discount_amount, tax_amount, total, deposit_amount, status, sent_at, customers(name)")
+      .select("quote_number, title, expires_on, terms, subtotal, discount_amount, tax_amount, total, deposit_amount, status, sent_at, public_token, customers(name)")
       .eq("id", id)
       .maybeSingle<{
         quote_number: string;
@@ -489,6 +499,7 @@ export async function sendQuote(
         deposit_amount: number;
         status: string;
         sent_at: string | null;
+        public_token: string;
         customers: { name: string } | null;
       }>(),
     ctx.supabase.from("quote_items").select("description, quantity, unit_price").eq("quote_id", id).order("position"),
@@ -527,6 +538,7 @@ export async function sendQuote(
       total: Number(q.total),
       deposit: Number(q.deposit_amount),
     },
+    viewUrl: `${await siteOrigin()}/q/${q.public_token}`,
     subject: email.subject.trim().slice(0, 200),
     attachments,
   });

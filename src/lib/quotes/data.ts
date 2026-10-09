@@ -138,6 +138,8 @@ export type QuoteDetail = {
   acceptedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Opens the customer-facing page at /q/<token>. */
+  publicToken: string;
   customer: { name: string; email: string | null; phone: string | null } | null;
   job: { id: string; number: string; title: string } | null;
   adjustments: {
@@ -176,6 +178,7 @@ type QuoteDetailRow = {
   accepted_at: string | null;
   created_at: string;
   updated_at: string;
+  public_token: string;
   discount_value: number;
   discount_type: AmountType;
   tax_value: number;
@@ -201,7 +204,7 @@ export async function getQuote(supabase: SupabaseClient, id: string): Promise<Qu
     supabase
       .from("quotes")
       .select(
-        "id, quote_number, customer_id, title, status, archived_at, quote_date, expires_on, customer_message, terms, internal_notes, sent_at, accepted_at, created_at, updated_at, discount_value, discount_type, tax_value, tax_type, deposit_value, deposit_type, subtotal, discount_amount, tax_amount, total, deposit_amount, deposit_received_amount, deposit_received_at, deposit_method, deposit_reference, deposit_note, customers(name, email, phone), jobs(id, job_number, title)",
+        "id, quote_number, customer_id, title, status, archived_at, quote_date, expires_on, customer_message, terms, internal_notes, sent_at, accepted_at, created_at, updated_at, public_token, discount_value, discount_type, tax_value, tax_type, deposit_value, deposit_type, subtotal, discount_amount, tax_amount, total, deposit_amount, deposit_received_amount, deposit_received_at, deposit_method, deposit_reference, deposit_note, customers(name, email, phone), jobs(id, job_number, title)",
       )
       .eq("id", id)
       .maybeSingle<QuoteDetailRow>(),
@@ -235,6 +238,7 @@ export async function getQuote(supabase: SupabaseClient, id: string): Promise<Qu
     acceptedAt: q.accepted_at,
     createdAt: q.created_at,
     updatedAt: q.updated_at,
+    publicToken: q.public_token,
     customer: q.customers,
     job: job ? { id: job.id, number: job.job_number, title: job.title } : null,
     adjustments: {

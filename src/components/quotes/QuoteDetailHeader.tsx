@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArchiveRestore, BriefcaseBusiness, CircleCheck, Copy, CreditCard, Download, FileText, HandCoins, Mail, RotateCw, Send, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, BriefcaseBusiness, CircleCheck, Copy, CreditCard, Download, FileText, HandCoins, Link2, Mail, RotateCw, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -120,6 +120,14 @@ export default function QuoteDetailHeader({
   const divider = (key: string) => <div key={key} className="mx-[9px] my-1 h-px bg-[#f3f4f6]" />;
   const gray = "size-3.5 text-[#6b7280]";
 
+  const copyLink = item(<Link2 className={gray} />, "Copy Customer Link", () => {
+    setMenuOpen(false);
+    setError(undefined);
+    navigator.clipboard
+      .writeText(`${window.location.origin}/q/${quote.publicToken}`)
+      .then(() => setNotice("Customer link copied. Anyone with it can view and approve this quote."))
+      .catch(() => setError("Couldn't copy the link. Please try again."));
+  });
   const duplicate = item(<Copy className={gray} />, "Duplicate Quote", () => run(() => duplicateQuote(quote.id), (id) => id && router.push(`/quotes/${id}`)));
   const download = item(<Download className={gray} />, "Download PDF", downloadPdf);
   const archive = item(<Archive className={gray} />, "Archive Quote", () => open("archive"), { tone: "text-[#6b7280]" });
@@ -141,6 +149,7 @@ export default function QuoteDetailHeader({
           ]
         : quote.state === "accepted"
           ? [
+              copyLink,
               duplicate,
               download,
               divider("d1"),
@@ -154,6 +163,7 @@ export default function QuoteDetailHeader({
             ]
           : [
               item(<RotateCw className="size-3.5 text-[#2563eb]" />, "Resend Quote", () => open("send")),
+              copyLink,
               item(<CreditCard className="size-3.5 text-[#00c185]" />, "Collect Deposit", () => {}, { disabled: "Connect Stripe to collect deposits online" }),
               item(<HandCoins className={gray} />, "Record Deposit", () => open("deposit")),
               item(<CircleCheck className={gray} />, "Manually Approve", () => run(() => setQuoteStatus(quote.id, "accepted"))),

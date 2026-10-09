@@ -15,6 +15,8 @@ type QuoteEmail = {
   terms: string | null;
   items: { description: string; quantity: number; unitPrice: number }[];
   totals: { subtotal: number; discount: number; tax: number; total: number; deposit: number };
+  /** The customer-facing page where the quote can be viewed and approved. */
+  viewUrl?: string;
   /** Defaults to "Quote Q-1001 from Business". */
   subject?: string;
   attachments?: EmailAttachment[];
@@ -76,7 +78,14 @@ function renderHtml(q: QuoteEmail) {
             ${row("Grand Total", formatMoney(q.totals.total), true)}
             ${q.totals.deposit ? row("Required Deposit", formatMoney(q.totals.deposit)) : ""}
           </table>
-          <p style="margin:24px 0 0;font-size:13px;color:#64748b">This quote is valid until ${escape(longDate(q.expiresOn))}. Reply to this email to approve it or ask any questions.</p>
+          ${
+            q.viewUrl
+              ? `<p style="margin:28px 0 0;text-align:center"><a href="${escape(q.viewUrl)}" style="display:inline-block;background:#10b981;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:12px">View &amp; Approve Quote</a></p>`
+              : ""
+          }
+          <p style="margin:24px 0 0;font-size:13px;color:#64748b">This quote is valid until ${escape(longDate(q.expiresOn))}. ${
+            q.viewUrl ? "Reply to this email with any questions." : "Reply to this email to approve it or ask any questions."
+          }</p>
           ${
             q.terms
               ? `<div style="margin-top:24px;padding:16px;background:#f8fafc;border-radius:12px;font-size:12px;line-height:18px;color:#64748b"><strong style="color:#0f172a">Terms and Conditions</strong><br>${paragraphs(q.terms)}</div>`
