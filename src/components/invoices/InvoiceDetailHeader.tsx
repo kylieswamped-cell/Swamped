@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArchiveRestore, Ban, CreditCard, Download, ExternalLink, HandCoins, Mail, RotateCcw, RotateCw, Send, Trash2, Undo2 } from "lucide-react";
+import { Archive, ArchiveRestore, Ban, CreditCard, Download, ExternalLink, HandCoins, Link2, Mail, RotateCcw, RotateCw, Send, Trash2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -165,6 +165,14 @@ export default function InvoiceDetailHeader({
   const divider = (key: string) => <div key={key} className="mx-3 my-1 h-px bg-[#f1f5f9]" />;
   const gray = "size-3.5 text-[#64748b]";
 
+  const copyLink = item(<Link2 className={gray} />, "Copy Customer Link", () => {
+    setMenuOpen(false);
+    setError(undefined);
+    navigator.clipboard
+      .writeText(`${window.location.origin}/i/${invoice.publicToken}`)
+      .then(() => setNotice("Customer link copied. Anyone with it can view this invoice."))
+      .catch(() => setError("Couldn't copy the link. Please try again."));
+  });
   const resend = item(<RotateCw className={gray} />, "Resend Invoice", () => open("send"));
   const collect = item(<CreditCard className="size-3.5 text-[#4f46e5]" />, "Collect Payment", () => {}, { tone: "font-semibold text-[#4f46e5]", disabled: STRIPE_SOON });
   const record = item(<HandCoins className={gray} />, "Record Payment", () => open("payment"));
@@ -187,10 +195,10 @@ export default function InvoiceDetailHeader({
       divider("d1"),
       item(<Trash2 className="size-3.5 text-[#dc2626]" />, "Delete Invoice", () => open("delete"), { tone: "text-[#dc2626]" }),
     ],
-    sent: [resend, collect, record, download, stripe, divider("d1"), voidItem],
-    overdue: [resend, collect, record, download, stripe, divider("d1"), voidItem],
-    partially_paid: [resend, collect, record, refund, download, stripe, divider("d1"), voidItem],
-    paid: [download, refund, archive, stripe],
+    sent: [resend, copyLink, collect, record, download, stripe, divider("d1"), voidItem],
+    overdue: [resend, copyLink, collect, record, download, stripe, divider("d1"), voidItem],
+    partially_paid: [resend, copyLink, collect, record, refund, download, stripe, divider("d1"), voidItem],
+    paid: [copyLink, download, refund, archive, stripe],
     void: [item(<RotateCcw className={gray} />, "Unvoid Invoice", () => run(() => setInvoiceVoid(invoice.id, false))), download, archive],
     archived: [item(<ArchiveRestore className={gray} />, "Unarchive Invoice", () => open("unarchive")), download],
   }[invoice.state];

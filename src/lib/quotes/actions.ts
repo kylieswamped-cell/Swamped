@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { sendDepositReceipt, sendQuoteEmail } from "@/lib/email/quoteEmail";
 import type { EmailAttachment } from "@/lib/email/send";
 import { nextJobNumber } from "@/lib/jobs/data";
 import { getProfile } from "@/lib/onboarding/server";
+import { siteOrigin } from "@/lib/siteOrigin";
 import { firstNameOf, profileTemplate } from "@/lib/settings/templates";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -47,15 +47,6 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TYPES: AmountType[] = ["percent", "fixed"];
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
-
-async function siteOrigin() {
-  const h = await headers();
-  const origin = h.get("origin");
-  if (origin) return origin;
-  const host = h.get("x-forwarded-host") ?? h.get("host");
-  const proto = h.get("x-forwarded-proto") ?? "https";
-  return `${proto}://${host}`;
-}
 
 async function signedInUser() {
   if (!isSupabaseConfigured) return { error: "Quotes aren't available right now." } as const;

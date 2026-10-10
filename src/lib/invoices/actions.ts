@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { sendInvoiceEmail, sendPaymentReceipt } from "@/lib/email/invoiceEmail";
 import type { EmailAttachment } from "@/lib/email/send";
 import { getProfile } from "@/lib/onboarding/server";
+import { siteOrigin } from "@/lib/siteOrigin";
 import { firstNameOf, profileTemplate } from "@/lib/settings/templates";
 import { formatMoney, quoteTotals, type AmountType } from "@/lib/quotes/totals";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -496,7 +497,7 @@ export async function sendInvoice(
   const [{ data: i }, { data: items }, { data: files }, profile] = await Promise.all([
     ctx.supabase
       .from("invoices")
-      .select("invoice_number, title, due_on, terms, subtotal, discount_amount, tax_amount, total, deposit_credit, amount_paid, status, customers(name)")
+      .select("invoice_number, title, due_on, terms, subtotal, discount_amount, tax_amount, total, deposit_credit, amount_paid, status, public_token, customers(name)")
       .eq("id", id)
       .maybeSingle<{
         invoice_number: string;
@@ -510,6 +511,7 @@ export async function sendInvoice(
         deposit_credit: number;
         amount_paid: number;
         status: string;
+        public_token: string;
         customers: { name: string } | null;
       }>(),
     ctx.supabase.from("invoice_items").select("description, quantity, unit_price").eq("invoice_id", id).order("position"),
@@ -549,6 +551,7 @@ export async function sendInvoice(
       paid: round(Number(i.deposit_credit) + Number(i.amount_paid)),
       balance: balanceOf({ total: Number(i.total), depositCredit: Number(i.deposit_credit), amountPaid: Number(i.amount_paid) }),
     },
+    viewUrl: `${await siteOrigin()}/i/${i.public_token}`,
     subject: email.subject.trim().slice(0, 200),
     attachments,
   });

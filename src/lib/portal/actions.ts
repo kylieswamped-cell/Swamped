@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
+import { getPublicInvoice } from "./invoices";
 import { getPublicQuote, TOKEN_RE } from "./quotes";
 
 const ACCEPT_ERRORS: Record<string, string> = {
@@ -25,13 +26,13 @@ export async function acceptPublicQuote(token: string): Promise<{ ok?: true; err
   return { ok: true };
 }
 
-/** A short-lived link to one of the quote's customer-facing files. */
-export async function publicQuoteFileUrl(token: string, path: string): Promise<{ url?: string; error?: string }> {
+/** A short-lived link to one of the customer-facing files on a quote or invoice. */
+export async function publicFileUrl(kind: "quote" | "invoice", token: string, path: string): Promise<{ url?: string; error?: string }> {
   if (!isSupabaseConfigured) return { error: "File not found." };
   const supabase = await createClient();
-  // Only hand out files that belong to the quote behind this link.
-  const quote = await getPublicQuote(supabase, token);
-  const file = quote?.attachments.find((a) => a.path === path);
+  // Only hand out files that belong to the document behind this link.
+  const doc = kind === "quote" ? await getPublicQuote(supabase, token) : await getPublicInvoice(supabase, token);
+  const file = doc?.attachments.find((a) => a.path === path);
   if (!file) return { error: "File not found." };
   const { data, error } = await supabase.storage.from("attachments").createSignedUrl(path, 60, { download: file.name });
   if (error || !data) return { error: "Couldn't open the file. Please try again." };

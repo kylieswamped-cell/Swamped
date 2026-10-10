@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { publicQuoteFileUrl } from "@/lib/portal/actions";
+import { publicFileUrl } from "@/lib/portal/actions";
 import type { PublicQuote } from "@/lib/portal/quotes";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
 import { ApproveQuoteModal, QuoteAcceptedModal } from "./QuoteAcceptModals";
@@ -56,7 +56,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
   const openFile = (path: string) => {
     setFileError(undefined);
     startOpening(async () => {
-      const result = await publicQuoteFileUrl(token, path);
+      const result = await publicFileUrl("quote", token, path);
       if (result.error || !result.url) return setFileError(result.error ?? "Couldn't open the file.");
       window.location.assign(result.url);
     });

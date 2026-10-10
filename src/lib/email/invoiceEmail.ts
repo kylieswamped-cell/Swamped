@@ -15,6 +15,8 @@ type InvoiceEmail = {
   terms: string | null;
   items: { description: string; quantity: number; unitPrice: number }[];
   totals: { subtotal: number; discount: number; tax: number; total: number; paid: number; balance: number };
+  /** The customer-facing page where the invoice can be viewed. */
+  viewUrl?: string;
   subject?: string;
   attachments?: EmailAttachment[];
 };
@@ -76,6 +78,11 @@ function renderHtml(i: InvoiceEmail) {
             ${i.totals.paid ? row("Paid", `-${formatMoney(i.totals.paid)}`) : ""}
             ${row("Balance Due", formatMoney(i.totals.balance), true)}
           </table>
+          ${
+            i.viewUrl
+              ? `<p style="margin:28px 0 0;text-align:center"><a href="${escape(i.viewUrl)}" style="display:inline-block;background:#00c185;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:8px">View Invoice</a></p>`
+              : ""
+          }
           <p style="margin:24px 0 0;font-size:13px;color:#64748b">Payment is due by ${escape(longDate(i.dueOn))}. Reply to this email with any questions.</p>
           ${
             i.terms

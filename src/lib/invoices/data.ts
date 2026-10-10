@@ -183,6 +183,8 @@ export type InvoiceDetail = {
   voidedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Opens the customer-facing page at /i/<token>. */
+  publicToken: string;
   customer: { name: string; email: string | null; phone: string | null; address: string | null } | null;
   job: { id: string; number: string; title: string } | null;
   quote: { id: string; number: string } | null;
@@ -211,6 +213,7 @@ type InvoiceDetailRow = StateInput & {
   voided_at: string | null;
   created_at: string;
   updated_at: string;
+  public_token: string;
   discount_value: number;
   discount_type: AmountType;
   tax_value: number;
@@ -228,7 +231,7 @@ export async function getInvoice(supabase: SupabaseClient, id: string, now = Dat
     supabase
       .from("invoices")
       .select(
-        "id, invoice_number, customer_id, title, status, archived_at, invoice_date, due_days, due_on, customer_message, terms, internal_notes, sent_at, paid_at, voided_at, created_at, updated_at, discount_value, discount_type, tax_value, tax_type, subtotal, discount_amount, tax_amount, total, deposit_credit, amount_paid, customers(name, email, phone, street_address), jobs(id, job_number, title), quotes(id, quote_number)",
+        "id, invoice_number, customer_id, title, status, archived_at, invoice_date, due_days, due_on, customer_message, terms, internal_notes, sent_at, paid_at, voided_at, created_at, updated_at, public_token, discount_value, discount_type, tax_value, tax_type, subtotal, discount_amount, tax_amount, total, deposit_credit, amount_paid, customers(name, email, phone, street_address), jobs(id, job_number, title), quotes(id, quote_number)",
       )
       .eq("id", id)
       .maybeSingle<InvoiceDetailRow>(),
@@ -267,6 +270,7 @@ export async function getInvoice(supabase: SupabaseClient, id: string, now = Dat
     voidedAt: i.voided_at,
     createdAt: i.created_at,
     updatedAt: i.updated_at,
+    publicToken: i.public_token,
     customer: i.customers
       ? { name: i.customers.name, email: i.customers.email, phone: i.customers.phone, address: i.customers.street_address }
       : null,
