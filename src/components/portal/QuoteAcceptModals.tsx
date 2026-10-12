@@ -9,6 +9,8 @@ import { formatMoney } from "@/lib/quotes/totals";
 
 const primaryButton =
   "flex h-[52px] w-full items-center justify-center rounded-lg bg-[#059669] text-[16px] font-semibold leading-6 tracking-[0.2px] text-white shadow-[0_2px_4px_-2px_#a7f3d0,0_4px_6px_-1px_#a7f3d0] transition-colors hover:bg-[#047857] disabled:cursor-wait disabled:opacity-70";
+const nameField =
+  "mt-2 h-12 w-full rounded-lg border border-[#e2e8f0] bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#059669]";
 const cancelButton =
   "flex h-12 w-full items-center justify-center rounded-lg bg-white text-[16px] font-medium leading-6 text-[#475569] transition-colors hover:bg-[#f8fafc] disabled:opacity-50";
 
@@ -29,6 +31,7 @@ export function ApproveQuoteModal({
   onClose: () => void;
   onAccepted: () => void;
 }) {
+  const [name, setName] = useState("");
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
   const business = quote.business.name || "The business";
@@ -39,9 +42,10 @@ export function ApproveQuoteModal({
   };
 
   const confirm = () => {
+    if (name.trim().length < 2) return setError("Please type your full name to approve.");
     setError(undefined);
     startTransition(async () => {
-      const result = await acceptPublicQuote(token);
+      const result = await acceptPublicQuote(token, name);
       if (result.error) return setError(result.error);
       onAccepted();
     });
@@ -74,6 +78,24 @@ export function ApproveQuoteModal({
             <span className="block text-[14px] font-bold leading-5 tracking-[0.8px] text-[#0f172a]">{formatMoney(quote.totals.total)}</span>
             <span className="block text-[12px] font-medium leading-4 text-[#059669]">Ready to start</span>
           </span>
+        </div>
+
+        {/* Not in Figma: the customer signs with their name, kept as the business's record of who approved. */}
+        <div className="mt-6">
+          <label htmlFor="approve-name" className="text-[14px] font-semibold leading-5 text-[#0f172a]">
+            Type your full name to approve
+          </label>
+          <input
+            id="approve-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && confirm()}
+            maxLength={120}
+            autoComplete="name"
+            placeholder={quote.customer.name}
+            disabled={pending}
+            className={nameField}
+          />
         </div>
 
         {error && <p role="alert" className="mt-4 text-[14px] leading-5 text-[#dc2626]">{error}</p>}

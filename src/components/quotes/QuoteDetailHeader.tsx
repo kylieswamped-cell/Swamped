@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArchiveRestore, BriefcaseBusiness, CircleCheck, Copy, CreditCard, Download, FileText, HandCoins, Link2, Mail, RotateCw, Send, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, BriefcaseBusiness, CircleCheck, Copy, CreditCard, Download, FileText, HandCoins, Link2, Mail, RefreshCw, RotateCw, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, useTransition, type ReactNode } from "reac
 import ConfirmDialog from "@/components/customers/ConfirmDialog";
 import type { JobCustomerOption } from "@/lib/jobs/data";
 import { createInvoiceFromQuote } from "@/lib/invoices/actions";
-import { convertQuoteToJob, deleteQuote, duplicateQuote, setQuoteArchived, setQuoteStatus } from "@/lib/quotes/actions";
+import { convertQuoteToJob, deleteQuote, duplicateQuote, resetQuoteLink, setQuoteArchived, setQuoteStatus } from "@/lib/quotes/actions";
 import type { QuoteDetail } from "@/lib/quotes/data";
 import QuoteFormModal, { type QuoteDefaults } from "./QuoteFormModal";
 import QuoteSendFlow from "./QuoteSendFlow";
@@ -128,6 +128,13 @@ export default function QuoteDetailHeader({
       .then(() => setNotice("Customer link copied. Anyone with it can view and approve this quote."))
       .catch(() => setError("Couldn't copy the link. Please try again."));
   });
+  // For a link that reached the wrong person: the old one stops working.
+  const resetLink = item(<RefreshCw className={gray} />, "Reset Customer Link", () =>
+    run(async () => {
+      const result = await resetQuoteLink(quote.id);
+      return result.error ? result : { notice: "Customer link reset. The old link no longer works; copy the new one to share." };
+    }),
+  );
   const duplicate = item(<Copy className={gray} />, "Duplicate Quote", () => run(() => duplicateQuote(quote.id), (id) => id && router.push(`/quotes/${id}`)));
   const download = item(<Download className={gray} />, "Download PDF", downloadPdf);
   const archive = item(<Archive className={gray} />, "Archive Quote", () => open("archive"), { tone: "text-[#6b7280]" });
@@ -150,6 +157,7 @@ export default function QuoteDetailHeader({
         : quote.state === "accepted"
           ? [
               copyLink,
+              resetLink,
               duplicate,
               download,
               divider("d1"),
@@ -164,6 +172,7 @@ export default function QuoteDetailHeader({
           : [
               item(<RotateCw className="size-3.5 text-[#2563eb]" />, "Resend Quote", () => open("send")),
               copyLink,
+              resetLink,
               item(<CreditCard className="size-3.5 text-[#00c185]" />, "Collect Deposit", () => {}, { disabled: "Connect Stripe to collect deposits online" }),
               item(<HandCoins className={gray} />, "Record Deposit", () => open("deposit")),
               item(<CircleCheck className={gray} />, "Manually Approve", () => run(() => setQuoteStatus(quote.id, "accepted"))),

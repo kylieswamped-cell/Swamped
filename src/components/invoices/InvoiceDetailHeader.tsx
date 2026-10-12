@@ -1,13 +1,13 @@
 "use client";
 
-import { Archive, ArchiveRestore, Ban, CreditCard, Download, ExternalLink, HandCoins, Link2, Mail, RotateCcw, RotateCw, Send, Trash2, Undo2 } from "lucide-react";
+import { Archive, ArchiveRestore, Ban, CreditCard, Download, ExternalLink, HandCoins, Link2, Mail, RefreshCw, RotateCcw, RotateCw, Send, Trash2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import ConfirmDialog from "@/components/customers/ConfirmDialog";
 import Modal from "@/components/customers/Modal";
-import { deleteInvoice, markInvoiceSent, setInvoiceArchived, setInvoiceVoid } from "@/lib/invoices/actions";
+import { deleteInvoice, markInvoiceSent, resetInvoiceLink, setInvoiceArchived, setInvoiceVoid } from "@/lib/invoices/actions";
 import { invoiceStateLabel, type InvoiceDetail } from "@/lib/invoices/data";
 import type { JobCustomerOption } from "@/lib/jobs/data";
 import InvoiceFormModal, { type InvoiceDefaults } from "./InvoiceFormModal";
@@ -115,13 +115,14 @@ export default function InvoiceDetailHeader({
     setDialog(d);
   };
 
-  const run = (action: () => Promise<{ error?: string }>) => {
+  const run = (action: () => Promise<{ error?: string; notice?: string }>) => {
     setMenuOpen(false);
     setError(undefined);
     setNotice(undefined);
     startTransition(async () => {
       const result = await action();
       if (result.error) return setError(result.error);
+      if (result.notice) setNotice(result.notice);
       router.refresh();
     });
   };
@@ -173,6 +174,13 @@ export default function InvoiceDetailHeader({
       .then(() => setNotice("Customer link copied. Anyone with it can view this invoice."))
       .catch(() => setError("Couldn't copy the link. Please try again."));
   });
+  // For a link that reached the wrong person: the old one stops working.
+  const resetLink = item(<RefreshCw className={gray} />, "Reset Customer Link", () =>
+    run(async () => {
+      const result = await resetInvoiceLink(invoice.id);
+      return result.error ? result : { notice: "Customer link reset. The old link no longer works; copy the new one to share." };
+    }),
+  );
   const resend = item(<RotateCw className={gray} />, "Resend Invoice", () => open("send"));
   const collect = item(<CreditCard className="size-3.5 text-[#4f46e5]" />, "Collect Payment", () => {}, { tone: "font-semibold text-[#4f46e5]", disabled: STRIPE_SOON });
   const record = item(<HandCoins className={gray} />, "Record Payment", () => open("payment"));
@@ -195,11 +203,11 @@ export default function InvoiceDetailHeader({
       divider("d1"),
       item(<Trash2 className="size-3.5 text-[#dc2626]" />, "Delete Invoice", () => open("delete"), { tone: "text-[#dc2626]" }),
     ],
-    sent: [resend, copyLink, collect, record, download, stripe, divider("d1"), voidItem],
-    overdue: [resend, copyLink, collect, record, download, stripe, divider("d1"), voidItem],
-    partially_paid: [resend, copyLink, collect, record, refund, download, stripe, divider("d1"), voidItem],
-    paid: [copyLink, download, refund, archive, stripe],
-    void: [item(<RotateCcw className={gray} />, "Unvoid Invoice", () => run(() => setInvoiceVoid(invoice.id, false))), download, archive],
+    sent: [resend, copyLink, resetLink, collect, record, download, stripe, divider("d1"), voidItem],
+    overdue: [resend, copyLink, resetLink, collect, record, download, stripe, divider("d1"), voidItem],
+    partially_paid: [resend, copyLink, resetLink, collect, record, refund, download, stripe, divider("d1"), voidItem],
+    paid: [copyLink, resetLink, download, refund, archive, stripe],
+    void: [item(<RotateCcw className={gray} />, "Unvoid Invoice", () => run(() => setInvoiceVoid(invoice.id, false))), copyLink, resetLink, download, archive],
     archived: [item(<ArchiveRestore className={gray} />, "Unarchive Invoice", () => open("unarchive")), download],
   }[invoice.state];
 

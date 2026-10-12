@@ -152,6 +152,13 @@ export default function QuoteDetailView({
             <span className={`size-2 rounded-full ${pill.dot}`} />
             <span className={`text-[14px] font-bold leading-5 ${pill.text}`}>{pill.label}</span>
           </span>
+          {quote.customerApproval && (
+            <p className="mt-3 text-[12px] leading-4 text-[#64748b]" title={quote.customerApproval.userAgent ?? undefined}>
+              Approved online by <span className="font-semibold text-[#0f172a]">{quote.customerApproval.name}</span> on{" "}
+              {shortDate(quote.customerApproval.at, local)}
+              {quote.customerApproval.ip && <span className="block text-[11px] text-[#94a3b8]">IP {quote.customerApproval.ip}</span>}
+            </p>
+          )}
           <p className="mt-4 text-[11px] italic leading-[17px] text-[#94a3b8]">Last activity: {relative(quote.updatedAt, now)}</p>
         </div>
       </div>

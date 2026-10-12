@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "Your Invoice — Swamped",
   // Customer links are private; keep them out of search results.
   robots: { index: false, follow: false },
+  // Don't pass the private link on to sites the customer clicks through to.
+  referrer: "no-referrer",
 };
 
 export default async function CustomerInvoicePage({ params }: { params: Promise<{ token: string }> }) {

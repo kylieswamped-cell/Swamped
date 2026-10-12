@@ -323,6 +323,16 @@ export async function markInvoiceSent(id: string): Promise<InvoiceResult> {
   return { id };
 }
 
+/** Replaces the customer link, so the old one stops working. */
+export async function resetInvoiceLink(id: string): Promise<InvoiceResult> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  const { data, error } = await ctx.supabase.from("invoices").update({ public_token: crypto.randomUUID() }).eq("id", id).select("id");
+  if (error || !data?.length) return { error: "Couldn't reset the customer link. Please try again." };
+  revalidate(id);
+  return { id };
+}
+
 /** Void cancels a sent invoice; Unvoid puts it back to awaiting payment. */
 export async function setInvoiceVoid(id: string, voided: boolean): Promise<InvoiceResult> {
   const ctx = await signedInUser();

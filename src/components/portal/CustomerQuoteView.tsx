@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { publicFileUrl } from "@/lib/portal/actions";
-import type { PublicQuote } from "@/lib/portal/quotes";
+import type { ExpiredPublicQuote, PublicBusiness, PublicQuote } from "@/lib/portal/quotes";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
 import { ApproveQuoteModal, QuoteAcceptedModal } from "./QuoteAcceptModals";
 
@@ -15,10 +15,9 @@ const percent = (n: number) => `${Number(n.toFixed(3))}%`;
 
 type Badge = { label: string; box: string; dot: string; text: string };
 
-const BADGES: Record<"awaiting" | "accepted" | "expired" | "declined", Badge> = {
+const BADGES: Record<"awaiting" | "accepted" | "declined", Badge> = {
   awaiting: { label: "Awaiting Action", box: "bg-[#ecfdf5] border-[#d1fae5]", dot: "bg-[#10b981]", text: "text-[#047857]" },
   accepted: { label: "Accepted", box: "bg-[#ecfdf5] border-[#d1fae5]", dot: "bg-[#10b981]", text: "text-[#047857]" },
-  expired: { label: "Expired", box: "bg-[#fffbeb] border-[#fef3c7]", dot: "bg-[#f59e0b]", text: "text-[#b45309]" },
   declined: { label: "Declined", box: "bg-[#fef2f2] border-[#fee2e2]", dot: "bg-[#ef4444]", text: "text-[#b91c1c]" },
 };
 
@@ -26,6 +25,50 @@ const metaLabel = "text-[12px] font-semibold uppercase leading-4 tracking-[0.4px
 const metaValue = "mt-0 text-[16px] font-medium leading-6 tracking-[-0.4px] text-[#334155]";
 const th = "h-12 text-[12px] font-bold uppercase leading-4 tracking-[0.6px] text-[#94a3b8]";
 const sectionHeading = "text-[14px] font-bold uppercase leading-5 tracking-[0.7px] text-[#0f172a]";
+
+const businessLinesOf = (b: PublicBusiness) => {
+  const cityLine = [b.city, [b.state, b.zip].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  return [b.name, b.street, cityLine, [b.phone, b.email].filter(Boolean).join(" "), b.website].filter(Boolean) as string[];
+};
+
+function BusinessHeader({ business }: { business: PublicBusiness }) {
+  return (
+    <div className="min-w-0">
+      <div className="flex items-center gap-2">
+        <Image src="/images/logo.png" alt="" width={40} height={40} className="mix-blend-multiply" />
+        <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-[#001e74]">Swamped</span>
+      </div>
+      <div className="mt-[17px] text-[15px] leading-[24.38px] text-[#64748b]">
+        {businessLinesOf(business).map((line, i) => (
+          <p key={i} className="break-words">{line}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** An expired quote nobody approved: no prices or items, just who to contact for a new one. */
+export function ExpiredQuoteView({ quote }: { quote: ExpiredPublicQuote }) {
+  const b = quote.business;
+  return (
+    <div className="min-h-screen bg-[#f8fafc] px-4 pb-16 pt-6 text-[#0f172a] sm:pt-12">
+      <article className="mx-auto max-w-[640px] rounded-2xl border border-[#e2e8f0] bg-white px-5 pb-10 pt-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:px-10">
+        <BusinessHeader business={b} />
+        <div className="mt-10 rounded-xl border border-[#fef3c7] bg-[#fffbeb] px-5 py-5">
+          <span className="inline-flex h-6 items-center gap-2 rounded-full border border-[#fef3c7] bg-white px-3">
+            <span className="size-2 rounded-full bg-[#f59e0b]" />
+            <span className="text-[12px] font-semibold uppercase leading-4 tracking-[0.6px] text-[#b45309]">Expired</span>
+          </span>
+          <h1 className="mt-4 text-[20px] font-bold leading-7 text-[#0f172a]">Quote {quote.number} has expired</h1>
+          <p className="mt-2 text-[15px] leading-6 text-[#64748b]">
+            This quote was valid until {longDate(quote.expiresOn)}. Contact {b.name || "the business"}
+            {b.phone || b.email ? ` at ${[b.phone, b.email].filter(Boolean).join(" or ")}` : ""} for an updated quote.
+          </p>
+        </div>
+      </article>
+    </div>
+  );
+}
 
 /** "Scope: Work is limited..." → bold "Scope:" then the rest. */
 function TermLine({ line }: { line: string }) {
@@ -44,11 +87,8 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
   const [fileError, setFileError] = useState<string>();
   const [opening, startOpening] = useTransition();
 
-  const state = quote.status === "accepted" ? "accepted" : quote.status === "declined" ? "declined" : quote.expired ? "expired" : "awaiting";
+  const state = quote.status === "accepted" ? "accepted" : quote.status === "declined" ? "declined" : "awaiting";
   const badge = BADGES[state];
-  const b = quote.business;
-  const cityLine = [b.city, [b.state, b.zip].filter(Boolean).join(" ")].filter(Boolean).join(", ");
-  const businessLines = [b.name, b.street, cityLine, [b.phone, b.email].filter(Boolean).join(" "), b.website].filter(Boolean) as string[];
   const terms = (quote.terms ?? "").split(/\n+/).map((l) => l.trim()).filter(Boolean);
   const t = quote.totals;
   const depositDue = t.deposit > 0 && !quote.depositReceived ? t.deposit : 0;
@@ -68,17 +108,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
         {/* Business and quote summary */}
         <header className="border-b border-[#f1f5f9] px-5 pb-8 pt-[18px] sm:px-10">
           <div className="flex flex-col-reverse gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <Image src="/images/logo.png" alt="" width={40} height={40} className="mix-blend-multiply" />
-                <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-[#001e74]">Swamped</span>
-              </div>
-              <div className="mt-[17px] text-[15px] leading-[24.38px] text-[#64748b]">
-                {businessLines.map((line, i) => (
-                  <p key={i} className="break-words">{line}</p>
-                ))}
-              </div>
-            </div>
+            <BusinessHeader business={quote.business} />
             <div className="flex flex-col items-start sm:items-end">
               <span className={`inline-flex h-6 items-center gap-2 rounded-full border px-3 ${badge.box}`}>
                 <span className={`size-2 rounded-full ${badge.dot}`} />
@@ -104,7 +134,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                 {quote.expiresOn && (
                   <div>
                     <dt className={metaLabel}>Valid Until</dt>
-                    <dd className={`${metaValue} ${state === "expired" ? "text-[#dc2626]" : ""}`}>{longDate(quote.expiresOn)}</dd>
+                    <dd className={metaValue}>{longDate(quote.expiresOn)}</dd>
                   </div>
                 )}
               </dl>
@@ -279,11 +309,6 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
           <p className="flex h-[54px] w-full items-center justify-center gap-2 rounded-xl border border-[#d1fae5] bg-[#ecfdf5] px-6 text-[16px] font-bold leading-6 text-[#047857] sm:w-[286px]">
             <Image src="/portal/check-small.svg" alt="" width={14} height={10} />
             {quote.acceptedAt ? `Approved ${new Date(quote.acceptedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : "Quote Approved"}
-          </p>
-        )}
-        {state === "expired" && (
-          <p className="rounded-xl border border-[#fef3c7] bg-[#fffbeb] px-5 py-3 text-center text-[14px] font-medium leading-5 text-[#b45309] sm:w-[286px]">
-            This quote has expired. Contact {b.name || "the business"} for an updated quote.
           </p>
         )}
       </div>

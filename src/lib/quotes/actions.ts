@@ -299,6 +299,16 @@ export async function setQuoteStatus(id: string, status: "sent" | "accepted"): P
   return { id };
 }
 
+/** Replaces the customer link, so the old one stops working. */
+export async function resetQuoteLink(id: string): Promise<QuoteResult> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  const { data, error } = await ctx.supabase.from("quotes").update({ public_token: crypto.randomUUID() }).eq("id", id).select("id");
+  if (error || !data?.length) return { error: "Couldn't reset the customer link. Please try again." };
+  revalidate(id);
+  return { id };
+}
+
 export async function setQuoteArchived(id: string, archived: boolean): Promise<QuoteResult> {
   const ctx = await signedInUser();
   if ("error" in ctx) return { error: ctx.error };

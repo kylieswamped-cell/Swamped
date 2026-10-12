@@ -136,6 +136,8 @@ export type QuoteDetail = {
   internalNotes: string | null;
   sentAt: string | null;
   acceptedAt: string | null;
+  /** Set when the customer approved through their link and signed with their name. */
+  customerApproval: { name: string; at: string; ip: string | null; userAgent: string | null } | null;
   createdAt: string;
   updatedAt: string;
   /** Opens the customer-facing page at /q/<token>. */
@@ -176,6 +178,10 @@ type QuoteDetailRow = {
   internal_notes: string | null;
   sent_at: string | null;
   accepted_at: string | null;
+  customer_accepted_at: string | null;
+  accepted_by_name: string | null;
+  accepted_ip: string | null;
+  accepted_user_agent: string | null;
   created_at: string;
   updated_at: string;
   public_token: string;
@@ -204,7 +210,7 @@ export async function getQuote(supabase: SupabaseClient, id: string): Promise<Qu
     supabase
       .from("quotes")
       .select(
-        "id, quote_number, customer_id, title, status, archived_at, quote_date, expires_on, customer_message, terms, internal_notes, sent_at, accepted_at, created_at, updated_at, public_token, discount_value, discount_type, tax_value, tax_type, deposit_value, deposit_type, subtotal, discount_amount, tax_amount, total, deposit_amount, deposit_received_amount, deposit_received_at, deposit_method, deposit_reference, deposit_note, customers(name, email, phone), jobs(id, job_number, title)",
+        "id, quote_number, customer_id, title, status, archived_at, quote_date, expires_on, customer_message, terms, internal_notes, sent_at, accepted_at, customer_accepted_at, accepted_by_name, accepted_ip, accepted_user_agent, created_at, updated_at, public_token, discount_value, discount_type, tax_value, tax_type, deposit_value, deposit_type, subtotal, discount_amount, tax_amount, total, deposit_amount, deposit_received_amount, deposit_received_at, deposit_method, deposit_reference, deposit_note, customers(name, email, phone), jobs(id, job_number, title)",
       )
       .eq("id", id)
       .maybeSingle<QuoteDetailRow>(),
@@ -236,6 +242,10 @@ export async function getQuote(supabase: SupabaseClient, id: string): Promise<Qu
     internalNotes: q.internal_notes,
     sentAt: q.sent_at,
     acceptedAt: q.accepted_at,
+    customerApproval:
+      q.status === "accepted" && q.accepted_by_name && q.customer_accepted_at
+        ? { name: q.accepted_by_name, at: q.customer_accepted_at, ip: q.accepted_ip, userAgent: q.accepted_user_agent }
+        : null,
     createdAt: q.created_at,
     updatedAt: q.updated_at,
     publicToken: q.public_token,
