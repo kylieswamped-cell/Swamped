@@ -635,6 +635,7 @@ export async function recordInvoicePayment(
       invoiceNumber: i.invoice_number,
       paymentAmount: formatMoney(amount),
       paymentDate: longDate(input.paidOn),
+      transactionId: clean(input.reference) ?? "N/A",
     }),
     replyTo: profile.business_email || ctx.email,
     invoiceNumber: i.invoice_number,

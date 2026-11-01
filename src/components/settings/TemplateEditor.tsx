@@ -146,6 +146,38 @@ function Toolbar({ onFormat, icons }: { onFormat: (k: Format) => void; icons?: b
   );
 }
 
+/**
+ * The merge field picker, shown the same way in every template editor: a row of
+ * chips right above the subject line that insert at the cursor.
+ */
+function MergeFieldBar({ fields, onPick }: { fields: string[]; onPick: (f: string) => void }) {
+  return (
+    <div className="flex flex-col gap-2 rounded-[12px] border border-line bg-[#f8fafc] p-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <span className="flex items-center gap-1.5 text-[12px] font-semibold uppercase leading-4 tracking-[0.6px] text-[#64748b]">
+          <Plus className="size-3" strokeWidth={3} />
+          Merge Field Library
+        </span>
+        <span className="text-[12px] leading-4 text-[#94a3b8]">Click a field to insert it where your cursor is.</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {fields.map((f) => (
+          <button
+            key={f}
+            type="button"
+            // Keep the cursor in the subject or body while clicking.
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onPick(f)}
+            className="rounded-[6px] border border-line bg-white px-2.5 py-1 text-[12px] font-medium leading-4 text-[#475569] transition-colors hover:border-brand hover:text-brand"
+          >
+            {`{{${f}}}`}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const quoteInput =
   "w-full rounded-[12px] border border-line bg-[#f8fafc] px-4 py-3 text-[14px] leading-5 text-[#1e293b] outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]";
 
@@ -159,7 +191,7 @@ export function QuoteTemplateCard({
   errors,
   onSaved,
 }: TemplateCardProps & { icon: { src: string; w: number; h: number } }) {
-  const { subjectRef, bodyRef, insertField, onSubjectFocus, onBodyFocus } = useTemplateEditing(value, onChange);
+  const { subjectRef, bodyRef, insertField, format, onSubjectFocus, onBodyFocus } = useTemplateEditing(value, onChange);
   const own = useTemplateSave(templateKey, value, onSaved);
   const err = (f: "subject" | "body") => own.errors[`${templateKey}.${f}`] ?? errors[`${templateKey}.${f}`];
   const id = `tpl-${templateKey}`;
@@ -176,22 +208,7 @@ export function QuoteTemplateCard({
         </span>
       </div>
       <div className="flex flex-col gap-6 rounded-[16px] border border-[#f1f5f9] bg-white p-4 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6">
-        <div className="flex flex-wrap items-center gap-3 border-b border-[#f8fafc] pb-4">
-          <span className="text-[12px] font-semibold uppercase leading-4 tracking-[0.3px] text-[#64748b]">➕ Custom Field Library</span>
-          <div className="flex flex-wrap gap-2">
-            {TEMPLATE_FIELDS[templateKey].map((f) => (
-              <button
-                key={f}
-                type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => insertField(f)}
-                className="rounded border border-line bg-[#f1f5f9] px-2 py-1 text-[10px] font-medium leading-[15px] text-[#475569] transition-colors hover:border-brand hover:text-brand-dark"
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-        </div>
+        <MergeFieldBar fields={TEMPLATE_FIELDS[templateKey]} onPick={insertField} />
         <div className="flex flex-col gap-1.5">
           <label htmlFor={`${id}-subject`} className="text-[12px] font-semibold leading-[18px] text-[#64748b]">
             Subject Line
@@ -212,17 +229,19 @@ export function QuoteTemplateCard({
           <label htmlFor={`${id}-body`} className="text-[12px] font-semibold leading-[18px] text-[#64748b]">
             Email Body Text
           </label>
-          <textarea
-            ref={bodyRef}
-            id={`${id}-body`}
-            value={value.body}
-            maxLength={5000}
-            rows={5}
-            onChange={(e) => onChange({ ...value, body: e.target.value })}
-            aria-invalid={err("body") ? true : undefined}
-            className={`${quoteInput} min-h-[160px] resize-y py-[14px] leading-[22.75px] text-[#475569]`}
-            onFocus={onBodyFocus}
-          />
+          <div className={`overflow-hidden rounded-[12px] border bg-[#f8fafc] focus-within:border-brand ${err("body") ? "border-[#ef4444]" : "border-line"}`}>
+            <Toolbar onFormat={format} />
+            <textarea
+              ref={bodyRef}
+              id={`${id}-body`}
+              value={value.body}
+              maxLength={5000}
+              rows={5}
+              onChange={(e) => onChange({ ...value, body: e.target.value })}
+              className="block min-h-[160px] w-full resize-y bg-transparent px-4 py-[14px] text-[14px] leading-[22.75px] text-[#475569] outline-none"
+              onFocus={onBodyFocus}
+            />
+          </div>
           <FieldError id={`${id}-body-error`} message={err("body")} />
         </div>
         <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
@@ -251,58 +270,6 @@ export function QuoteTemplateCard({
 const invoiceInput =
   "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] leading-5 text-navy outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]";
 
-/** Merge Field Library button with a menu of fields to insert. */
-function MergeFieldMenu({ fields, onPick }: { fields: string[]; onPick: (f: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const close = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
-    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("mousedown", close);
-    document.addEventListener("keydown", esc);
-    return () => {
-      document.removeEventListener("mousedown", close);
-      document.removeEventListener("keydown", esc);
-    };
-  }, [open]);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => setOpen((o) => !o)}
-        className="flex h-8 items-center gap-2 rounded-[8px] border border-[#d1fae5] bg-[#ecfdf5] px-3 text-[14px] font-medium leading-5 text-[#059669] transition-colors hover:bg-[#d1fae5]"
-      >
-        <Plus className="size-3" strokeWidth={3} />
-        Merge Field Library
-      </button>
-      {open && (
-        <div role="menu" className="absolute right-0 top-10 z-20 w-56 rounded-xl border border-line bg-white p-1.5 shadow-lg">
-          {fields.map((f) => (
-            <button
-              key={f}
-              type="button"
-              role="menuitem"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                onPick(f);
-                setOpen(false);
-              }}
-              className="block w-full rounded-lg px-3 py-2 text-left text-[13px] text-[#334155] hover:bg-[#f8fafc]"
-            >
-              {`{{${f}}}`}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 /** Template card in Invoice Configuration: tinted icon header, rich text body, Save Template footer. */
 export function InvoiceTemplateCard({
   templateKey,
@@ -328,9 +295,9 @@ export function InvoiceTemplateCard({
           </span>
           <h4 className="text-[18px] font-semibold leading-7 text-navy">{title}</h4>
         </div>
-        <MergeFieldMenu fields={TEMPLATE_FIELDS[templateKey]} onPick={insertField} />
       </div>
       <div className="flex flex-col gap-5 p-4 sm:p-6">
+        <MergeFieldBar fields={TEMPLATE_FIELDS[templateKey]} onPick={insertField} />
         <div className="flex flex-col gap-2">
           <label htmlFor={`${id}-subject`} className="text-[14px] font-medium leading-5 text-[#334155]">
             Subject Line
@@ -408,23 +375,8 @@ export function RefundTemplateFields({
   const { subjectRef, bodyRef, insertField, format, onSubjectFocus, onBodyFocus } = useTemplateEditing(value, onChange);
   const id = "tpl-refund";
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-3">
-        <span className="text-[12px] font-semibold uppercase leading-4 tracking-[0.6px] text-[#64748b]">➕ Merge Field Library</span>
-        <div className="flex flex-wrap gap-2">
-          {TEMPLATE_FIELDS.refund.map((f) => (
-            <button
-              key={f}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => insertField(f)}
-              className="rounded-[6px] border border-[rgba(226,232,240,0.6)] bg-[#f8fafc] px-3 py-1.5 text-[12px] font-medium leading-4 tracking-[-0.4px] text-[#475569] transition-colors hover:border-brand hover:text-brand-dark"
-            >
-              {`{{${f}}}`}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-col gap-6">
+      <MergeFieldBar fields={TEMPLATE_FIELDS.refund} onPick={insertField} />
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-[9px] pt-[3px]">
           <label htmlFor={`${id}-subject`} className="text-[14px] font-semibold leading-5 text-[#334155]">

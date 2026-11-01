@@ -606,6 +606,7 @@ export async function recordDeposit(id: string, input: DepositInput, emailReceip
       senderName: profile.contact_name || businessName,
       quoteNumber: q.quote_number,
       paymentAmount: formatMoney(amount),
+      paymentDate: new Date(`${input.paidOn}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }),
       transactionId: clean(input.reference) ?? "N/A",
     }),
     replyTo: profile.business_email || ctx.email,

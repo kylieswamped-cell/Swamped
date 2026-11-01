@@ -16,12 +16,12 @@ export type EmailTemplates = Record<TemplateKey, EmailTemplate>;
 
 export const DEFAULT_TEMPLATES: EmailTemplates = {
   quote: {
-    subject: "New Quote Proposal from {{company_name}} - #{{quote_number}}",
-    body: "Hi {{customer_name}},\n\nPlease find the attached quote for your upcoming project. You can review the details below and reply to this email to accept the proposal or ask any questions.\n\nBest regards,\n{{sender_name}}",
+    subject: "New Quote Proposal from {{Business Name}} - #{{Quote Number}}",
+    body: "Hi {{Customer First Name}},\n\nPlease find the attached quote for your upcoming project. You can review the details below and reply to this email to accept the proposal or ask any questions.\n\nBest regards,\n{{Sender Name}}",
   },
   deposit: {
-    subject: "Deposit Received for Quote #{{quote_number}}",
-    body: "Hello {{customer_name}},\n\nThank you for your payment. We have successfully received your deposit for quote #{{quote_number}}. We are now moving forward with your project and will keep you updated on the progress.\n\nTransaction ID: {{transaction_id}}\n\nThank you,\nThe {{company_name}} Team",
+    subject: "Deposit Received for Quote #{{Quote Number}}",
+    body: "Hello {{Customer First Name}},\n\nThank you for your payment. We have successfully received your deposit of {{Payment Amount}} for quote #{{Quote Number}}. We are now moving forward with your project and will keep you updated on the progress.\n\nTransaction ID: {{Transaction ID}}\n\nThank you,\nThe {{Business Name}} Team",
   },
   invoice: {
     subject: "New Invoice {{Invoice Number}} from {{Business Name}}",
@@ -51,17 +51,50 @@ export const DEFAULT_TEMPLATES: EmailTemplates = {
 
 export const TEMPLATE_KEYS = Object.keys(DEFAULT_TEMPLATES) as TemplateKey[];
 
-/** Merge fields offered in each template's field library. */
-export const TEMPLATE_FIELDS: Record<TemplateKey, string[]> = {
-  quote: ["Customer First Name", "Business Name", "Quote Number"],
-  deposit: ["Customer First Name", "Business Name", "Quote Number"],
-  invoice: ["Customer First Name", "Business Name", "Invoice Number", "Invoice Total", "Due Date"],
-  invoice_receipt: ["Customer First Name", "Business Name", "Invoice Number", "Payment Amount", "Payment Date"],
-  invoice_reminder: ["Customer First Name", "Business Name", "Invoice Number", "Invoice Total", "Due Date"],
-  past_due_notice: ["Customer First Name", "Business Name", "Invoice Number", "Invoice Total", "Due Date"],
-  past_due_reminder: ["Customer First Name", "Business Name", "Invoice Number", "Invoice Total", "Due Date", "Days Overdue"],
-  refund: ["Customer First Name", "Refund Amount", "Original Payment Amount", "Business Name"],
+/**
+ * Every supported merge field and its display name. The display name is what
+ * gets inserted ({{Customer First Name}}); older spellings like
+ * {{customer_name}} still fill in through FIELD_ALIASES below.
+ */
+export const MERGE_FIELDS = {
+  customerFirstName: "Customer First Name",
+  customerName: "Customer Name",
+  businessName: "Business Name",
+  senderName: "Sender Name",
+  quoteNumber: "Quote Number",
+  invoiceNumber: "Invoice Number",
+  invoiceTotal: "Invoice Total",
+  dueDate: "Due Date",
+  paymentAmount: "Payment Amount",
+  paymentDate: "Payment Date",
+  transactionId: "Transaction ID",
+  refundAmount: "Refund Amount",
+  originalPaymentAmount: "Original Payment Amount",
+  daysOverdue: "Days Overdue",
+} as const;
+
+type FieldKey = keyof typeof MERGE_FIELDS;
+
+// Filled in for every email.
+const COMMON: FieldKey[] = ["customerFirstName", "customerName", "businessName", "senderName"];
+const INVOICE: FieldKey[] = [...COMMON, "invoiceNumber", "invoiceTotal", "dueDate"];
+
+/** The fields each template can use, matching what's filled in when it's sent. */
+const TEMPLATE_FIELD_KEYS: Record<TemplateKey, FieldKey[]> = {
+  quote: [...COMMON, "quoteNumber"],
+  deposit: [...COMMON, "quoteNumber", "paymentAmount", "paymentDate", "transactionId"],
+  invoice: INVOICE,
+  invoice_receipt: [...COMMON, "invoiceNumber", "paymentAmount", "paymentDate", "transactionId"],
+  invoice_reminder: INVOICE,
+  past_due_notice: INVOICE,
+  past_due_reminder: [...INVOICE, "daysOverdue"],
+  refund: [...COMMON, "refundAmount", "originalPaymentAmount"],
 };
+
+/** Merge fields offered in each template's field library, by display name. */
+export const TEMPLATE_FIELDS = Object.fromEntries(
+  Object.entries(TEMPLATE_FIELD_KEYS).map(([k, keys]) => [k, keys.map((f) => MERGE_FIELDS[f])]),
+) as Record<TemplateKey, string[]>;
 
 /** A saved templates column merged over the defaults; ignores anything malformed. */
 export function resolveTemplates(saved: unknown): EmailTemplates {
