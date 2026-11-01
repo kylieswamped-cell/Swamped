@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { X } from "lucide-react";
+import { useCallback, useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 const noop = () => () => {};
@@ -10,7 +11,11 @@ const noop = () => () => {};
 // a popup opened from another popup doesn't close both.
 const stack: symbol[] = [];
 
-/** Centered popup over a dimmed page. Escape and backdrop clicks close it unless `busy`. */
+/**
+ * Centered popup over a dimmed page. Escape, backdrop clicks, and the corner X
+ * close it unless `busy`. The X is left out when the content has its own
+ * Close button.
+ */
 export default function Modal({
   open,
   onClose,
@@ -28,6 +33,17 @@ export default function Modal({
 }) {
   // True only in the browser after hydration, so the portal never mismatches the server HTML.
   const mounted = useSyncExternalStore(noop, () => true, () => false);
+  const [ownClose, setOwnClose] = useState(true);
+
+  // Watches the content, since multi-step popups swap what's inside.
+  const dialog = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    const check = () => setOwnClose(Boolean(el.querySelector('[aria-label^="Close"]:not([data-modal-x])')));
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(el, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -56,6 +72,7 @@ export default function Modal({
           onMouseDown={(e) => e.target === e.currentTarget && !busy && onClose()}
         >
           <motion.div
+            ref={dialog}
             role="dialog"
             aria-modal="true"
             aria-label={label}
@@ -63,9 +80,21 @@ export default function Modal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className={`w-full ${className}`}
+            className={`relative w-full ${className}`}
           >
             {children}
+            {!ownClose && (
+              <button
+                type="button"
+                data-modal-x
+                onClick={() => !busy && onClose()}
+                disabled={busy}
+                aria-label="Close dialog"
+                className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-navy disabled:opacity-50"
+              >
+                <X className="size-5" />
+              </button>
+            )}
           </motion.div>
         </motion.div>
       )}

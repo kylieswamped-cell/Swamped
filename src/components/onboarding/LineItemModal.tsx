@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Save } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { joinItem, MAX_LINE_TEXT } from "@/lib/lineItems";
@@ -53,8 +53,16 @@ export default function LineItemModal({
           if (!(Number(item.unitPrice) >= 0) || item.unitPrice === "") return setError("Enter a unit price.");
           onSave({ ...item, description: joinItem(name.trim(), details.trim()) });
         }}
-        className="w-full max-w-[440px] overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="relative w-full max-w-[440px] overflow-hidden rounded-2xl bg-white shadow-2xl"
       >
+        <button
+          type="button"
+          onClick={onCancel}
+          aria-label="Close"
+          className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-navy"
+        >
+          <X className="size-5" />
+        </button>
         <h2 id="line-item-title" className="border-b border-[#f1f5f9] bg-[#f8fafc] py-6 text-center text-[18px] font-semibold text-navy">
           Create New Line Item
         </h2>

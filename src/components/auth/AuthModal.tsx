@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, type ReactNode } from "react";
 import { authEase } from "./AuthLayout";
@@ -41,9 +42,17 @@ export default function AuthModal({ open, onClose, children, className, label }:
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.35, ease: authEase }}
             onClick={(e) => e.stopPropagation()}
-            className={`w-full ${className ?? ""}`}
+            className={`relative w-full ${className ?? ""}`}
           >
             {children}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-navy"
+            >
+              <X className="size-5" />
+            </button>
           </motion.div>
         </motion.div>
       )}
