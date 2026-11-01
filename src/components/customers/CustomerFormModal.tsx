@@ -12,7 +12,7 @@ export type CustomerFormValues = CustomerInput;
 const EMPTY: CustomerFormValues = { name: "", email: "", phone: "", streetAddress: "", notes: "" };
 
 const baseInput =
-  "w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] pr-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#00c185] focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-lg border border-line bg-[#f8fafc] pr-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 const inputClass = `${baseInput} h-11 pl-[39px]`;
 const labelClass = "text-[14px] font-semibold leading-5 text-[#334155]";
 
@@ -158,7 +158,7 @@ export default function CustomerFormModal({
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
-              className={`flex h-[108px] flex-col items-center justify-center gap-2 rounded border border-dashed border-[rgba(45,212,191,0.5)] text-center text-[16px] leading-5 text-[#94a3b8] transition-colors hover:border-[#2dd4bf] ${dragging ? "bg-[#ecfdf5]" : "bg-[#f8fafc]"}`}
+              className={`flex h-[108px] flex-col items-center justify-center gap-2 rounded border border-dashed border-[rgba(4,129,255,0.5)] text-center text-[16px] leading-5 text-[#94a3b8] transition-colors hover:border-[#2dd4bf] ${dragging ? "bg-brand-light" : "bg-[#f8fafc]"}`}
             >
               <span className="flex size-12 items-center justify-center rounded-full bg-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
                 <Image src="/customers/upload.svg" alt="" width={25} height={20} />
@@ -173,7 +173,7 @@ export default function CustomerFormModal({
             {files.length > 0 && (
               <ul className="flex flex-col gap-1.5">
                 {files.map((file, i) => (
-                  <li key={`${file.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px] text-[#334155]">
+                  <li key={`${file.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg border border-line bg-[#f8fafc] px-3 py-2 text-[13px] text-[#334155]">
                     <span className="truncate">{file.name}</span>
                     <button type="button" aria-label={`Remove ${file.name}`} onClick={() => setFiles(files.filter((_, j) => j !== i))} className="text-[#94a3b8] hover:text-[#ef4444]">
                       <X className="size-4" />
@@ -195,7 +195,7 @@ export default function CustomerFormModal({
           <button type="button" onClick={close} disabled={pending} className="h-10 w-[88px] rounded-lg text-[14px] font-semibold tracking-[0.19px] text-[#475569] hover:bg-[#f1f5f9] disabled:opacity-60">
             Cancel
           </button>
-          <button type="submit" disabled={pending} className="flex h-10 items-center gap-2.5 rounded-lg bg-[#00c185] px-6 text-[14px] font-bold text-white transition-colors hover:bg-[#00a873] disabled:opacity-60">
+          <button type="submit" disabled={pending} className="flex h-10 items-center gap-2.5 rounded-lg bg-brand px-6 text-[14px] font-bold text-white transition-colors hover:bg-brand-dark disabled:opacity-60">
             {!editing && <Image src="/customers/plus.svg" alt="" width={10} height={12} />}
             {pending ? "Saving…" : editing ? "Save Changes" : "Add Customer"}
           </button>

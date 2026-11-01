@@ -21,7 +21,7 @@ export default function DashboardOverview({ stats }: { stats: DashboardStats }) 
           <Link
             key={action.label}
             href={action.href}
-            className="flex h-[50px] items-center justify-center gap-2 rounded-full bg-[#e6f9f5] px-4 text-[15px] font-bold text-[#00c9a7] shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-transform hover:scale-[1.03] active:scale-[0.98] sm:text-[16px]"
+            className="flex h-[50px] items-center justify-center gap-2 rounded-full bg-brand-light px-4 text-[15px] font-bold text-brand shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-transform hover:scale-[1.03] active:scale-[0.98] sm:text-[16px]"
           >
             <Image src={`/onboarding/${action.icon}.svg`} alt="" width={action.w} height={16} />
             {action.label}
@@ -31,7 +31,7 @@ export default function DashboardOverview({ stats }: { stats: DashboardStats }) 
 
       <section className="min-h-[600px] rounded-3xl border border-border bg-white shadow-[0_10px_15px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between border-b border-border px-8 py-8">
-          <h2 className="text-[24px] font-extrabold leading-7 text-[#0a1b33]">Recent Activity</h2>
+          <h2 className="text-[24px] font-extrabold leading-7 text-navy">Recent Activity</h2>
         </div>
         <div className="flex flex-col items-center px-6 py-16 text-center">
           <div className="flex size-20 items-center justify-center rounded-full bg-[#f9fafb]">

@@ -81,7 +81,7 @@ export default function CustomerHeader({
           </Link>
           <h2 className="truncate text-[30px] font-bold leading-9 tracking-[-0.2px] text-[#0f172a]">{name}</h2>
           {archived && (
-            <span className="shrink-0 rounded-full border border-[#e2e8f0] bg-[#f1f5f9] px-2.5 py-0.5 text-[12px] font-medium text-[#64748b]">
+            <span className="shrink-0 rounded-full border border-line bg-[#f1f5f9] px-2.5 py-0.5 text-[12px] font-medium text-[#64748b]">
               Archived
             </span>
           )}
@@ -91,7 +91,7 @@ export default function CustomerHeader({
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="h-[41px] w-[75px] rounded-lg border border-[#00c185] bg-[#00c185] text-[14px] font-semibold tracking-[-0.1px] text-white transition-colors hover:bg-[#00a873]"
+            className="h-[41px] w-[75px] rounded-lg border border-brand bg-brand text-[14px] font-semibold tracking-[-0.1px] text-white transition-colors hover:bg-brand-dark"
           >
             Edit
           </button>
@@ -101,7 +101,7 @@ export default function CustomerHeader({
               aria-haspopup="menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-[#00c185] bg-white pl-[22px] pr-[18px] text-[14px] font-semibold tracking-[-0.1px] text-[#00c185] transition-colors hover:bg-[#ecfdf5]"
+              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-brand bg-white pl-[22px] pr-[18px] text-[14px] font-semibold tracking-[-0.1px] text-brand transition-colors hover:bg-brand-light"
             >
               Quick Actions
               <Image src="/customers/chevron-down.svg" alt="" width={11} height={7} className={`transition-transform ${menuOpen ? "rotate-180" : ""}`} />

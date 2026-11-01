@@ -9,13 +9,13 @@ export type LineDraft = { description: string; quantity: string; unitPrice: stri
 
 const labelClass = "text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]";
 const inputClass =
-  "mt-2 h-[47px] w-full rounded-xl border border-[#94a3b8] bg-white px-4 text-[14px] font-medium text-[#334155] outline-none transition-colors placeholder:text-[#334155]/20 focus:border-[#00c185]";
+  "mt-2 h-[47px] w-full rounded-xl border border-[#94a3b8] bg-white px-4 text-[14px] font-medium text-[#334155] outline-none transition-colors placeholder:text-[#334155]/20 focus:border-brand";
 
 function TaxOption({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
     <label className="flex cursor-pointer items-center gap-2 text-[14px] font-medium leading-5 text-[#334155]">
       <input type="radio" name="taxable" checked={checked} onChange={onChange} className="peer sr-only" />
-      <span className="flex h-3 w-3.5 items-center justify-center rounded-[2.5px] border border-[#767676] bg-white peer-focus-visible:ring-2 peer-focus-visible:ring-[#00c185]">
+      <span className="flex h-3 w-3.5 items-center justify-center rounded-[2.5px] border border-[#767676] bg-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand">
         {checked && <Check className="size-2.5 text-[#334155]" strokeWidth={3} />}
       </span>
       {label}
@@ -89,7 +89,7 @@ export default function JobLineItemModal({
           <button type="button" onClick={onClose} className="h-10 w-[88px] rounded-lg border border-[#94a3b8] text-[14px] font-semibold text-[#94a3b8] transition-colors hover:bg-[#f8fafc]">
             Cancel
           </button>
-          <button type="submit" className="flex h-[39px] w-[150px] items-center justify-center gap-2 rounded-lg bg-[#10b981] text-[14px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#059669]">
+          <button type="submit" className="flex h-[39px] w-[150px] items-center justify-center gap-2 rounded-lg bg-brand text-[14px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark">
             <Save className="size-3" />
             Save Product
           </button>

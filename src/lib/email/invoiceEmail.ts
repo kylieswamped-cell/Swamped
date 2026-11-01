@@ -51,8 +51,8 @@ function renderHtml(i: InvoiceEmail) {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px">
     <tr><td align="center">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0">
-        <tr><td style="background:#0b192c;padding:32px">
-          <p style="margin:0;color:#00c9a7;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Invoice ${escape(i.invoiceNumber)}</p>
+        <tr><td style="background:#082741;padding:32px">
+          <p style="margin:0;color:#3794f9;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Invoice ${escape(i.invoiceNumber)}</p>
           <h1 style="margin:8px 0 0;color:#ffffff;font-size:24px">${escape(i.businessName)} sent you an invoice</h1>
           ${i.title ? `<p style="margin:8px 0 0;color:#cbd5e1;font-size:15px">${escape(i.title)}</p>` : ""}
         </td></tr>
@@ -80,7 +80,7 @@ function renderHtml(i: InvoiceEmail) {
           </table>
           ${
             i.viewUrl
-              ? `<p style="margin:28px 0 0;text-align:center"><a href="${escape(i.viewUrl)}" style="display:inline-block;background:#00c185;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:8px">View Invoice</a></p>`
+              ? `<p style="margin:28px 0 0;text-align:center"><a href="${escape(i.viewUrl)}" style="display:inline-block;background:#0481ff;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:8px">View Invoice</a></p>`
               : ""
           }
           <p style="margin:24px 0 0;font-size:13px;color:#64748b">Payment is due by ${escape(longDate(i.dueOn))}. Reply to this email with any questions.</p>
@@ -128,8 +128,8 @@ export function sendPaymentReceipt(r: {
 <html><body style="margin:0;background:#f8fafc;font-family:Inter,Arial,Helvetica,sans-serif">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px"><tr><td align="center">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0">
-      <tr><td style="background:#0b192c;padding:28px 32px">
-        <p style="margin:0;color:#00c9a7;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Payment Receipt</p>
+      <tr><td style="background:#082741;padding:28px 32px">
+        <p style="margin:0;color:#3794f9;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Payment Receipt</p>
         <h1 style="margin:8px 0 0;color:#ffffff;font-size:22px">${escape(r.businessName)} received your payment</h1>
       </td></tr>
       <tr><td style="padding:28px 32px">

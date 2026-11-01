@@ -5,7 +5,7 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
 import type { AmountType } from "@/lib/quotes/totals";
 
 export const inputClass =
-  "h-12 w-full rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c9a7] focus:bg-white aria-invalid:border-[#ef4444]";
+  "h-12 w-full rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 
 type FieldProps = {
   label: string;
@@ -119,7 +119,7 @@ export function AmountInput({
   className?: string;
 }) {
   return (
-    <div className={`flex h-12 items-center overflow-hidden rounded-lg border border-[#e4e4e7] bg-[#fafafa] focus-within:border-[#00c9a7] ${className}`}>
+    <div className={`flex h-12 items-center overflow-hidden rounded-lg border border-[#e4e4e7] bg-[#fafafa] focus-within:border-brand ${className}`}>
       <input
         id={name}
         name={name}
@@ -139,7 +139,7 @@ export function AmountInput({
             aria-pressed={type === t}
             onClick={() => onType(t)}
             className={`rounded px-2 py-1 transition-colors ${
-              type === t ? "bg-[#e6f9f5] text-[#059669]" : "text-[#94a3b8] hover:text-[#334155]"
+              type === t ? "bg-brand-light text-[#059669]" : "text-[#94a3b8] hover:text-[#334155]"
             }`}
           >
             {t === "fixed" ? "$" : "%"}
@@ -160,7 +160,7 @@ export function PrimaryButton({
     <button
       type="submit"
       disabled={pending || button.disabled}
-      className={`inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#00c9a7] px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(0,201,167,0.2),0_4px_6px_-4px_rgba(0,201,167,0.2)] transition-colors hover:bg-[#00b394] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      className={`inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
       {...button}
     >
       {pending ? "Saving…" : children}

@@ -16,7 +16,7 @@ type Saved = { id: string; name: string; sizeBytes: number | null; contentType: 
 
 const labelClass = "text-[14px] font-semibold leading-5 text-[#374151]";
 const fieldClass =
-  "w-full rounded-lg border border-[#e5e7eb] bg-[#f3f4f6] px-4 text-[16px] text-[#374151] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-lg border border-line bg-[#f3f4f6] px-4 text-[16px] text-[#374151] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 const sectionLabel = "text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#64748b]";
 
 const ACCEPTS = `${ACCEPTED_UPLOADS},.doc,.docx,.xls,.xlsx,.csv,.txt`;
@@ -199,7 +199,7 @@ export default function JobFormModal({
         className="flex max-h-[calc(100vh-32px)] flex-col overflow-hidden rounded-2xl bg-[#f8f9fa] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
       >
         <div className="relative flex h-[119px] shrink-0 items-end bg-white px-6 pb-[38px] sm:px-10">
-          <h2 className="text-[24px] font-bold leading-8 tracking-[-0.3px] text-[#0a1b33]">{editing ? `Job ${job!.number}` : "Create New Job"}</h2>
+          <h2 className="text-[24px] font-bold leading-8 tracking-[-0.3px] text-navy">{editing ? `Job ${job!.number}` : "Create New Job"}</h2>
           <button type="button" onClick={onClose} disabled={pending} aria-label="Close" className="absolute right-[22px] top-[22px] rounded p-1 hover:bg-[#f1f5f9]">
             <Image src="/customers/close.svg" alt="" width={14} height={18} />
           </button>
@@ -248,15 +248,15 @@ export default function JobFormModal({
           <div className="mt-[18px] grid grid-cols-1 items-end gap-5 lg:grid-cols-[210px_minmax(0,1fr)_auto] lg:gap-x-[44px]">
             <div className="lg:mb-[14px]">
               <span className={labelClass}>Job Number</span>
-              <p className="mt-2 flex h-[42px] items-center rounded-lg border border-[#e5e7eb] bg-[#f3f4f6] px-4 text-[14px] font-medium leading-[21px] text-[#475569]">
+              <p className="mt-2 flex h-[42px] items-center rounded-lg border border-line bg-[#f3f4f6] px-4 text-[14px] font-medium leading-[21px] text-[#475569]">
                 {job?.number ?? nextNumber}
               </p>
             </div>
             <div>
               <span className="text-[12px] font-bold uppercase leading-4 tracking-[0.6px] text-[#4b5563]">Scheduling</span>
-              <div className="mt-2.5 flex flex-col rounded-xl border border-[#e5e7eb] bg-white sm:flex-row">
+              <div className="mt-2.5 flex flex-col rounded-xl border border-line bg-white sm:flex-row">
                 <ScheduleField label="Start Date & Time" value={startsAt} onChange={changeStart} invalid={Boolean(fieldErrors.startsAt)} />
-                <span className="h-px bg-[#e5e7eb] sm:h-auto sm:w-px sm:bg-[#111827]/80" />
+                <span className="h-px bg-line sm:h-auto sm:w-px sm:bg-[#111827]/80" />
                 <ScheduleField label="End Date & Time" value={endsAt} onChange={setEndsAt} invalid={Boolean(fieldErrors.endsAt)} />
               </div>
               {fieldError("startsAt")}
@@ -265,14 +265,14 @@ export default function JobFormModal({
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
-              className="flex h-[42px] items-center justify-center gap-2 whitespace-nowrap rounded-[5px] bg-[#01c185] px-5 text-[14px] leading-6 tracking-[-0.2px] text-white transition-colors hover:bg-[#00a873] lg:mb-[18px]"
+              className="flex h-[42px] items-center justify-center gap-2 whitespace-nowrap rounded-[5px] bg-brand px-5 text-[14px] leading-6 tracking-[-0.2px] text-white transition-colors hover:bg-brand-dark lg:mb-[18px]"
             >
               <Plus className="size-4" strokeWidth={2.5} />
               Create Line Item
             </button>
           </div>
 
-          <div className="mt-[17px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+          <div className="mt-[17px] overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[860px] table-fixed text-left">
                 <colgroup>
@@ -281,7 +281,7 @@ export default function JobFormModal({
                   ))}
                 </colgroup>
                 <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
-                  <tr className="h-[46px] border-b border-[#e2e8f0]">
+                  <tr className="h-[46px] border-b border-line">
                     <th className="pl-6">Item Description</th>
                     <th className="pl-6">Quantity</th>
                     <th className="pr-6 text-right">Unit Price</th>
@@ -298,7 +298,7 @@ export default function JobFormModal({
                           aria-label={`Line ${i + 1} description`}
                           value={l.description}
                           onChange={(e) => updateLine(i, { description: e.target.value })}
-                          className="h-[35px] w-full rounded-md border border-[#e2e8f0] px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185]"
+                          className="h-[35px] w-full rounded-md border border-line px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-brand"
                         />
                       </td>
                       <td className="pl-12">
@@ -310,7 +310,7 @@ export default function JobFormModal({
                           step="any"
                           value={l.quantity}
                           onChange={(e) => updateLine(i, { quantity: e.target.value })}
-                          className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-[#00c185]"
+                          className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
                         />
                       </td>
                       <td className="pr-[21px]">
@@ -324,7 +324,7 @@ export default function JobFormModal({
                             step="0.01"
                             value={l.unitPrice}
                             onChange={(e) => updateLine(i, { unitPrice: e.target.value })}
-                            className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-[#00c185]"
+                            className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-brand"
                           />
                         </div>
                       </td>
@@ -382,7 +382,7 @@ export default function JobFormModal({
             <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
               <UserRoundCheck className="size-[17px] text-[#00c38b]" />
             </span>
-            <h3 className="text-[18px] font-bold leading-7 tracking-[-0.2px] text-[#0a1b2f]">Customer-Facing Information</h3>
+            <h3 className="text-[18px] font-bold leading-7 tracking-[-0.2px] text-navy">Customer-Facing Information</h3>
           </div>
 
           <div className="mt-[40px] grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,527fr)_minmax(0,469fr)] lg:gap-[29px] lg:px-[25px]">
@@ -393,13 +393,13 @@ export default function JobFormModal({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Add a note for your customer, such as what's included or the expected timeline."
-                className="mt-4 h-[230px] w-full resize-y rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-[#0a1b2f] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#00c185] focus:bg-white"
+                className="mt-4 h-[230px] w-full resize-y rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-navy outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand focus:bg-white"
               />
             </div>
             <div>
               <div className="flex items-center justify-between">
                 <span className={sectionLabel}>Attachments</span>
-                <button type="button" onClick={() => publicPicker.current?.click()} className="flex items-center gap-1 text-[12px] font-semibold text-[#00c185] hover:text-[#00a873]">
+                <button type="button" onClick={() => publicPicker.current?.click()} className="flex items-center gap-1 text-[12px] font-semibold text-brand hover:text-brand-dark">
                   <Plus className="size-3.5" strokeWidth={2.5} />
                   Add files
                 </button>
@@ -436,7 +436,7 @@ export default function JobFormModal({
                     <button
                       type="button"
                       onClick={() => publicPicker.current?.click()}
-                      className="flex h-[74px] w-full items-center justify-center rounded-xl border border-dashed border-[#e2e8f0] bg-white text-[14px] text-[#94a3b8] transition-colors hover:border-[#00c185]"
+                      className="flex h-[74px] w-full items-center justify-center rounded-xl border border-dashed border-line bg-white text-[14px] text-[#94a3b8] transition-colors hover:border-brand"
                     >
                       No files yet. Click to add files for your customer.
                     </button>
@@ -463,7 +463,7 @@ export default function JobFormModal({
                 value={terms}
                 onChange={(e) => setTerms(e.target.value)}
                 rows={3}
-                className="mt-[15px] w-full resize-y rounded-lg border border-[#e2e8f0] p-3 text-[14px] leading-[22.8px] text-[#475569] outline-none focus:border-[#00c185]"
+                className="mt-[15px] w-full resize-y rounded-lg border border-line p-3 text-[14px] leading-[22.8px] text-[#475569] outline-none focus:border-brand"
               />
             ) : (
               <p className="mt-[15px] whitespace-pre-line text-[14px] leading-[22.8px] text-[#475569]">
@@ -474,9 +474,9 @@ export default function JobFormModal({
 
           <div className="mt-5 flex items-center justify-center gap-3">
             <span className="flex size-8 items-center justify-center rounded-full bg-[#f1f5f9]">
-              <LockKeyhole className="size-3.5 text-[#0a1b2f]" />
+              <LockKeyhole className="size-3.5 text-navy" />
             </span>
-            <h3 className="text-[18px] font-bold leading-7 tracking-[-0.3px] text-[#0a1b2f]">Internal Logs (Private)</h3>
+            <h3 className="text-[18px] font-bold leading-7 tracking-[-0.3px] text-navy">Internal Logs (Private)</h3>
           </div>
 
           <div className="mt-[38px] grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-[31px] lg:pl-16">
@@ -490,7 +490,7 @@ export default function JobFormModal({
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}
                 placeholder="Internal memos or cost notes (visible only to you)"
-                className="mt-2 h-24 w-full resize-y rounded-xl border border-[#e2e8f0] bg-white p-4 text-[14px] leading-5 text-[#334155] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185]"
+                className="mt-2 h-24 w-full resize-y rounded-xl border border-line bg-white p-4 text-[14px] leading-5 text-[#334155] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
               />
             </div>
             <div>
@@ -502,7 +502,7 @@ export default function JobFormModal({
                 onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                 onDragLeave={() => setDragging(false)}
                 onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files, true); }}
-                className={`mt-2 flex h-24 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#e2e8f0] px-4 text-center transition-colors hover:border-[#00c185] ${dragging ? "bg-[#ecfdf5]" : "bg-white"}`}
+                className={`mt-2 flex h-24 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-line px-4 text-center transition-colors hover:border-brand ${dragging ? "bg-brand-light" : "bg-white"}`}
               >
                 <span className="flex items-center gap-[11px] text-[14px] font-semibold leading-5 text-[#334155]">
                   <Image src="/customers/upload.svg" alt="" width={25} height={20} />
@@ -551,17 +551,17 @@ export default function JobFormModal({
           )}
 
           <div className="mt-[59px] flex flex-wrap justify-end gap-x-6 gap-y-3">
-            <button type="button" onClick={onClose} disabled={pending} className="h-10 w-[87px] rounded-lg border border-[#0b192c] text-[14px] font-medium text-[#0b192c] transition-colors hover:bg-[#f1f5f9] disabled:opacity-60">
+            <button type="button" onClick={onClose} disabled={pending} className="h-10 w-[87px] rounded-lg border border-navy text-[14px] font-medium text-navy transition-colors hover:bg-[#f1f5f9] disabled:opacity-60">
               Cancel
             </button>
-            <button type="submit" disabled={pending} className="h-[41px] w-[117px] rounded-lg border border-[#02c185] bg-white text-[14px] font-bold text-[#02c185] transition-colors hover:bg-[#ecfdf5] disabled:opacity-60">
+            <button type="submit" disabled={pending} className="h-[41px] w-[117px] rounded-lg border border-brand bg-white text-[14px] font-bold text-brand transition-colors hover:bg-brand-light disabled:opacity-60">
               {pending ? "Saving…" : editing ? "Save" : "Save Draft"}
             </button>
             <button
               type="button"
               onClick={() => submit(true)}
               disabled={pending}
-              className="h-[41px] w-[149px] rounded-lg bg-[#02c185] text-[14px] font-bold text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#00a873] disabled:opacity-60"
+              className="h-[41px] w-[149px] rounded-lg bg-brand text-[14px] font-bold text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark disabled:opacity-60"
             >
               Save &amp; Send
             </button>

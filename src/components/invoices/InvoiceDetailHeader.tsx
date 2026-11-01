@@ -61,7 +61,7 @@ function DangerDialog({
           type="button"
           onClick={onClose}
           disabled={busy}
-          className="mt-3 h-[52px] w-full rounded-xl border border-[#e5e7eb] bg-white text-[16px] font-semibold text-[#1e293b] transition-colors hover:bg-[#f8fafc]"
+          className="mt-3 h-[52px] w-full rounded-xl border border-line bg-white text-[16px] font-semibold text-[#1e293b] transition-colors hover:bg-[#f8fafc]"
         >
           {cancelLabel}
         </button>
@@ -227,7 +227,7 @@ export default function InvoiceDetailHeader({
             onClick={() => setEditing(true)}
             disabled={invoice.status === "void"}
             title={invoice.status === "void" ? "Unvoid the invoice to edit it" : undefined}
-            className="h-[41px] w-[75px] rounded-lg border border-[#00c185] bg-[#00c185] text-[14px] font-semibold text-white transition-colors hover:bg-[#00a873] disabled:cursor-not-allowed disabled:opacity-50"
+            className="h-[41px] w-[75px] rounded-lg border border-brand bg-brand text-[14px] font-semibold text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             Edit
           </button>
@@ -238,14 +238,14 @@ export default function InvoiceDetailHeader({
               aria-expanded={menuOpen}
               disabled={pending}
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-[#00c185] bg-white pl-[23px] pr-5 text-[14px] font-semibold text-[#00c185] transition-colors hover:bg-[#ecfdf5] disabled:opacity-60"
+              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-brand bg-white pl-[23px] pr-5 text-[14px] font-semibold text-brand transition-colors hover:bg-brand-light disabled:opacity-60"
             >
               {pending ? "Working…" : "Quick Actions"}
               <Image src="/customers/chevron-down.svg" alt="" width={11} height={7} className={`transition-transform ${menuOpen ? "rotate-180" : ""}`} />
             </button>
 
             {menuOpen && (
-              <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white py-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
+              <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-line bg-white py-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
                 <p className="px-4 pb-2 pt-2 text-[12px] font-semibold leading-4 text-[#334155]">Status: {invoiceStateLabel(invoice.state)}</p>
                 {menuItems}
               </div>

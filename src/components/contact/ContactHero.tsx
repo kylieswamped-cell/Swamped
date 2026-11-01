@@ -8,7 +8,7 @@ export default function ContactHero() {
       <div className="mx-auto max-w-[900px] px-6 py-20 text-center sm:px-16">
         <Stagger>
           <StaggerItem className="flex justify-center">
-            <span className="inline-flex items-center rounded-full bg-[rgba(0,193,133,0.1)] px-4 py-1.5 text-[12px] font-bold uppercase tracking-[1.2px] text-brand">
+            <span className="inline-flex items-center rounded-full bg-[rgba(4,129,255,0.1)] px-4 py-1.5 text-[12px] font-bold uppercase tracking-[1.2px] text-brand">
               Get in Touch
             </span>
           </StaggerItem>

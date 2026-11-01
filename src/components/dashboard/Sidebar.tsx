@@ -30,8 +30,8 @@ function NavLink({ link, active }: { link: (typeof mainLinks)[number]; active: b
       aria-current={active ? "page" : undefined}
       className={`flex h-12 items-center gap-2 rounded-lg px-4 text-[16px] transition-colors ${
         active
-          ? "bg-[rgba(0,201,167,0.1)] font-medium text-[#00c9a7]"
-          : "text-navy-deep hover:bg-surface hover:text-[#00c9a7]"
+          ? "bg-[rgba(4,129,255,0.1)] font-medium text-brand"
+          : "text-navy-deep hover:bg-surface hover:text-brand"
       }`}
     >
       <span className="flex w-6 shrink-0">
@@ -55,10 +55,10 @@ function SidebarContent({ pathname }: { pathname: string }) {
       {/* 83px tall so its bottom border lines up with the page header's. */}
       <Link
         href="/"
-        className="flex h-[83px] shrink-0 items-center justify-center border-b border-[#e2e8f0]"
+        className="flex h-[83px] shrink-0 items-center justify-center border-b border-line"
       >
         <Image src="/images/logo.png" alt="Swamped" width={40} height={40} className="mix-blend-multiply" />
-        <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-[#001e74]">
+        <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-navy">
           Swamped
         </span>
       </Link>
@@ -71,7 +71,7 @@ function SidebarContent({ pathname }: { pathname: string }) {
             </li>
           ))}
         </ul>
-        <ul className="mt-[5px] border-t border-[#e2e8f0] px-4">
+        <ul className="mt-[5px] border-t border-line px-4">
           {footerLinks.map((link) => (
             <li key={link.label}>
               <NavLink link={link} active={isActive(link.href, pathname)} />
@@ -99,7 +99,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-[#e2e8f0] bg-white lg:block">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-line bg-white lg:block">
         <SidebarContent pathname={pathname} />
       </aside>
 

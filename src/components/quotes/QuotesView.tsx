@@ -23,7 +23,7 @@ const RANGES = [
 const inRange = (iso: string | null, days: string, now: number) =>
   !days || Boolean(iso && new Date(iso).getTime() >= now - Number(days) * DAY);
 
-const statCard = "h-[113px] rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const statCard = "h-[113px] rounded-xl border border-line bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 
 export default function QuotesView({
   quotes,
@@ -98,7 +98,7 @@ export default function QuotesView({
         ))}
       </div>
 
-      <div className="mt-4 flex flex-col gap-3 rounded-xl border border-[#e2e8f0] bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:h-[83px] xl:flex-row xl:items-center xl:gap-0 xl:py-0">
+      <div className="mt-4 flex flex-col gap-3 rounded-xl border border-line bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:h-[83px] xl:flex-row xl:items-center xl:gap-0 xl:py-0">
         <label className="relative min-w-0 xl:w-[358px] xl:shrink-0">
           <span className="sr-only">Search quotes</span>
           <Image src="/onboarding/search.svg" alt="" width={17} height={16} className="pointer-events-none absolute left-[15px] top-1/2 -translate-y-1/2" />
@@ -107,7 +107,7 @@ export default function QuotesView({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by ID, customer or amount..."
-            className="h-[37px] w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185]"
+            className="h-[37px] w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
           />
         </label>
         <div className="flex flex-wrap gap-[13px] xl:ml-[7px]">
@@ -118,7 +118,7 @@ export default function QuotesView({
         <button
           type="button"
           onClick={() => (customers.length ? setCreating(true) : router.push("/customers?new=1"))}
-          className="flex h-[51px] items-center justify-center gap-2 rounded-lg bg-[#00c185] px-5 text-[16px] font-semibold leading-6 text-white transition-colors hover:bg-[#00a873] xl:ml-auto xl:w-[174px] xl:px-0"
+          className="flex h-[51px] items-center justify-center gap-2 rounded-lg bg-brand px-5 text-[16px] font-semibold leading-6 text-white transition-colors hover:bg-brand-dark xl:ml-auto xl:w-[174px] xl:px-0"
         >
           <span className="text-[18px] font-bold leading-[27px]">+</span>
           Create New Quote
@@ -144,7 +144,7 @@ export default function QuotesView({
         </div>
       )}
 
-      <section className={`${chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
+      <section className={`${chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">{quotes.length === 0 ? "No quotes yet" : filtering ? "No matching quotes" : "No active quotes"}</h2>
@@ -159,7 +159,7 @@ export default function QuotesView({
               <button
                 type="button"
                 onClick={() => (customers.length ? setCreating(true) : router.push("/customers?new=1"))}
-                className="mt-5 h-10 rounded-lg bg-[#00c185] px-5 text-[14px] font-semibold text-white hover:bg-[#00a873]"
+                className="mt-5 h-10 rounded-lg bg-brand px-5 text-[14px] font-semibold text-white hover:bg-brand-dark"
               >
                 {customers.length ? "+ Create New Quote" : "+ Add Customer"}
               </button>
@@ -174,7 +174,7 @@ export default function QuotesView({
                 ))}
               </colgroup>
               <thead className="whitespace-nowrap bg-[#f8fafc] text-[12px] font-bold uppercase leading-[18px] tracking-[0.6px] text-[#64748b]">
-                <tr className="h-[60px] border-b border-[#e2e8f0]">
+                <tr className="h-[60px] border-b border-line">
                   <th className="pl-6">Quote Number</th>
                   <th className="pl-3">Customer</th>
                   <th className="pl-3">Amount</th>
@@ -189,9 +189,9 @@ export default function QuotesView({
               </thead>
               <tbody className="text-[14px] leading-[22px] text-[#475569]">
                 {filtered.map((q) => (
-                  <tr key={q.id} className="h-[72px] border-b border-[#e2e8f0] last:border-b-0 hover:bg-[#f8fafc]">
+                  <tr key={q.id} className="h-[72px] border-b border-line last:border-b-0 hover:bg-[#f8fafc]">
                     <td className="pl-6 pr-2">
-                      <Link href={`/quotes/${q.id}`} className="text-[16px] font-semibold leading-6 text-[#334155] hover:text-[#00c185]">
+                      <Link href={`/quotes/${q.id}`} className="text-[16px] font-semibold leading-6 text-[#334155] hover:text-brand">
                         {q.number}
                       </Link>
                     </td>
@@ -206,7 +206,7 @@ export default function QuotesView({
                     <td className="px-3">{q.state === "draft" ? "—" : dateOnly(q.expiresOn)}</td>
                     <td className="px-3 text-[#64748b]">
                       {q.job ? (
-                        <Link href={`/jobs/${q.job.id}`} className="hover:text-[#00c185]">{q.job.number}</Link>
+                        <Link href={`/jobs/${q.job.id}`} className="hover:text-brand">{q.job.number}</Link>
                       ) : (
                         "—"
                       )}

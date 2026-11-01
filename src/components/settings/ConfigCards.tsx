@@ -103,7 +103,7 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
                       value={Number.isNaN(v.depositValue) ? "" : v.depositValue}
                       onChange={(e) => set("depositValue", e.target.value === "" ? NaN : Number(e.target.value))}
                       aria-invalid={errors.depositValue ? true : undefined}
-                      className={`h-9 w-full rounded-[8px] border border-[#e2e8f0] bg-[#f8fafc] pr-8 text-[14px] text-[#0f172a] outline-none focus:border-[#10b981] aria-invalid:border-[#ef4444] ${
+                      className={`h-9 w-full rounded-[8px] border border-line bg-[#f8fafc] pr-8 text-[14px] text-[#0f172a] outline-none focus:border-brand aria-invalid:border-[#ef4444] ${
                         v.depositType === "fixed" ? "pl-6" : "pl-3"
                       }`}
                     />
@@ -127,7 +127,7 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
                 value={v.quoteTerms}
                 onChange={(e) => set("quoteTerms", e.target.value)}
                 placeholder="e.g. Payment is due within 30 days of quote acceptance…"
-                className="min-h-[120px] w-full resize-y rounded-[12px] border border-[#e2e8f0] bg-[#f8fafc] px-4 py-[15px] text-[14px] leading-[22.75px] text-[#475569] outline-none placeholder:text-[#9ca3af] focus:border-[#10b981]"
+                className="min-h-[120px] w-full resize-y rounded-[12px] border border-line bg-[#f8fafc] px-4 py-[15px] text-[14px] leading-[22.75px] text-[#475569] outline-none placeholder:text-[#9ca3af] focus:border-brand"
               />
             </div>
           </div>
@@ -153,7 +153,7 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
                   value={v.reminderDays}
                   disabled={!v.reminderEnabled}
                   onChange={(e) => set("reminderDays", Number(e.target.value))}
-                  className="h-[30px] rounded-[8px] border border-[#e2e8f0] bg-white pl-3 text-[12px] font-medium text-[#334155] outline-none focus:border-[#10b981] disabled:opacity-60"
+                  className="h-[30px] rounded-[8px] border border-line bg-white pl-3 text-[12px] font-medium text-[#334155] outline-none focus:border-brand disabled:opacity-60"
                 >
                   {withCurrent(QUOTE_REMINDER_OPTIONS, v.reminderDays).map((d) => (
                     <option key={d} value={d}>
@@ -213,7 +213,7 @@ function SwitchRow({ title, description, checked, onChange, border }: { title: s
 }
 
 const invoiceSelect =
-  "h-11 w-full rounded-[12px] border border-[#e2e8f0] bg-white px-3 text-[14px] text-[#0f172a] outline-none focus:border-[#10b981] disabled:opacity-60";
+  "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] text-[#0f172a] outline-none focus:border-brand disabled:opacity-60";
 
 function DaysBox({ id, label, value, options, suffix, disabled, onChange }: { id: string; label: string; value: number; options: number[]; suffix: string; disabled: boolean; onChange: (n: number) => void }) {
   return (
@@ -283,7 +283,7 @@ export function InvoiceConfigCard({ data, templates }: { data: SettingsData["inv
               value={v.invoiceTerms}
               onChange={(e) => set("invoiceTerms", e.target.value)}
               placeholder="Enter your standard terms..."
-              className="min-h-[104px] w-full resize-y rounded-[12px] border border-[#e2e8f0] bg-white px-3 py-[11px] text-[14px] leading-5 text-[#0f172a] outline-none placeholder:text-[#9ca3af] focus:border-[#10b981]"
+              className="min-h-[104px] w-full resize-y rounded-[12px] border border-line bg-white px-3 py-[11px] text-[14px] leading-5 text-[#0f172a] outline-none placeholder:text-[#9ca3af] focus:border-brand"
             />
             <p className="flex items-center gap-1.5 text-[12px] leading-4 text-[#64748b]">
               <Info className="size-2.5" strokeWidth={3} />

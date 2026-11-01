@@ -18,7 +18,7 @@ const DATE_RANGES = [
 const badge: Record<ActivityStatus, string> = {
   Pending: "bg-[#f1f5f9] text-[#64748b]",
   Draft: "bg-[#f8fafc] text-[#94a3b8]",
-  Accepted: "text-[#00c9a7]",
+  Accepted: "text-brand",
   Declined: "bg-[#fef2f2] text-[#ef4444]",
   New: "bg-[#eff6ff] text-[#3b82f6]",
 };
@@ -44,7 +44,7 @@ function timeAgo(iso: string, now: number) {
 }
 
 const filterClass =
-  "h-9 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#00c9a7]";
+  "h-9 rounded-lg border border-line bg-[#f9fafb] text-[14px] text-[#0f172a] outline-none transition-colors focus:border-brand";
 
 export default function ActivityPanel({ items, now }: { items: ActivityItem[]; now: number }) {
   const [query, setQuery] = useState("");
@@ -74,7 +74,7 @@ export default function ActivityPanel({ items, now }: { items: ActivityItem[]; n
 
   return (
     <>
-      <div className="flex flex-col gap-3 rounded-xl border border-[#e2e8f0] bg-white p-[11px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:h-[60px] sm:flex-row sm:items-center sm:gap-3.5 sm:px-[15px] sm:py-0">
+      <div className="flex flex-col gap-3 rounded-xl border border-line bg-white p-[11px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:h-[60px] sm:flex-row sm:items-center sm:gap-3.5 sm:px-[15px] sm:py-0">
         <label className="relative min-w-0 flex-1">
           <span className="sr-only">Search activity</span>
           <Image src="/onboarding/search.svg" alt="" width={17} height={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" />
@@ -121,14 +121,14 @@ export default function ActivityPanel({ items, now }: { items: ActivityItem[]; n
         </div>
       </div>
 
-      <section className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-        <div className="flex h-[76px] items-center justify-between border-b border-[#e2e8f0] px-6 sm:px-8">
+      <section className="overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+        <div className="flex h-[76px] items-center justify-between border-b border-line px-6 sm:px-8">
           <h2 className="text-[18px] font-bold leading-7 tracking-[0.018px] text-[#0f172a]">Recent Activity</h2>
           {filtered.length > COLLAPSED_ROWS && (
             <button
               type="button"
               onClick={() => setExpanded(!expanded)}
-              className="text-[14px] font-semibold leading-5 tracking-[0.041px] text-[#00c9a7] hover:underline"
+              className="text-[14px] font-semibold leading-5 tracking-[0.041px] text-brand hover:underline"
             >
               {expanded ? "Show Less" : "View All Activity"}
             </button>
@@ -159,7 +159,7 @@ export default function ActivityPanel({ items, now }: { items: ActivityItem[]; n
                 <col className="w-[18.6%]" />
                 <col className="w-[16.8%]" />
               </colgroup>
-              <thead className="border-b border-[#e2e8f0] bg-[#f8fafc] text-[12px] font-bold uppercase leading-4 tracking-[0.6px] text-[#64748b]">
+              <thead className="border-b border-line bg-[#f8fafc] text-[12px] font-bold uppercase leading-4 tracking-[0.6px] text-[#64748b]">
                 <tr className="h-12">
                   <th className="pl-[38px]">Customer Name</th>
                   <th className="pl-8">Activity Type</th>

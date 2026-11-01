@@ -35,7 +35,7 @@ export default function SetupComplete({ note }: { note?: string }) {
         type="button"
         disabled={pending}
         onClick={() => startTransition(() => router.replace("/dashboard"))}
-        className="mt-8 h-12 w-full rounded-lg bg-[#00c9a7] text-[18px] font-medium text-white shadow-[0_10px_15px_-3px_rgba(0,201,167,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+        className="mt-8 h-12 w-full rounded-lg bg-brand text-[18px] font-medium text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
       >
         {pending ? "Loading…" : "Go to Dashboard"}
       </button>

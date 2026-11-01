@@ -19,7 +19,7 @@ const cards = [
   },
   {
     icon: "/icons/trust-star.svg",
-    bg: "bg-[rgba(0,200,151,0.1)]",
+    bg: "bg-[rgba(4,129,255,0.1)]",
     title: "Professional Experience",
     desc: "Give your customers the high-end payment experience they expect.",
   },

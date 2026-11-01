@@ -10,9 +10,9 @@ import { EMAIL_RE, NETWORK_ERROR } from "./formUtils";
 import PasswordInput from "./PasswordInput";
 
 const popupInput =
-  "w-full rounded-lg border border-[#e5e7eb] bg-white px-4 text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:ring-2 focus:ring-brand/20";
+  "w-full rounded-lg border border-line bg-white px-4 text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:ring-2 focus:ring-brand/20";
 const greenButton =
-  "w-full rounded-lg bg-[#10b981] text-[15px] font-medium text-white drop-shadow-[0_4px_7px_rgba(16,185,129,0.3)] transition-colors hover:bg-[#0ea371] disabled:opacity-70";
+  "w-full rounded-lg bg-brand text-[15px] font-medium text-white drop-shadow-[0_4px_7px_rgba(4,129,255,0.3)] transition-colors hover:bg-brand-dark disabled:opacity-70";
 
 function PopupLogo({ size }: { size: number }) {
   return (
@@ -74,7 +74,7 @@ export function ForgotPasswordCard({
   };
 
   return (
-    <div className="mx-auto max-w-[400px] overflow-hidden rounded-xl border border-[#e5e7eb]/50 bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
+    <div className="mx-auto max-w-[400px] overflow-hidden rounded-xl border border-line/50 bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
       <div className="px-6 pb-12 pt-10 sm:px-10">
         <PopupLogo size={56} />
         <h2 className="mt-4 text-center text-[24px] font-bold leading-[32px] tracking-[-0.6px] text-logo">
@@ -114,7 +114,7 @@ export function ForgotPasswordCard({
           <BackToLogin onClick={onBack} color="text-logo" />
         </div>
       </div>
-      <div className="h-1 bg-[#10b981]/10" />
+      <div className="h-1 bg-brand/10" />
     </div>
   );
 }
@@ -133,7 +133,7 @@ export function CheckEmailCard({
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.15 }}
-        className="mx-auto mt-8 flex size-16 items-center justify-center rounded-full bg-[rgba(0,193,133,0.1)]"
+        className="mx-auto mt-8 flex size-16 items-center justify-center rounded-full bg-[rgba(4,129,255,0.1)]"
       >
         <Image src="/auth/email-check-icon.svg" alt="" width={38} height={30} />
       </motion.div>

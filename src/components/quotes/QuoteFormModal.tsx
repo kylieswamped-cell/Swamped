@@ -25,7 +25,7 @@ export type QuoteDefaults = {
 
 const labelClass = "text-[14px] font-semibold leading-5 text-[#374151]";
 const fieldClass =
-  "w-full rounded-lg border border-[#e5e7eb] bg-[#f3f4f6] px-4 text-[16px] text-[#374151] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-lg border border-line bg-[#f3f4f6] px-4 text-[16px] text-[#374151] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 const ACCEPTS = `${ACCEPTED_UPLOADS},.doc,.docx,.xls,.xlsx,.csv,.txt`;
 
 /** YYYY-MM-DD for a date in the viewer's zone. */
@@ -39,7 +39,7 @@ const longDate = (v: string) =>
 function DateField({ id, value, onChange, invalid }: { id: string; value: string; onChange: (v: string) => void; invalid?: boolean }) {
   const input = useRef<HTMLInputElement>(null);
   return (
-    <div className={`relative flex h-11 items-center gap-3 rounded-lg border bg-[#f3f4f6] px-[18px] ${invalid ? "border-[#ef4444]" : "border-[#e5e7eb]"}`}>
+    <div className={`relative flex h-11 items-center gap-3 rounded-lg border bg-[#f3f4f6] px-[18px] ${invalid ? "border-[#ef4444]" : "border-line"}`}>
       <CalendarDays className="size-4 shrink-0 text-[#9ca3af]" />
       <span className={`truncate text-[16px] ${value ? "text-[#374151]" : "text-[#9ca3af]"}`}>{value ? longDate(value) : "Select a date"}</span>
       <input
@@ -217,7 +217,7 @@ export default function QuoteFormModal({
           e.preventDefault();
           submit(false);
         }}
-        className="flex max-h-[calc(100vh-32px)] flex-col overflow-hidden rounded-2xl border border-[#e2e8f0] bg-[#f8f9fa] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
+        className="flex max-h-[calc(100vh-32px)] flex-col overflow-hidden rounded-2xl border border-line bg-[#f8f9fa] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
       >
         <div className="relative flex h-[150px] shrink-0 items-start bg-white px-6 pt-[61px] sm:px-10">
           <h2 className="text-[24px] font-bold leading-8 text-[#0f172a]">{heading}</h2>
@@ -263,7 +263,7 @@ export default function QuoteFormModal({
           <div className="mt-[18px] grid grid-cols-1 items-end gap-5 sm:grid-cols-3 lg:grid-cols-[212px_minmax(0,305px)_minmax(0,307px)_auto] lg:gap-x-[15px]">
             <div>
               <span className={labelClass}>Quote Number</span>
-              <p className="mt-[9px] flex h-11 items-center rounded-lg border border-[#e5e7eb] bg-[#f3f4f6] px-4 text-[16px] text-[#374151]">{quote?.number ?? defaults.number}</p>
+              <p className="mt-[9px] flex h-11 items-center rounded-lg border border-line bg-[#f3f4f6] px-4 text-[16px] text-[#374151]">{quote?.number ?? defaults.number}</p>
             </div>
             <div className="lg:mr-[19px]">
               <label htmlFor="quote-date" className={labelClass}>Quote Date</label>
@@ -282,14 +282,14 @@ export default function QuoteFormModal({
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
-              className="flex h-[42px] items-center justify-center gap-2 whitespace-nowrap rounded-[5px] bg-[#01c185] px-5 text-[14px] leading-6 text-white transition-colors hover:bg-[#00a873] sm:col-span-3 lg:col-span-1 lg:mb-px lg:ml-auto"
+              className="flex h-[42px] items-center justify-center gap-2 whitespace-nowrap rounded-[5px] bg-brand px-5 text-[14px] leading-6 text-white transition-colors hover:bg-brand-dark sm:col-span-3 lg:col-span-1 lg:mb-px lg:ml-auto"
             >
               <Plus className="size-4" strokeWidth={2.5} />
               Create New Line Item
             </button>
           </div>
 
-          <div className="mt-7 overflow-hidden rounded-xl border border-[#e2e8f0] bg-white">
+          <div className="mt-7 overflow-hidden rounded-xl border border-line bg-white">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[860px] table-fixed text-left">
                 <colgroup>
@@ -298,7 +298,7 @@ export default function QuoteFormModal({
                   ))}
                 </colgroup>
                 <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
-                  <tr className="h-[46px] border-b border-[#e2e8f0]">
+                  <tr className="h-[46px] border-b border-line">
                     <th className="pl-6">Item Description</th>
                     <th className="pl-6">Quantity</th>
                     <th className="pr-6 text-right">Unit Price</th>
@@ -315,7 +315,7 @@ export default function QuoteFormModal({
                           aria-label={`Line ${i + 1} description`}
                           value={l.description}
                           onChange={(e) => updateLine(i, { description: e.target.value })}
-                          className="h-[27px] w-full rounded-md border border-[#e2e8f0] px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185]"
+                          className="h-[27px] w-full rounded-md border border-line px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-brand"
                         />
                       </td>
                       <td className="pl-6">
@@ -327,7 +327,7 @@ export default function QuoteFormModal({
                           step="any"
                           value={l.quantity}
                           onChange={(e) => updateLine(i, { quantity: e.target.value })}
-                          className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-[#00c185]"
+                          className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
                         />
                       </td>
                       <td className="pr-[21px]">
@@ -341,7 +341,7 @@ export default function QuoteFormModal({
                             step="0.01"
                             value={l.unitPrice}
                             onChange={(e) => updateLine(i, { unitPrice: e.target.value })}
-                            className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-[#00c185]"
+                            className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-brand"
                           />
                         </div>
                       </td>
@@ -388,7 +388,7 @@ export default function QuoteFormModal({
             {fieldErrors.items && <p className="px-6 pb-3 text-[12px] text-[#ef4444]">{fieldErrors.items}</p>}
 
             <div className="flex justify-end border-t border-[#f1f5f9] p-6">
-              <div className="w-full rounded-[20px] border border-[#e5e7eb] bg-white p-6 lg:w-[418px]">
+              <div className="w-full rounded-[20px] border border-line bg-white p-6 lg:w-[418px]">
                 <div className="flex items-center justify-between text-[14px] leading-5">
                   <span className="font-medium text-[#4b5563]">Subtotal</span>
                   <span className="font-semibold text-[#111827]">{formatMoney(totals.subtotal)}</span>
@@ -453,7 +453,7 @@ export default function QuoteFormModal({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Enter a message that the customer will see on the final quote document..."
-                  className="mt-2 h-[142px] w-full resize-y rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white"
+                  className="mt-2 h-[142px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
                 />
               </div>
               <div>
@@ -465,11 +465,11 @@ export default function QuoteFormModal({
                   onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                   onDragLeave={() => setDragging(false)}
                   onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
-                  className={`mt-2 flex h-[142px] w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5e7eb] transition-colors hover:border-[#00c185] ${dragging ? "bg-[#ecfdf5]" : "bg-[#f9fafb]"}`}
+                  className={`mt-2 flex h-[142px] w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-line transition-colors hover:border-brand ${dragging ? "bg-brand-light" : "bg-[#f9fafb]"}`}
                 >
                   <CloudUpload className="size-9 text-[#d1d5db]" />
                   <span className="mt-2 text-[14px] leading-5 text-[#4b5563]">
-                    <span className="font-semibold text-[#00c185]">Click to upload</span> or drag and drop
+                    <span className="font-semibold text-brand">Click to upload</span> or drag and drop
                   </span>
                   <span className="text-[12px] leading-4 text-[#9ca3af]">(PDF, JPG, PNG up to 10MB)</span>
                 </button>
@@ -527,12 +527,12 @@ export default function QuoteFormModal({
                   readOnly={!editingTerms}
                   onChange={(e) => setTerms(e.target.value)}
                   placeholder="No terms yet. Click Edit to add them."
-                  className={`h-[110px] w-full resize-y rounded-xl border border-[#e2e8f0] bg-[#f9fafb] py-4 pl-1 pr-20 text-[12px] leading-[19.5px] text-[#64748b] outline-none placeholder:text-[#9ca3af] ${editingTerms ? "focus:border-[#00c185] focus:bg-white" : "cursor-default"}`}
+                  className={`h-[110px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] py-4 pl-1 pr-20 text-[12px] leading-[19.5px] text-[#64748b] outline-none placeholder:text-[#9ca3af] ${editingTerms ? "focus:border-brand focus:bg-white" : "cursor-default"}`}
                 />
                 <button
                   type="button"
                   onClick={() => setEditingTerms(!editingTerms)}
-                  className="absolute right-[38px] top-3 rounded bg-[#f1f5f9] px-2 py-1 text-[10px] leading-[15px] text-[#64748b] hover:bg-[#e2e8f0]"
+                  className="absolute right-[38px] top-3 rounded bg-[#f1f5f9] px-2 py-1 text-[10px] leading-[15px] text-[#64748b] hover:bg-line"
                 >
                   {editingTerms ? "Done" : "Edit"}
                 </button>
@@ -554,7 +554,7 @@ export default function QuoteFormModal({
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}
                 placeholder="Add private notes for your team only. These will not be visible to the customer..."
-                className="mt-2 h-32 w-full resize-y rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white"
+                className="mt-2 h-32 w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
               />
             </div>
           </Section>
@@ -566,17 +566,17 @@ export default function QuoteFormModal({
           )}
 
           <div className="mt-7 flex flex-wrap justify-end gap-x-3.5 gap-y-3">
-            <button type="button" onClick={onClose} disabled={pending} className="h-10 w-[87px] rounded-lg border border-[#0b192c] text-[14px] font-medium text-[#0b192c] transition-colors hover:bg-[#f1f5f9] disabled:opacity-60">
+            <button type="button" onClick={onClose} disabled={pending} className="h-10 w-[87px] rounded-lg border border-navy text-[14px] font-medium text-navy transition-colors hover:bg-[#f1f5f9] disabled:opacity-60">
               Cancel
             </button>
-            <button type="submit" disabled={pending} className="h-[42px] rounded-lg border border-[#01c9a7] bg-white px-5 text-[14px] font-medium text-[#01a98c] transition-colors hover:bg-[#ecfdf5] disabled:opacity-60">
+            <button type="submit" disabled={pending} className="h-[42px] rounded-lg border border-brand bg-white px-5 text-[14px] font-medium text-brand-dark transition-colors hover:bg-brand-light disabled:opacity-60">
               {pending ? "Saving…" : editing ? "Save Changes" : "Save Draft"}
             </button>
             <button
               type="button"
               onClick={() => submit(true)}
               disabled={pending}
-              className="h-[42px] w-[218px] rounded-lg bg-[#01c9a7] text-[14px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+              className="h-[42px] w-[218px] rounded-lg bg-brand text-[14px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
             >
               Save &amp; Send to Customer
             </button>

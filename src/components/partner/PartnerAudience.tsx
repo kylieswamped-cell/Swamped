@@ -39,7 +39,7 @@ export default function PartnerAudience() {
           {audiences.map((a) => (
             <StaggerItem key={a.title} className="h-full">
               <motion.div
-                whileHover={{ y: -6, borderColor: "rgba(0,193,133,0.5)" }}
+                whileHover={{ y: -6, borderColor: "rgba(4,129,255,0.5)" }}
                 transition={{ duration: 0.25 }}
                 className="flex h-full flex-col gap-3 rounded-3xl border border-white/10 p-8"
               >

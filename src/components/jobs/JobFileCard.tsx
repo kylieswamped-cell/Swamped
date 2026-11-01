@@ -31,13 +31,13 @@ export default function JobFileCard({
 }) {
   const { bg, Icon, color } = KIND[fileKind(name, type)];
   return (
-    <li className={`flex items-center justify-between gap-3 rounded-xl border border-[#e2e8f0] bg-white ${compact ? "h-[66px] px-3" : "h-[74px] px-4"}`}>
+    <li className={`flex items-center justify-between gap-3 rounded-xl border border-line bg-white ${compact ? "h-[66px] px-3" : "h-[74px] px-4"}`}>
       <div className={`flex min-w-0 items-center ${compact ? "gap-3" : "gap-4"}`}>
         <span className={`flex size-10 shrink-0 items-center justify-center rounded ${bg}`}>
           <Icon className={`size-5 ${color}`} />
         </span>
         <div className="min-w-0">
-          <p className={`truncate text-[14px] leading-5 ${compact ? "font-semibold text-[#0f172a]" : "font-bold text-[#0a1b2f]"}`} title={name}>
+          <p className={`truncate text-[14px] leading-5 ${compact ? "font-semibold text-[#0f172a]" : "font-bold text-navy"}`} title={name}>
             {name}
           </p>
           <p className={`truncate text-[12px] leading-4 ${compact ? "text-[#94a3b8]" : "text-[#64748b]"}`}>{meta}</p>

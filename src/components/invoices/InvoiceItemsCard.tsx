@@ -87,7 +87,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
 
   return (
     <>
-      <div className="mt-6 overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <div className="mt-6 overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] table-fixed text-left">
             <colgroup>
@@ -96,7 +96,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
               ))}
             </colgroup>
             <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
-              <tr className="h-[46px] border-b border-[#e2e8f0]">
+              <tr className="h-[46px] border-b border-line">
                 <th className="pl-6">Item Description</th>
                 <th className="pl-6">Quantity</th>
                 <th className="pr-6 text-right">Unit Price</th>
@@ -114,7 +114,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
                       value={l.description}
                       disabled={locked}
                       onChange={(e) => update(i, { description: e.target.value })}
-                      className="h-[35px] w-full rounded-md border border-[#e2e8f0] px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185] disabled:bg-transparent"
+                      className="h-[35px] w-full rounded-md border border-line px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-brand disabled:bg-transparent"
                     />
                   </td>
                   <td className="pl-6">
@@ -127,7 +127,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
                       value={l.quantity}
                       disabled={locked}
                       onChange={(e) => update(i, { quantity: e.target.value })}
-                      className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-[#00c185]"
+                      className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
                     />
                   </td>
                   <td className="pr-[21px]">
@@ -142,7 +142,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
                         value={l.unitPrice}
                         disabled={locked}
                         onChange={(e) => update(i, { unitPrice: e.target.value })}
-                        className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-[#00c185]"
+                        className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-brand"
                       />
                     </div>
                   </td>
@@ -184,7 +184,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
               <button
                 type="button"
                 onClick={() => setLineModal({ index: null })}
-                className="flex h-[42px] w-[168px] items-center justify-center gap-2 rounded-[5px] bg-[#01c185] text-[14px] text-white transition-colors hover:bg-[#00a873]"
+                className="flex h-[42px] w-[168px] items-center justify-center gap-2 rounded-[5px] bg-brand text-[14px] text-white transition-colors hover:bg-brand-dark"
               >
                 <span className="text-[18px] leading-none">+</span>
                 Create Line Item
@@ -195,7 +195,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
             {error && <p role="alert" className="max-w-[380px] text-[12px] text-[#ef4444]">{error}</p>}
           </div>
 
-          <div className="w-full rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:w-[368px]">
+          <div className="w-full rounded-2xl border border-line bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:w-[368px]">
             <div className="flex h-8 items-center justify-between text-[16px] leading-6">
               <span className="font-medium text-[#4b5563]">Subtotal</span>
               <span className="font-semibold text-[#111827]">{formatMoney(totals.subtotal)}</span>

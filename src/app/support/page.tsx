@@ -19,7 +19,7 @@ export default async function SupportPage() {
       subtitle="Send our team a request and we'll reply by email."
     >
       <div className="px-4 pb-16 pt-6 sm:px-10 sm:pt-[72px]">
-        <div className="rounded-[16px] border border-[#e2e8f0] bg-white p-5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-8">
+        <div className="rounded-[16px] border border-line bg-white p-5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-8">
           <SupportForm email={user.email ?? ""} />
         </div>
       </div>

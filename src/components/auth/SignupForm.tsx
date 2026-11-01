@@ -105,7 +105,7 @@ export default function SignupForm() {
           disabled={!hydrated || submitting}
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.98 }}
-          className="h-16 w-full rounded-xl bg-brand text-[18px] font-bold text-white drop-shadow-[0_4px_6px_rgba(0,193,133,0.25)] transition-colors hover:bg-brand-dark disabled:opacity-70"
+          className="h-16 w-full rounded-xl bg-brand text-[18px] font-bold text-white drop-shadow-[0_4px_6px_rgba(4,129,255,0.25)] transition-colors hover:bg-brand-dark disabled:opacity-70"
         >
           {submitting ? "Creating Account…" : "Sign up"}
         </motion.button>

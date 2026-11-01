@@ -82,7 +82,7 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
   };
 
   const borderFor = (field: "email" | "password") =>
-    invalidField === field ? "border-red-400" : "border-[#e2e8f0]";
+    invalidField === field ? "border-red-400" : "border-line";
 
   return (
     <>

@@ -27,7 +27,7 @@ const badge: Record<CustomerStatus, string> = {
 };
 
 const filterClass =
-  "h-9 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#00c185]";
+  "h-9 rounded-lg border border-line bg-[#f9fafb] text-[14px] text-[#0f172a] outline-none transition-colors focus:border-brand";
 
 // Fixed zone so the server render and the browser agree on the date.
 const shortDate = (iso: string) =>
@@ -70,7 +70,7 @@ export default function CustomersView({
       aria-current={active ? "page" : undefined}
       className={`-mb-px flex h-[50px] items-center border-b-2 px-6 text-[16px] leading-6 transition-colors ${
         active
-          ? "border-[#00c185] font-semibold tracking-[-0.3px] text-[#00c185]"
+          ? "border-brand font-semibold tracking-[-0.3px] text-brand"
           : "border-transparent font-medium tracking-[-0.2px] text-[#64748b] hover:text-[#334155]"
       }`}
     >
@@ -93,12 +93,12 @@ export default function CustomersView({
 
   return (
     <>
-      <nav aria-label="Customer lists" className="flex border-b border-[#e2e8f0]">
+      <nav aria-label="Customer lists" className="flex border-b border-line">
         {tab("Active Customers", "/customers", !archived)}
         {tab("Archived Customers", "/customers?tab=archived", archived)}
       </nav>
 
-      <div className="mt-8 flex flex-col gap-3 rounded-xl border border-[#e2e8f0] bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:h-[60px] lg:flex-row lg:items-center lg:gap-4 lg:py-0 lg:pl-3.5 lg:pr-[6px]">
+      <div className="mt-8 flex flex-col gap-3 rounded-xl border border-line bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:h-[60px] lg:flex-row lg:items-center lg:gap-4 lg:py-0 lg:pl-3.5 lg:pr-[6px]">
         <label className="relative min-w-0 lg:w-[559px]">
           <span className="sr-only">Search customers</span>
           <Image src="/onboarding/search.svg" alt="" width={17} height={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" />
@@ -137,7 +137,7 @@ export default function CustomersView({
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="flex h-12 items-center justify-center gap-4 rounded-lg bg-[#00c185] px-6 text-[16px] font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#00a873] lg:ml-auto lg:w-[176px] lg:px-0"
+            className="flex h-12 items-center justify-center gap-4 rounded-lg bg-brand px-6 text-[16px] font-semibold text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark lg:ml-auto lg:w-[176px] lg:px-0"
           >
             <span className="text-[16px] font-black leading-6">+</span>
             Add Customer
@@ -145,7 +145,7 @@ export default function CustomersView({
         )}
       </div>
 
-      <section className="mt-[19px] overflow-hidden rounded-[11px] border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <section className="mt-[19px] overflow-hidden rounded-[11px] border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">
@@ -159,7 +159,7 @@ export default function CustomersView({
                   : "Add your first customer to start sending quotes and invoices."}
             </p>
             {!filtering && !archived && (
-              <button type="button" onClick={() => setAdding(true)} className="mt-5 h-10 rounded-lg bg-[#00c185] px-5 text-[14px] font-semibold text-white hover:bg-[#00a873]">
+              <button type="button" onClick={() => setAdding(true)} className="mt-5 h-10 rounded-lg bg-brand px-5 text-[14px] font-semibold text-white hover:bg-brand-dark">
                 + Add Customer
               </button>
             )}
@@ -173,7 +173,7 @@ export default function CustomersView({
                 ))}
               </colgroup>
               <thead className="bg-[#f8fafc] text-[11px] font-bold uppercase tracking-[0.57px] text-[#64748b]">
-                <tr className="h-[57px] border-b border-[#e2e8f0]">
+                <tr className="h-[57px] border-b border-line">
                   <th className="pl-6">Name</th>
                   <th className="pl-3">Phone</th>
                   <th className="pl-3">Email</th>
@@ -185,9 +185,9 @@ export default function CustomersView({
               </thead>
               <tbody className="text-[13px] text-[#475569]">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="h-[69px] border-b border-[#e2e8f0] last:border-b-0 hover:bg-[#f8fafc]">
+                  <tr key={c.id} className="h-[69px] border-b border-line last:border-b-0 hover:bg-[#f8fafc]">
                     <td className="pl-6 pr-3">
-                      <Link href={`/customers/${c.id}`} className="line-clamp-2 text-[15px] font-semibold leading-[18px] text-[#334155] hover:text-[#00c185]">
+                      <Link href={`/customers/${c.id}`} className="line-clamp-2 text-[15px] font-semibold leading-[18px] text-[#334155] hover:text-brand">
                         {c.name}
                       </Link>
                     </td>
@@ -212,7 +212,7 @@ export default function CustomersView({
                             type="button"
                             aria-label={`Unarchive ${c.name}`}
                             onClick={() => { setRestoreError(undefined); setRestoring(c); }}
-                            className="rounded p-1 text-[#6b7280] transition-colors hover:text-[#00c185]"
+                            className="rounded p-1 text-[#6b7280] transition-colors hover:text-brand"
                           >
                             <ArchiveRestore className="size-[18px]" />
                           </button>

@@ -2,17 +2,21 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0b192c;
+  --foreground: #082741;
 
-  --color-brand: #00c897;
-  --color-brand-dark: #00a67d;
-  --color-navy: #0b192c;
-  --color-navy-deep: #001e74;
-  --color-logo: #002075;
+  /* Brand palette, aligned with TradeLink 365 */
+  --color-brand: #0481ff;
+  --color-brand-dark: #0368d4;
+  --color-brand-accent: #3794f9;
+  --color-brand-light: #e8f3ff;
+  --color-navy: #082741;
+  --color-navy-deep: #082741;
+  --color-logo: #082741;
   --color-muted: #6b7280;
   --color-muted-light: #9ca3af;
   --color-border: #f3f4f6;
-  --color-surface: #f8fafc;
+  --color-line: #e0e0e2;
+  --color-surface: #ecf0f5;
 }
 
 @theme inline {
@@ -20,12 +24,15 @@
   --color-foreground: var(--foreground);
   --color-brand: var(--color-brand);
   --color-brand-dark: var(--color-brand-dark);
+  --color-brand-accent: var(--color-brand-accent);
+  --color-brand-light: var(--color-brand-light);
   --color-navy: var(--color-navy);
   --color-navy-deep: var(--color-navy-deep);
   --color-logo: var(--color-logo);
   --color-muted: var(--color-muted);
   --color-muted-light: var(--color-muted-light);
   --color-border: var(--color-border);
+  --color-line: var(--color-line);
   --color-surface: var(--color-surface);
   --font-sans: var(--font-inter);
 }

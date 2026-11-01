@@ -40,14 +40,14 @@ export function FilterMenu<T extends string>({
         aria-expanded={open}
         onClick={() => setOpen(!open)}
         className={`flex h-9 items-center justify-between gap-2 rounded-lg border px-4 text-[14px] font-medium leading-5 transition-colors ${
-          selected.length ? "border-[#00c185] bg-[#ecfdf5] text-[#0f172a]" : "border-[#e2e8f0] bg-[#f9fafb] text-[#475569] hover:bg-white"
+          selected.length ? "border-brand bg-brand-light text-[#0f172a]" : "border-line bg-[#f9fafb] text-[#475569] hover:bg-white"
         } ${width}`}
       >
         <span className="whitespace-nowrap">{label}</span>
         <Image src="/jobs/chevron.svg" alt="" width={9} height={5} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute left-0 top-[calc(100%+8px)] z-30 w-[224px] rounded-xl border border-[#e2e8f0] bg-white p-4 shadow-[0_8px_10px_-6px_rgba(0,0,0,0.1),0_20px_25px_-5px_rgba(0,0,0,0.1)]">
+        <div className="absolute left-0 top-[calc(100%+8px)] z-30 w-[224px] rounded-xl border border-line bg-white p-4 shadow-[0_8px_10px_-6px_rgba(0,0,0,0.1),0_20px_25px_-5px_rgba(0,0,0,0.1)]">
           <div className="flex flex-col gap-3">
             {options.map((o) => {
               const checked = selected.includes(o.value);
@@ -67,9 +67,9 @@ export function FilterMenu<T extends string>({
 
 export function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="flex h-6 items-center gap-1.5 rounded-full border border-[#e2e8f0] bg-[#f1f5f9] pl-3 pr-2 text-[12px] font-semibold leading-4 text-[#475569]">
+    <span className="flex h-6 items-center gap-1.5 rounded-full border border-line bg-[#f1f5f9] pl-3 pr-2 text-[12px] font-semibold leading-4 text-[#475569]">
       {label}
-      <button type="button" onClick={onRemove} aria-label={`Remove filter ${label}`} className="flex size-4 items-center justify-center rounded-full hover:bg-[#e2e8f0]">
+      <button type="button" onClick={onRemove} aria-label={`Remove filter ${label}`} className="flex size-4 items-center justify-center rounded-full hover:bg-line">
         <Image src="/jobs/chip-x.svg" alt="" width={6} height={6} />
       </button>
     </span>

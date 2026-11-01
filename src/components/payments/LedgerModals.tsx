@@ -9,11 +9,11 @@ import { formatMoney } from "@/lib/quotes/totals";
 
 const labelClass = "text-[14px] font-medium leading-5 text-[#3f3f46]";
 const fieldClass =
-  "w-full rounded-lg border border-[#d4d4d8] bg-white px-4 text-[16px] text-[#18181b] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] aria-invalid:border-[#ef4444]";
+  "w-full rounded-lg border border-[#d4d4d8] bg-white px-4 text-[16px] text-[#18181b] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand aria-invalid:border-[#ef4444]";
 const secondaryButton =
   "h-9 rounded-lg border border-[#d4d4d8] bg-white px-4 text-[14px] font-medium leading-5 text-[#52525b] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#fafafa] disabled:opacity-60";
 const primaryButton =
-  "h-9 rounded-lg bg-[#02c185] px-4 text-[14px] font-medium leading-5 text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#00a873] disabled:opacity-60";
+  "h-9 rounded-lg bg-brand px-4 text-[14px] font-medium leading-5 text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark disabled:opacity-60";
 
 export function todayInput() {
   const d = new Date();
@@ -329,7 +329,7 @@ export function RefundFlow({
               type="button"
               onClick={() => save(step.input, step.emailReceipt)}
               disabled={pending}
-              className="h-11 rounded-lg bg-[#02c185] text-[14px] font-bold leading-5 text-white shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#00a873] disabled:opacity-60"
+              className="h-11 rounded-lg bg-brand text-[14px] font-bold leading-5 text-white shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark disabled:opacity-60"
             >
               {pending ? "Saving…" : "Confirm refund"}
             </button>
@@ -365,7 +365,7 @@ export function RefundFlow({
             ))}
           </dl>
           {step.notice && <p className="w-full rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2 text-left text-[13px] text-[#92400e]">{step.notice}</p>}
-          <button type="button" onClick={onClose} className="h-10 w-full rounded-lg bg-[#02c185] text-[14px] font-medium text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#00a873]">
+          <button type="button" onClick={onClose} className="h-10 w-full rounded-lg bg-brand text-[14px] font-medium text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark">
             Done
           </button>
         </div>

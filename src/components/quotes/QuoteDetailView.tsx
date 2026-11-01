@@ -14,7 +14,7 @@ import type { QuoteDefaults } from "./QuoteFormModal";
 import QuoteInternalLogs from "./QuoteInternalLogs";
 import QuoteItemsCard from "./QuoteItemsCard";
 
-const card = "rounded-xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const card = "rounded-xl border border-line bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 const cardLabel = "text-[12px] font-semibold uppercase leading-4 text-[#94a3b8]";
 
 // "Awaiting approval" is the Figma style; the others follow the same pattern.
@@ -87,10 +87,10 @@ export default function QuoteDetailView({
           <p className={cardLabel}>Quote</p>
           <div className="mt-[5px] flex flex-col gap-0">
             <Meta label="Total:">
-              <span className="text-[14px] font-extrabold leading-8 text-[#0a1b33]">{formatMoney(quote.totals.total)}</span>
+              <span className="text-[14px] font-extrabold leading-8 text-navy">{formatMoney(quote.totals.total)}</span>
             </Meta>
             <Meta label="Required Deposit:">
-              <span className="font-bold text-[#0a1b33]">{formatMoney(quote.totals.deposit)}</span>
+              <span className="font-bold text-navy">{formatMoney(quote.totals.deposit)}</span>
             </Meta>
             <Meta label="Created Date:">{shortDate(quote.createdAt, local)}</Meta>
             <Meta label="Sent Date:">{quote.sentAt ? shortDate(quote.sentAt, local) : "—"}</Meta>
@@ -105,7 +105,7 @@ export default function QuoteDetailView({
               <div className="mt-5 flex items-start gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-[13px] font-bold text-white">{initials(quote.customer.name)}</span>
                 <div className="min-w-0">
-                  <Link href={`/customers/${quote.customerId}`} className="line-clamp-2 text-[14px] font-bold leading-5 text-[#0f172a] hover:text-[#00c185]">
+                  <Link href={`/customers/${quote.customerId}`} className="line-clamp-2 text-[14px] font-bold leading-5 text-[#0f172a] hover:text-brand">
                     {quote.customer.name}
                   </Link>
                   <p className="flex items-center gap-1.5 truncate text-[12px] leading-4 text-[#64748b]">
@@ -132,7 +132,7 @@ export default function QuoteDetailView({
             </span>
             {quote.job ? (
               <div className="min-w-0">
-                <Link href={`/jobs/${quote.job.id}`} className="text-[14px] font-bold leading-5 text-[#0f172a] hover:text-[#00c185]">
+                <Link href={`/jobs/${quote.job.id}`} className="text-[14px] font-bold leading-5 text-[#0f172a] hover:text-brand">
                   {quote.job.number}
                 </Link>
                 <p className="truncate text-[12px] leading-4 text-[#64748b]" title={quote.job.title}>{quote.job.title}</p>
@@ -170,12 +170,12 @@ export default function QuoteDetailView({
           <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
             <UserRoundCheck className="size-[17px] text-[#00c38b]" />
           </span>
-          <h3 className="text-[18px] font-bold leading-7 text-[#0a1b2f]">Customer-Facing Information</h3>
+          <h3 className="text-[18px] font-bold leading-7 text-navy">Customer-Facing Information</h3>
         </div>
         <div className="mt-[61px] grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,528fr)_minmax(0,469fr)] lg:gap-[62px] lg:pl-[22px]">
           <div>
             <h4 className="text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#64748b]">Customer Message</h4>
-            <div className="mt-4 min-h-[230px] whitespace-pre-line rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-[#0a1b2f]">
+            <div className="mt-4 min-h-[230px] whitespace-pre-line rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-navy">
               {quote.message || <span className="text-[#94a3b8]">No message for the customer.</span>}
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function QuoteDetailView({
                 />
               ))}
               {publicFiles.length === 0 && (
-                <li className="flex h-[74px] items-center justify-center rounded-xl border border-dashed border-[#e2e8f0] bg-white text-[14px] text-[#94a3b8]">
+                <li className="flex h-[74px] items-center justify-center rounded-xl border border-dashed border-line bg-white text-[14px] text-[#94a3b8]">
                   No files for the customer. Add them with Edit.
                 </li>
               )}

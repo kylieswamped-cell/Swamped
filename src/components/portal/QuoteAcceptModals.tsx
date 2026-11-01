@@ -8,9 +8,9 @@ import type { PublicQuote } from "@/lib/portal/quotes";
 import { formatMoney } from "@/lib/quotes/totals";
 
 const primaryButton =
-  "flex h-[52px] w-full items-center justify-center rounded-lg bg-[#059669] text-[16px] font-semibold leading-6 tracking-[0.2px] text-white shadow-[0_2px_4px_-2px_#a7f3d0,0_4px_6px_-1px_#a7f3d0] transition-colors hover:bg-[#047857] disabled:cursor-wait disabled:opacity-70";
+  "flex h-[52px] w-full items-center justify-center rounded-lg bg-brand text-[16px] font-semibold leading-6 tracking-[0.2px] text-white shadow-[0_2px_4px_-2px_#b4d8ff,0_4px_6px_-1px_#b4d8ff] transition-colors hover:bg-[#047857] disabled:cursor-wait disabled:opacity-70";
 const nameField =
-  "mt-2 h-12 w-full rounded-lg border border-[#e2e8f0] bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#059669]";
+  "mt-2 h-12 w-full rounded-lg border border-line bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand";
 const cancelButton =
   "flex h-12 w-full items-center justify-center rounded-lg bg-white text-[16px] font-medium leading-6 text-[#475569] transition-colors hover:bg-[#f8fafc] disabled:opacity-50";
 
@@ -53,7 +53,7 @@ export function ApproveQuoteModal({
 
   return (
     <Modal open={open} onClose={close} label="Approve Quote" busy={pending} className="max-w-[484px]">
-      <div className="relative rounded-2xl border border-[#e2e8f0] bg-white px-8 pb-6 pt-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
+      <div className="relative rounded-2xl border border-line bg-white px-8 pb-6 pt-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
         <button type="button" onClick={close} disabled={pending} aria-label="Close" className="absolute right-8 top-8 rounded p-1 opacity-100 hover:opacity-70">
           <Image src="/portal/close.svg" alt="" width={13} height={13} />
         </button>
@@ -66,7 +66,7 @@ export function ApproveQuoteModal({
 
         <div className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-[#f1f5f9] bg-[#f8fafc] px-5 py-5">
           <div className="flex min-w-0 items-center gap-4">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#e2e8f0] bg-white">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-line bg-white">
               <Image src="/portal/check-small.svg" alt="" width={14} height={10} />
             </span>
             <span className="min-w-0">
@@ -136,7 +136,7 @@ export function QuoteAcceptedModal({ open, onClose }: { open: boolean; onClose: 
         <button
           type="button"
           onClick={download}
-          className="mt-10 flex h-12 w-full max-w-[320px] items-center justify-center gap-2 rounded-xl border border-[#e2e8f0] bg-white px-6 text-[16px] font-semibold leading-6 tracking-[0.2px] text-[#334155] shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f8fafc]"
+          className="mt-10 flex h-12 w-full max-w-[320px] items-center justify-center gap-2 rounded-xl border border-line bg-white px-6 text-[16px] font-semibold leading-6 tracking-[0.2px] text-[#334155] shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f8fafc]"
         >
           <Image src="/portal/file-download.svg" alt="" width={12} height={16} />
           Download Quote

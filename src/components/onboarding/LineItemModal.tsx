@@ -10,7 +10,7 @@ export type NewLineItem = { description: string; quantity: string; unitPrice: st
 
 const labelClass = "text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]";
 const fieldClass =
-  "mt-2 h-12 w-full rounded-xl border border-[#94a3b8]/60 bg-white px-4 text-[15px] text-[#0f172a] outline-none placeholder:text-[#cbd5e1] focus:border-[#00c9a7]";
+  "mt-2 h-12 w-full rounded-xl border border-[#94a3b8]/60 bg-white px-4 text-[15px] text-[#0f172a] outline-none placeholder:text-[#cbd5e1] focus:border-brand";
 
 export default function LineItemModal({
   onSave,
@@ -79,7 +79,7 @@ export default function LineItemModal({
             <div className="mt-2 flex gap-8 pl-4 text-[15px] text-[#0f172a]">
               {[true, false].map((v) => (
                 <label key={String(v)} className="flex items-center gap-2">
-                  <input type="radio" name="taxable" checked={item.taxable === v} onChange={() => set({ taxable: v })} className="size-4 accent-[#00c9a7]" />
+                  <input type="radio" name="taxable" checked={item.taxable === v} onChange={() => set({ taxable: v })} className="size-4 accent-brand" />
                   {v ? "Yes" : "No"}
                 </label>
               ))}
@@ -91,7 +91,7 @@ export default function LineItemModal({
           <button type="button" onClick={onCancel} className="h-11 rounded-lg border border-[#94a3b8] px-5 text-[15px] font-semibold text-[#94a3b8] hover:text-[#334155]">
             Cancel
           </button>
-          <button type="submit" className="flex h-11 items-center gap-2 rounded-lg bg-[#10b981] px-5 text-[15px] font-medium text-white hover:bg-[#059669]">
+          <button type="submit" className="flex h-11 items-center gap-2 rounded-lg bg-brand px-5 text-[15px] font-medium text-white hover:bg-brand-dark">
             <Save className="size-4" /> Add Line Item
           </button>
         </div>

@@ -36,7 +36,7 @@ function BusinessHeader({ business }: { business: PublicBusiness }) {
     <div className="min-w-0">
       <div className="flex items-center gap-2">
         <Image src="/images/logo.png" alt="" width={40} height={40} className="mix-blend-multiply" />
-        <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-[#001e74]">Swamped</span>
+        <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-navy">Swamped</span>
       </div>
       <div className="mt-[17px] text-[15px] leading-[24.38px] text-[#64748b]">
         {businessLinesOf(business).map((line, i) => (
@@ -52,7 +52,7 @@ export function ExpiredQuoteView({ quote }: { quote: ExpiredPublicQuote }) {
   const b = quote.business;
   return (
     <div className="min-h-screen bg-[#f8fafc] px-4 pb-16 pt-6 text-[#0f172a] sm:pt-12">
-      <article className="mx-auto max-w-[640px] rounded-2xl border border-[#e2e8f0] bg-white px-5 pb-10 pt-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:px-10">
+      <article className="mx-auto max-w-[640px] rounded-2xl border border-line bg-white px-5 pb-10 pt-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:px-10">
         <BusinessHeader business={b} />
         <div className="mt-10 rounded-xl border border-[#fef3c7] bg-[#fffbeb] px-5 py-5">
           <span className="inline-flex h-6 items-center gap-2 rounded-full border border-[#fef3c7] bg-white px-3">
@@ -104,7 +104,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
 
   return (
     <div className="min-h-screen bg-[#f8fafc] px-4 pb-[120px] pt-6 text-[#0f172a] sm:pt-12 print:bg-white print:p-0">
-      <article className="mx-auto max-w-[1024px] rounded-2xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] print:border-0 print:shadow-none">
+      <article className="mx-auto max-w-[1024px] rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] print:border-0 print:shadow-none">
         {/* Business and quote summary */}
         <header className="border-b border-[#f1f5f9] px-5 pb-8 pt-[18px] sm:px-10">
           <div className="flex flex-col-reverse gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -152,7 +152,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
           <div className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
             <table className="w-full min-w-[640px] border-collapse">
               <thead>
-                <tr className="border-b border-[#e2e8f0]">
+                <tr className="border-b border-line">
                   <th className={`${th} w-[50%] text-left`}>Description</th>
                   <th className={`${th} w-[13%] text-center`}>Quantity</th>
                   <th className={`${th} w-[13.5%] text-right`}>Unit Price</th>
@@ -169,7 +169,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                       <td className="py-6 pr-6">
                         <p className="text-[18px] font-bold leading-7 text-[#1e293b]">{first}</p>
                         {details && (
-                          <p className="mt-2 whitespace-pre-line border-l border-[#e2e8f0] pl-4 text-[14px] italic leading-[22.75px] text-[#64748b]">{details}</p>
+                          <p className="mt-2 whitespace-pre-line border-l border-line pl-4 text-[14px] italic leading-[22.75px] text-[#64748b]">{details}</p>
                         )}
                       </td>
                       <td className="py-6 pt-7 text-center text-[16px] font-medium leading-6 text-[#334155]">{item.quantity}</td>
@@ -236,7 +236,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                 )}
               </div>
               {quote.attachments.length > 0 && (
-                <section className="w-full shrink-0 rounded-xl border border-[#e2e8f0] bg-white p-6 md:w-[320px] print:hidden">
+                <section className="w-full shrink-0 rounded-xl border border-line bg-white p-6 md:w-[320px] print:hidden">
                   <h3 className={`flex items-center gap-2 ${sectionHeading}`}>
                     <Image src="/portal/attachment.svg" alt="" width={12} height={14} />
                     Attachments
@@ -248,7 +248,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                           type="button"
                           onClick={() => openFile(f.path)}
                           disabled={opening}
-                          className="flex min-h-16 w-full items-center justify-between gap-3 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] px-4 py-3 text-left transition-colors hover:border-[#e2e8f0] hover:bg-[#f1f5f9] disabled:cursor-wait"
+                          className="flex min-h-16 w-full items-center justify-between gap-3 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] px-4 py-3 text-left transition-colors hover:border-line hover:bg-[#f1f5f9] disabled:cursor-wait"
                         >
                           <span className="flex min-w-0 items-start gap-3">
                             <Image
@@ -299,7 +299,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
           <button
             type="button"
             onClick={() => setDialog("approve")}
-            className="flex h-[54px] w-full items-center justify-center gap-2 rounded-xl bg-[#10b981] px-6 text-[16px] font-bold leading-6 tracking-[0.4px] text-white shadow-[0_4px_6px_-4px_rgba(16,185,129,0.2),0_10px_15px_-3px_rgba(16,185,129,0.2)] transition-colors hover:bg-[#059669] sm:w-[286px]"
+            className="flex h-[54px] w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 text-[16px] font-bold leading-6 tracking-[0.4px] text-white shadow-[0_4px_6px_-4px_rgba(4,129,255,0.2),0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark sm:w-[286px]"
           >
             <Image src="/portal/approve.svg" alt="" width={14} height={14} />
             Approve Quote

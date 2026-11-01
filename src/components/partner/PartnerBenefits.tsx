@@ -40,7 +40,7 @@ export default function PartnerBenefits() {
                 transition={{ duration: 0.25 }}
                 className="flex h-full flex-col gap-4 rounded-3xl border border-border bg-surface p-8 sm:p-10"
               >
-                <div className="flex size-12 items-center justify-center rounded-xl bg-[rgba(0,193,133,0.1)]">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-[rgba(4,129,255,0.1)]">
                   <Image src={b.icon} alt="" width={20} height={20} />
                 </div>
                 <h3 className="pt-2 text-[20px] font-bold leading-[30px] text-navy">

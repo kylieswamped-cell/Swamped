@@ -49,7 +49,7 @@ export const escapeHtml = (s: string) =>
 export function formatMessage(text: string) {
   const inline = (s: string) =>
     escapeHtml(s)
-      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" style="color:#059669">$1</a>')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" style="color:#0481ff">$1</a>')
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\+\+(.+?)\+\+/g, "<u>$1</u>")
       .replace(/(^|[^\w])_(.+?)_(?=[^\w]|$)/g, "$1<em>$2</em>");

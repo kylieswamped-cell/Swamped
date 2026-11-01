@@ -9,7 +9,7 @@ export default function PartnerHero() {
       <div className="mx-auto max-w-[1000px] px-6 py-20 text-center sm:px-16 sm:py-[100px]">
         <Stagger>
           <StaggerItem className="flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[rgba(0,193,133,0.1)] px-3 py-1 text-[12px] font-bold uppercase leading-[18px] tracking-[0.6px] text-brand">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[rgba(4,129,255,0.1)] px-3 py-1 text-[12px] font-bold uppercase leading-[18px] tracking-[0.6px] text-brand">
               <span className="size-2 rounded-full bg-brand" />
               Join Our Network
             </span>

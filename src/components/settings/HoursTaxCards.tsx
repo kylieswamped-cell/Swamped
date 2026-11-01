@@ -21,7 +21,7 @@ const TIMES = Array.from({ length: 48 }, (_, i) => {
 function TimeSelect({ value, onChange, label, disabled }: { value: string; onChange: (v: string) => void; label: string; disabled: boolean }) {
   if (disabled) {
     return (
-      <span className="flex h-9 w-24 items-center justify-center rounded-[8px] border border-[#e2e8f0] bg-[#f1f5f9] text-[14px] font-medium tracking-[-0.55px] text-[#9ca3af]">
+      <span className="flex h-9 w-24 items-center justify-center rounded-[8px] border border-line bg-[#f1f5f9] text-[14px] font-medium tracking-[-0.55px] text-[#9ca3af]">
         Closed
       </span>
     );
@@ -31,7 +31,7 @@ function TimeSelect({ value, onChange, label, disabled }: { value: string; onCha
       aria-label={label}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-9 w-24 cursor-pointer appearance-none rounded-[8px] border border-[#e2e8f0] bg-[#f8fafc] text-center text-[14px] font-medium tracking-[-0.57px] text-[#334155] outline-none transition-colors [text-align-last:center] focus:border-[#10b981]"
+      className="h-9 w-24 cursor-pointer appearance-none rounded-[8px] border border-line bg-[#f8fafc] text-center text-[14px] font-medium tracking-[-0.57px] text-[#334155] outline-none transition-colors [text-align-last:center] focus:border-brand"
     >
       {TIMES.map((t) => (
         <option key={t.value} value={t.value}>
@@ -47,7 +47,7 @@ function DayRow({ label, day, onChange, error }: { label: string; day: DayHours;
     <div>
       <div
         className={`flex flex-col gap-3 rounded-[12px] border px-4 py-4 sm:h-[68px] sm:flex-row sm:items-center sm:justify-between sm:py-0 ${
-          day.open ? "border-[#f1f5f9] bg-white" : "border-[#e2e8f0] bg-[#f8fafc] opacity-80"
+          day.open ? "border-[#f1f5f9] bg-white" : "border-line bg-[#f8fafc] opacity-80"
         }`}
       >
         <span className={`w-24 text-[14px] font-semibold leading-5 ${day.open ? "text-[#334155]" : "text-[#9ca3af]"}`}>{label}</span>
@@ -56,7 +56,7 @@ function DayRow({ label, day, onChange, error }: { label: string; day: DayHours;
             <span className={`text-[12px] font-bold uppercase leading-4 ${day.open ? "text-[#059669]" : "text-[#9ca3af]"}`}>
               {day.open ? "Open" : "Closed"}
             </span>
-            <Toggle size="md" color="#00c185" checked={day.open} onChange={(open) => onChange({ ...day, open })} label={`${label} open`} />
+            <Toggle size="md" color="#0481ff" checked={day.open} onChange={(open) => onChange({ ...day, open })} label={`${label} open`} />
           </div>
           <div className="flex items-center gap-2">
             <TimeSelect label={`${label} opens`} value={day.from} onChange={(from) => onChange({ ...day, from })} disabled={!day.open} />
@@ -78,7 +78,7 @@ export function OperatingHoursCard({ data }: { data: SettingsData["hours"] }) {
     <SettingsCard
       id="hours"
       title="Operating Hours & Time Zone Settings"
-      titleClass="text-[20px] font-bold leading-7 tracking-[-0.21px] text-[#0a192f]"
+      titleClass="text-[20px] font-bold leading-7 tracking-[-0.21px] text-navy"
       subtitle="Configure your business availability and local timing."
       aside={
         <label className="flex cursor-pointer items-center gap-3 text-[14px] leading-5 text-[#374151]">
@@ -101,7 +101,7 @@ export function OperatingHoursCard({ data }: { data: SettingsData["hours"] }) {
             id="timeZone"
             value={v.timeZone}
             onChange={(e) => set("timeZone", e.target.value)}
-            className="h-12 w-full rounded-[12px] border border-[#e2e8f0] bg-[#f8fafc] px-4 text-[16px] text-[#334155] outline-none focus:border-[#10b981]"
+            className="h-12 w-full rounded-[12px] border border-line bg-[#f8fafc] px-4 text-[16px] text-[#334155] outline-none focus:border-brand"
           >
             {TIME_ZONES.map((z) => (
               <option key={z.value} value={z.value}>
@@ -174,12 +174,12 @@ export function TaxCard({ data }: { data: SettingsData["tax"] }) {
             value={draft}
             onChange={(e) => setDefault(e.target.value)}
             aria-invalid={errors.taxRate ? true : undefined}
-            className="h-12 w-[192px] rounded-[8px] border border-[#e5e7eb] bg-white px-4 font-mono text-[16px] text-[#111827] outline-none focus:border-[#10b981] aria-invalid:border-[#ef4444]"
+            className="h-12 w-[192px] rounded-[8px] border border-line bg-white px-4 font-mono text-[16px] text-[#111827] outline-none focus:border-brand aria-invalid:border-[#ef4444]"
           />
           <button
             type="button"
             onClick={addRate}
-            className="flex h-[50px] items-center gap-2 rounded-[12px] bg-[#00c185] px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(34,197,94,0.2),0_4px_6px_-4px_rgba(34,197,94,0.2)] transition-colors hover:bg-[#00ad77]"
+            className="flex h-[50px] items-center gap-2 rounded-[12px] bg-brand px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(34,197,94,0.2),0_4px_6px_-4px_rgba(34,197,94,0.2)] transition-colors hover:bg-[#00ad77]"
           >
             <Image src="/settings/plus.svg" alt="" width={21} height={21} />
             Add
@@ -195,11 +195,11 @@ export function TaxCard({ data }: { data: SettingsData["tax"] }) {
         </p>
 
         {v.taxRates.length > 0 && (
-          <ul className="mt-8 w-[192px] border-b border-[#e5e7eb]" aria-label="Saved tax rates">
+          <ul className="mt-8 w-[192px] border-b border-line" aria-label="Saved tax rates">
             {v.taxRates.map((r) => {
               const isDefault = r === v.taxRate;
               return (
-                <li key={r} className="group flex h-12 items-center border-t border-[#e5e7eb]">
+                <li key={r} className="group flex h-12 items-center border-t border-line">
                   <button
                     type="button"
                     onClick={() => setDefault(String(r))}
@@ -208,7 +208,7 @@ export function TaxCard({ data }: { data: SettingsData["tax"] }) {
                   >
                     {formatRate(r)}
                     {isDefault && (
-                      <span className="rounded bg-[#ecfdf5] px-1.5 font-sans text-[10px] font-bold uppercase leading-4 text-[#059669]">Default</span>
+                      <span className="rounded bg-brand-light px-1.5 font-sans text-[10px] font-bold uppercase leading-4 text-[#059669]">Default</span>
                     )}
                   </button>
                   <button

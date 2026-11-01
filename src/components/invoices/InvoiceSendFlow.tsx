@@ -14,7 +14,7 @@ const dueDate = (d: string) =>
   new Date(`${d}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
 const darkInput =
-  "h-9 w-full rounded-md border border-[#333333] bg-[#2a2a2a] px-3 text-[14px] text-[#e0e0e0] outline-none transition-colors placeholder:text-[#666] focus:border-[#01c185]";
+  "h-9 w-full rounded-md border border-[#333333] bg-[#2a2a2a] px-3 text-[14px] text-[#e0e0e0] outline-none transition-colors placeholder:text-[#666] focus:border-brand";
 
 /** Wraps the selected text (or the current line, for lists) in the message box's light formatting. */
 function format(el: HTMLTextAreaElement, kind: "bold" | "italic" | "bullet" | "number") {
@@ -79,17 +79,17 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
   if (step.kind === "sent") {
     return (
       <Modal open onClose={onClose} label="Invoice Sent Successfully" className="max-w-[468px]">
-        <div className="flex flex-col items-center rounded-3xl border border-[#e2e8f0] bg-white px-10 pb-10 pt-12 text-center shadow-2xl">
-          <span className="flex size-20 items-center justify-center rounded-full bg-[#02c185]">
+        <div className="flex flex-col items-center rounded-3xl border border-line bg-white px-10 pb-10 pt-12 text-center shadow-2xl">
+          <span className="flex size-20 items-center justify-center rounded-full bg-brand">
             <Check className="size-9 text-white" strokeWidth={3} />
           </span>
-          <h2 className="mt-6 text-[24px] font-bold leading-8 text-[#0a1b33]">Invoice Sent Successfully</h2>
+          <h2 className="mt-6 text-[24px] font-bold leading-8 text-navy">Invoice Sent Successfully</h2>
           <p className="mt-2 text-[15px] leading-6 text-[#64748b]">
             Invoice #{invoiceNumber} has been sent to
             <br />
-            <span className="break-all font-semibold text-[#0a1b33]">{step.to}</span>
+            <span className="break-all font-semibold text-navy">{step.to}</span>
           </p>
-          <div className="mt-6 w-full rounded-xl border border-[#e2e8f0] bg-[#f8fafc] px-5 py-4 text-left">
+          <div className="mt-6 w-full rounded-xl border border-line bg-[#f8fafc] px-5 py-4 text-left">
             <div className="flex items-center justify-between text-[13px] leading-5">
               <span className="text-[#64748b]">Payment Due</span>
               <span className="font-medium text-[#334155]">{step.dueOn ? dueDate(step.dueOn) : "—"}</span>
@@ -99,7 +99,7 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
               <span className="rounded-full border border-[#ffedd5] bg-[#fff7ed] px-2.5 text-[11px] font-bold uppercase leading-[19px] text-[#ea580c]">Awaiting</span>
             </div>
           </div>
-          <button type="button" onClick={onClose} className="mt-8 h-[52px] w-full rounded-xl bg-[#02c185] text-[16px] font-bold text-white transition-colors hover:bg-[#00a873]">
+          <button type="button" onClick={onClose} className="mt-8 h-[52px] w-full rounded-xl bg-brand text-[16px] font-bold text-white transition-colors hover:bg-brand-dark">
             Done
           </button>
         </div>
@@ -110,7 +110,7 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
   if (step.kind === "failed") {
     return (
       <Modal open onClose={onClose} label="Failed to Send Invoice" busy={pending} className="max-w-[468px]">
-        <div className="overflow-hidden rounded-[20px] border border-[#e2e8f0] bg-white shadow-2xl">
+        <div className="overflow-hidden rounded-[20px] border border-line bg-white shadow-2xl">
           <div className="flex flex-col items-center border-b border-[#fee2e2] bg-[#fef2f2] px-8 pb-10 pt-12 text-center">
             <span className="flex size-16 items-center justify-center rounded-full bg-[#fee2e2]">
               <XCircle className="size-8 fill-[#ef4444] text-white" />
@@ -132,12 +132,12 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
             <button
               type="button"
               onClick={() => setStep({ kind: "preview" })}
-              className="mt-8 flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#02c185] text-[16px] font-bold text-white transition-colors hover:bg-[#00a873]"
+              className="mt-8 flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-brand text-[16px] font-bold text-white transition-colors hover:bg-brand-dark"
             >
               <RotateCw className="size-3.5" strokeWidth={3} />
               Try Again
             </button>
-            <button type="button" onClick={onClose} className="mt-3 h-[52px] w-full rounded-xl border border-[#e2e8f0] bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]">
+            <button type="button" onClick={onClose} className="mt-3 h-[52px] w-full rounded-xl border border-line bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]">
               Cancel
             </button>
             <p className="mt-5 text-center text-[10px] font-medium uppercase leading-[15px] text-[#9ca3af]">Error Code: {step.code}</p>
@@ -195,7 +195,7 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
                   aria-label="Message body"
                   value={draft.message}
                   onChange={(e) => setDraft({ ...draft, message: e.target.value })}
-                  className="h-[182px] w-full resize-y bg-transparent px-4 py-3 text-[16px] leading-6 text-[#e5e7eb] outline-none"
+                  className="h-[182px] w-full resize-y bg-transparent px-4 py-3 text-[16px] leading-6 text-line outline-none"
                 />
               </div>
               <p className="mt-1.5 text-[11px] text-[#666666]">The line items, totals, and terms are added below your message.</p>
@@ -233,7 +233,7 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
             type="button"
             onClick={send}
             disabled={pending || !draft}
-            className="flex h-10 w-[180px] items-center justify-center gap-2 rounded-md bg-[#01c185] text-[14px] font-medium text-white transition-colors hover:bg-[#00a873] disabled:opacity-60"
+            className="flex h-10 w-[180px] items-center justify-center gap-2 rounded-md bg-brand text-[14px] font-medium text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
           >
             {pending ? "Sending…" : "Send Invoice Now"}
             {!pending && <Send className="size-3" />}

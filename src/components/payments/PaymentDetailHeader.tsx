@@ -145,7 +145,7 @@ export default function PaymentDetailHeader({
           <button
             type="button"
             onClick={() => open("edit")}
-            className="h-[41px] w-[75px] rounded-lg border border-[#00c185] bg-[#00c185] text-[14px] font-semibold text-white transition-colors hover:bg-[#00a873]"
+            className="h-[41px] w-[75px] rounded-lg border border-brand bg-brand text-[14px] font-semibold text-white transition-colors hover:bg-brand-dark"
           >
             Edit
           </button>
@@ -156,13 +156,13 @@ export default function PaymentDetailHeader({
               aria-expanded={menuOpen}
               disabled={pending}
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-[#00c185] bg-white pl-[23px] pr-5 text-[14px] font-semibold text-[#00c185] transition-colors hover:bg-[#ecfdf5] disabled:opacity-60"
+              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-brand bg-white pl-[23px] pr-5 text-[14px] font-semibold text-brand transition-colors hover:bg-brand-light disabled:opacity-60"
             >
               {pending ? "Working…" : "Quick Actions"}
               <Image src="/payments/qa-chevron.svg" alt="" width={11.5} height={6.5} className={`transition-transform ${menuOpen ? "rotate-180" : ""}`} />
             </button>
             {menuOpen && (
-              <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-64 overflow-hidden rounded-xl border border-[#e2e8f0] bg-white py-1.5 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
+              <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-64 overflow-hidden rounded-xl border border-line bg-white py-1.5 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
                 {items}
               </div>
             )}

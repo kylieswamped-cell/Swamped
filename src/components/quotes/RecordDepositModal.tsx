@@ -9,7 +9,7 @@ import { DEPOSIT_METHODS } from "@/lib/quotes/data";
 
 const labelClass = "text-[14px] font-semibold leading-5 text-[#334155]";
 const fieldClass =
-  "w-full rounded-xl border border-[#e2e8f0] bg-[#f8fafc] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-xl border border-line bg-[#f8fafc] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 
 function today() {
   const d = new Date();
@@ -80,7 +80,7 @@ export default function RecordDepositModal({
         <div className="mt-6 grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="deposit-date" className={labelClass}>Payment Date</label>
-            <div className={`relative mt-2 flex h-12 items-center justify-between rounded-xl border bg-[#f8fafc] px-4 ${fieldErrors.paidOn ? "border-[#ef4444]" : "border-[#e2e8f0]"}`}>
+            <div className={`relative mt-2 flex h-12 items-center justify-between rounded-xl border bg-[#f8fafc] px-4 ${fieldErrors.paidOn ? "border-[#ef4444]" : "border-line"}`}>
               <span className="text-[16px] text-[#0f172a]">{paidOn ? shortDate(paidOn) : "Select"}</span>
               <CalendarDays className="size-4 text-[#94a3b8]" />
               <input
@@ -103,7 +103,7 @@ export default function RecordDepositModal({
 
         <div className="mt-6">
           <label htmlFor="deposit-amount" className={labelClass}>Payment Amount</label>
-          <div className={`mt-2 flex h-16 items-center gap-2 rounded-xl border bg-[#f8fafc] px-4 focus-within:border-[#00c185] ${fieldErrors.amount ? "border-[#ef4444]" : "border-[#e2e8f0]"}`}>
+          <div className={`mt-2 flex h-16 items-center gap-2 rounded-xl border bg-[#f8fafc] px-4 focus-within:border-brand ${fieldErrors.amount ? "border-[#ef4444]" : "border-line"}`}>
             <span className="text-[16px] font-medium text-[#94a3b8]">$</span>
             <input
               id="deposit-amount"
@@ -139,13 +139,13 @@ export default function RecordDepositModal({
         )}
 
         <div className="mt-[46px] flex flex-col gap-3">
-          <button type="button" onClick={() => save(true)} disabled={pending} className="h-14 rounded-xl bg-[#02c185] text-[16px] font-semibold text-white transition-colors hover:bg-[#00a873] disabled:opacity-60">
+          <button type="button" onClick={() => save(true)} disabled={pending} className="h-14 rounded-xl bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60">
             {pending ? "Saving…" : "Save & Email Receipt"}
           </button>
-          <button type="button" onClick={() => save(false)} disabled={pending} className="h-14 rounded-xl bg-[#02c185] text-[16px] font-semibold text-white transition-colors hover:bg-[#00a873] disabled:opacity-60">
+          <button type="button" onClick={() => save(false)} disabled={pending} className="h-14 rounded-xl bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60">
             Save Entry
           </button>
-          <button type="button" onClick={onClose} disabled={pending} className="h-12 rounded-xl border border-[#e2e8f0] bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]">
+          <button type="button" onClick={onClose} disabled={pending} className="h-12 rounded-xl border border-line bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]">
             Cancel
           </button>
         </div>

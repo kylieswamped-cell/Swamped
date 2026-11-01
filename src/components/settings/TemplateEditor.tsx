@@ -113,7 +113,7 @@ function Toolbar({ onFormat, icons }: { onFormat: (k: Format) => void; icons?: b
   const btn = icons ? "size-8" : "size-7";
   return (
     <div
-      className={`flex items-center border-b border-[#e2e8f0] bg-[#f8fafc] ${icons ? "gap-1 p-2" : "h-11 gap-2 px-3"}`}
+      className={`flex items-center border-b border-line bg-[#f8fafc] ${icons ? "gap-1 p-2" : "h-11 gap-2 px-3"}`}
       role="toolbar"
       aria-label="Formatting"
     >
@@ -126,7 +126,7 @@ function Toolbar({ onFormat, icons }: { onFormat: (k: Format) => void; icons?: b
           // Keep the textarea's selection when clicking a button.
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => onFormat(b.kind)}
-          className={`flex items-center justify-center rounded text-[14px] text-[#64748b] transition-colors hover:bg-[#e2e8f0] ${btn}`}
+          className={`flex items-center justify-center rounded text-[14px] text-[#64748b] transition-colors hover:bg-line ${btn}`}
         >
           {icons ? <Image src={b.icon} alt="" width={b.w} height={12} /> : b.text}
         </button>
@@ -138,7 +138,7 @@ function Toolbar({ onFormat, icons }: { onFormat: (k: Format) => void; icons?: b
         aria-label="Insert link"
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => onFormat("link")}
-        className={`flex items-center justify-center rounded transition-colors hover:bg-[#e2e8f0] ${btn}`}
+        className={`flex items-center justify-center rounded transition-colors hover:bg-line ${btn}`}
       >
         <Image src="/settings/fmt-link.svg" alt="" width={15} height={12} />
       </button>
@@ -147,7 +147,7 @@ function Toolbar({ onFormat, icons }: { onFormat: (k: Format) => void; icons?: b
 }
 
 const quoteInput =
-  "w-full rounded-[12px] border border-[#e2e8f0] bg-[#f8fafc] px-4 py-3 text-[14px] leading-5 text-[#1e293b] outline-none transition-colors focus:border-[#10b981] aria-invalid:border-[#ef4444]";
+  "w-full rounded-[12px] border border-line bg-[#f8fafc] px-4 py-3 text-[14px] leading-5 text-[#1e293b] outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]";
 
 /** Template card in Quote Configuration: field chips, subject, body. */
 export function QuoteTemplateCard({
@@ -185,7 +185,7 @@ export function QuoteTemplateCard({
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => insertField(f)}
-                className="rounded border border-[#e2e8f0] bg-[#f1f5f9] px-2 py-1 text-[10px] font-medium leading-[15px] text-[#475569] transition-colors hover:border-[#10b981] hover:text-[#059669]"
+                className="rounded border border-line bg-[#f1f5f9] px-2 py-1 text-[10px] font-medium leading-[15px] text-[#475569] transition-colors hover:border-brand hover:text-brand-dark"
               >
                 {f}
               </button>
@@ -230,7 +230,7 @@ export function QuoteTemplateCard({
           <button
             type="button"
             onClick={() => onChange(DEFAULT_TEMPLATES[templateKey])}
-            className="rounded-[8px] border border-[#f1f5f9] px-4 py-2 text-[12px] font-semibold leading-4 text-[#94a3b8] transition-colors hover:border-[#e2e8f0] hover:text-[#64748b]"
+            className="rounded-[8px] border border-[#f1f5f9] px-4 py-2 text-[12px] font-semibold leading-4 text-[#94a3b8] transition-colors hover:border-line hover:text-[#64748b]"
           >
             Reset to Default
           </button>
@@ -238,7 +238,7 @@ export function QuoteTemplateCard({
             type="button"
             onClick={own.save}
             disabled={own.pending}
-            className="rounded-[8px] bg-[#10b981] px-6 pb-[9.5px] pt-[8.5px] text-[12px] font-bold leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#059669] disabled:opacity-60"
+            className="rounded-[8px] bg-brand px-6 pb-[9.5px] pt-[8.5px] text-[12px] font-bold leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark disabled:opacity-60"
           >
             {own.pending ? "Saving…" : "Save"}
           </button>
@@ -249,7 +249,7 @@ export function QuoteTemplateCard({
 }
 
 const invoiceInput =
-  "h-11 w-full rounded-[12px] border border-[#e2e8f0] bg-white px-3 text-[14px] leading-5 text-[#0f172a] outline-none transition-colors focus:border-[#10b981] aria-invalid:border-[#ef4444]";
+  "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] leading-5 text-[#0f172a] outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]";
 
 /** Merge Field Library button with a menu of fields to insert. */
 function MergeFieldMenu({ fields, onPick }: { fields: string[]; onPick: (f: string) => void }) {
@@ -281,7 +281,7 @@ function MergeFieldMenu({ fields, onPick }: { fields: string[]; onPick: (f: stri
         Merge Field Library
       </button>
       {open && (
-        <div role="menu" className="absolute right-0 top-10 z-20 w-56 rounded-xl border border-[#e2e8f0] bg-white p-1.5 shadow-lg">
+        <div role="menu" className="absolute right-0 top-10 z-20 w-56 rounded-xl border border-line bg-white p-1.5 shadow-lg">
           {fields.map((f) => (
             <button
               key={f}
@@ -352,8 +352,8 @@ export function InvoiceTemplateCard({
             Email Body Text
           </label>
           <div
-            className={`overflow-hidden rounded-[12px] border focus-within:border-[#10b981] ${
-              err("body") ? "border-[#ef4444]" : "border-[#e2e8f0]"
+            className={`overflow-hidden rounded-[12px] border focus-within:border-brand ${
+              err("body") ? "border-[#ef4444]" : "border-line"
             }`}
           >
             <Toolbar onFormat={format} />
@@ -376,7 +376,7 @@ export function InvoiceTemplateCard({
         <button
           type="button"
           onClick={() => onChange(DEFAULT_TEMPLATES[templateKey])}
-          className="flex h-9 items-center gap-2 rounded-[8px] border border-[#e2e8f0] bg-white px-4 text-[14px] font-medium text-[#475569] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f8fafc]"
+          className="flex h-9 items-center gap-2 rounded-[8px] border border-line bg-white px-4 text-[14px] font-medium text-[#475569] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#f8fafc]"
         >
           <RotateCcw className="size-3" strokeWidth={2.5} />
           Reset to Default
@@ -385,7 +385,7 @@ export function InvoiceTemplateCard({
           type="button"
           onClick={own.save}
           disabled={own.pending}
-          className="flex h-9 items-center gap-2 rounded-[8px] bg-[#10b981] px-4 text-[14px] font-medium text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#059669] disabled:opacity-60"
+          className="flex h-9 items-center gap-2 rounded-[8px] bg-brand px-4 text-[14px] font-medium text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark disabled:opacity-60"
         >
           <Save className="size-3" strokeWidth={2.5} />
           {own.pending ? "Saving…" : "Save Template"}
@@ -418,7 +418,7 @@ export function RefundTemplateFields({
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => insertField(f)}
-              className="rounded-[6px] border border-[rgba(226,232,240,0.6)] bg-[#f8fafc] px-3 py-1.5 text-[12px] font-medium leading-4 tracking-[-0.4px] text-[#475569] transition-colors hover:border-[#10b981] hover:text-[#059669]"
+              className="rounded-[6px] border border-[rgba(226,232,240,0.6)] bg-[#f8fafc] px-3 py-1.5 text-[12px] font-medium leading-4 tracking-[-0.4px] text-[#475569] transition-colors hover:border-brand hover:text-brand-dark"
             >
               {`{{${f}}}`}
             </button>
@@ -437,7 +437,7 @@ export function RefundTemplateFields({
             maxLength={200}
             onChange={(e) => onChange({ ...value, subject: e.target.value })}
             aria-invalid={errors["refund.subject"] ? true : undefined}
-            className="w-full rounded-[12px] border border-[#e2e8f0] bg-[rgba(248,250,252,0.5)] px-4 py-3 text-[13.234px] leading-5 text-[#0f172a] outline-none transition-colors focus:border-[#10b981] aria-invalid:border-[#ef4444]"
+            className="w-full rounded-[12px] border border-line bg-[rgba(248,250,252,0.5)] px-4 py-3 text-[13.234px] leading-5 text-[#0f172a] outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]"
             onFocus={onSubjectFocus}
           />
           <FieldError id={`${id}-subject-error`} message={errors["refund.subject"]} />
@@ -447,8 +447,8 @@ export function RefundTemplateFields({
             Email Body Text
           </label>
           <div
-            className={`overflow-hidden rounded-[12px] border bg-[rgba(248,250,252,0.5)] focus-within:border-[#10b981] focus-within:shadow-[0_0_0_2px_rgba(16,185,129,0.2)] ${
-              errors["refund.body"] ? "border-[#ef4444]" : "border-[#e2e8f0]"
+            className={`overflow-hidden rounded-[12px] border bg-[rgba(248,250,252,0.5)] focus-within:border-brand focus-within:shadow-[0_0_0_2px_rgba(4,129,255,0.2)] ${
+              errors["refund.body"] ? "border-[#ef4444]" : "border-line"
             }`}
           >
             <Toolbar onFormat={format} icons />

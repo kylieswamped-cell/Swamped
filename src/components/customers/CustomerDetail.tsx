@@ -9,7 +9,7 @@ import CustomerFiles from "./CustomerFiles";
 import CustomerHeader from "./CustomerHeader";
 
 const cardClass =
-  "h-[146px] rounded-xl border border-[#e2e8f0] bg-white p-[23px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]";
+  "h-[146px] rounded-xl border border-line bg-white p-[23px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]";
 
 const longDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -67,14 +67,14 @@ function HistorySection({
   children?: ReactNode;
 }) {
   return (
-    <section className="border-b border-[#e2e8f0] p-6 last:border-b-0 sm:p-8">
+    <section className="border-b border-line p-6 last:border-b-0 sm:p-8">
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-[18px] font-bold leading-[27px] text-[#1e293b]">{title}</h3>
         <span className={`rounded-full px-2.5 text-[12px] font-medium leading-[22px] ${badgeClass}`}>{badge}</span>
       </div>
       <div className="mt-5 flex flex-col gap-3">
         {children ?? (
-          <p className="rounded-lg border border-dashed border-[#e2e8f0] px-4 py-6 text-center text-[14px] text-[#94a3b8]">{empty}</p>
+          <p className="rounded-lg border border-dashed border-line px-4 py-6 text-center text-[14px] text-[#94a3b8]">{empty}</p>
         )}
       </div>
     </section>
@@ -83,7 +83,7 @@ function HistorySection({
 
 function HistoryRow({ dot, title, subtitle, amount, href }: { dot: string; title: string; subtitle: string; amount: number; href: string }) {
   return (
-    <Link href={href} className="flex min-h-[74px] items-center justify-between gap-4 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] px-[15px] py-3 transition-colors hover:border-[#e2e8f0] hover:bg-white">
+    <Link href={href} className="flex min-h-[74px] items-center justify-between gap-4 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] px-[15px] py-3 transition-colors hover:border-line hover:bg-white">
       <div className="flex min-w-0 items-center gap-4">
         <span className={`size-2.5 shrink-0 rounded-full ${dot}`} />
         <div className="min-w-0">
@@ -144,7 +144,7 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
         <CustomerFiles customerId={customer.id} attachments={customer.attachments} cardClass={cardClass} />
       </div>
 
-      <div className="mt-[18px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">
+      <div className="mt-[18px] overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">
         <HistorySection
           title="Job History"
           badge={`${activeJobs} Active Job${activeJobs === 1 ? "" : "s"}`}
@@ -208,7 +208,7 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
         </HistorySection>
       </div>
 
-      <section className="mt-4 overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">
+      <section className="mt-4 overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">
         <div className="flex items-center justify-between border-b border-[#f1f5f9] px-6 py-4">
           <h3 className="text-[16px] font-bold text-[#0f172a]">Payment History</h3>
           <span className="rounded-full border border-[#ddd6fe] bg-[#f5f3ff] px-2.5 text-[12px] font-medium leading-[22px] text-[#7c3aed]">

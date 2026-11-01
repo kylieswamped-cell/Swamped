@@ -31,7 +31,7 @@ export default function HowItWorks() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformOrigin: "left" }}
-            className="absolute left-0 right-0 top-10 hidden h-0.5 border-t-2 border-dashed border-[rgba(0,200,151,0.3)] md:block"
+            className="absolute left-0 right-0 top-10 hidden h-0.5 border-t-2 border-dashed border-[rgba(4,129,255,0.3)] md:block"
           />
 
           <Stagger

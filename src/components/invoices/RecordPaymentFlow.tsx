@@ -10,7 +10,7 @@ import { formatMoney } from "@/lib/quotes/totals";
 
 const labelClass = "text-[14px] font-semibold leading-5 text-[#334155]";
 const fieldClass =
-  "w-full rounded-xl border border-[#e2e8f0] bg-[#f8fafc] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-xl border border-line bg-[#f8fafc] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 
 function today() {
   const d = new Date();
@@ -110,7 +110,7 @@ export default function RecordPaymentFlow({
               type="button"
               onClick={() => save(step.emailReceipt)}
               disabled={pending}
-              className="mt-8 h-14 w-full rounded-xl bg-[#02c185] text-[16px] font-bold text-white transition-colors hover:bg-[#00a873] disabled:opacity-60"
+              className="mt-8 h-14 w-full rounded-xl bg-brand text-[16px] font-bold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
             >
               {pending ? "Saving…" : "Confirm Payment"}
             </button>
@@ -126,7 +126,7 @@ export default function RecordPaymentFlow({
 
   if (step.kind === "done") {
     const rows: [string, ReactNode][] = [
-      ["Amount Received", <span key="a" className="font-extrabold text-[#0a1b33]">{formatMoney(value)}</span>],
+      ["Amount Received", <span key="a" className="font-extrabold text-navy">{formatMoney(value)}</span>],
       ["Payment Method", method],
       ["Reference", reference.trim() || "—"],
       ["Invoice", `#${invoiceNumber}`],
@@ -145,7 +145,7 @@ export default function RecordPaymentFlow({
           <span className="flex size-16 items-center justify-center rounded-full bg-[#dcfce7]">
             <Check className="size-8 text-[#16a34a]" strokeWidth={3} />
           </span>
-          <h2 className="mt-6 text-[24px] font-extrabold leading-8 text-[#0a1b33]">Manual Payment Recorded Successfully!</h2>
+          <h2 className="mt-6 text-[24px] font-extrabold leading-8 text-navy">Manual Payment Recorded Successfully!</h2>
           <div className="mt-6 w-full rounded-2xl border border-[#f3f4f6] bg-[#f9fafb] px-6 py-5 text-left">
             {rows.map(([label, content], i) => (
               <div key={label} className={`flex items-center justify-between gap-4 text-[14px] leading-5 ${i ? "mt-3" : ""}`}>
@@ -153,12 +153,12 @@ export default function RecordPaymentFlow({
                 <span className="truncate font-bold text-[#1e293b]">{content}</span>
               </div>
             ))}
-            <p className="mt-5 border-t border-[#e2e8f0] pt-4 text-[13px] leading-5 text-[#64748b]">
-              <span className="font-semibold text-[#0a1b33]">Invoice updated successfully.</span> Associated records have been updated automatically.
+            <p className="mt-5 border-t border-line pt-4 text-[13px] leading-5 text-[#64748b]">
+              <span className="font-semibold text-navy">Invoice updated successfully.</span> Associated records have been updated automatically.
             </p>
           </div>
           {step.notice && <p className="mt-4 rounded-lg border border-[#fde68a] bg-[#fffbeb] px-3 py-2 text-[13px] text-[#92400e]">{step.notice}</p>}
-          <button type="button" onClick={onClose} className="mt-8 h-[52px] w-full rounded-xl bg-[#00c185] text-[16px] font-semibold text-white transition-colors hover:bg-[#00a873]">
+          <button type="button" onClick={onClose} className="mt-8 h-[52px] w-full rounded-xl bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-dark">
             Return to Invoice
           </button>
         </div>
@@ -193,7 +193,7 @@ export default function RecordPaymentFlow({
             type="button"
             onClick={() => setStep({ kind: "form" })}
             disabled={pending}
-            className="mt-3 h-[52px] w-full rounded-xl border border-[#e2e8f0] bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]"
+            className="mt-3 h-[52px] w-full rounded-xl border border-line bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]"
           >
             Use a Different Payment Method
           </button>
@@ -231,7 +231,7 @@ export default function RecordPaymentFlow({
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="payment-date" className={labelClass}>Payment Date</label>
-              <div className={`relative mt-2 flex h-12 items-center justify-between rounded-xl border bg-[#f8fafc] px-4 ${fieldErrors.paidOn ? "border-[#ef4444]" : "border-[#e2e8f0]"}`}>
+              <div className={`relative mt-2 flex h-12 items-center justify-between rounded-xl border bg-[#f8fafc] px-4 ${fieldErrors.paidOn ? "border-[#ef4444]" : "border-line"}`}>
                 <span className="text-[16px] text-[#0f172a]">{paidOn ? shortDate(paidOn) : "Select"}</span>
                 <CalendarDays className="size-4 text-[#94a3b8]" />
                 <input
@@ -254,7 +254,7 @@ export default function RecordPaymentFlow({
 
           <div className="mt-6">
             <label htmlFor="payment-amount" className={labelClass}>Amount Received</label>
-            <div className={`mt-2 flex h-16 items-center gap-2 rounded-xl border bg-[#f8fafc] px-4 focus-within:border-[#00c185] ${fieldErrors.amount ? "border-[#ef4444]" : "border-[#e2e8f0]"}`}>
+            <div className={`mt-2 flex h-16 items-center gap-2 rounded-xl border bg-[#f8fafc] px-4 focus-within:border-brand ${fieldErrors.amount ? "border-[#ef4444]" : "border-line"}`}>
               <span className="text-[16px] font-medium text-[#94a3b8]">$</span>
               <input
                 id="payment-amount"
@@ -286,13 +286,13 @@ export default function RecordPaymentFlow({
           </div>
 
           <div className="mt-8 flex flex-col gap-3">
-            <button type="button" onClick={() => review(true)} className="h-14 rounded-xl bg-[#02c185] text-[16px] font-semibold text-white transition-colors hover:bg-[#00a873]">
+            <button type="button" onClick={() => review(true)} className="h-14 rounded-xl bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-dark">
               Save &amp; Email Receipt
             </button>
-            <button type="button" onClick={() => review(false)} className="h-14 rounded-xl bg-[#02c185] text-[16px] font-semibold text-white transition-colors hover:bg-[#00a873]">
+            <button type="button" onClick={() => review(false)} className="h-14 rounded-xl bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-dark">
               Save Entry
             </button>
-            <button type="button" onClick={onClose} className="h-12 rounded-xl border border-[#e2e8f0] bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]">
+            <button type="button" onClick={onClose} className="h-12 rounded-xl border border-line bg-white text-[16px] font-semibold text-[#475569] transition-colors hover:bg-[#f8fafc]">
               Cancel
             </button>
           </div>

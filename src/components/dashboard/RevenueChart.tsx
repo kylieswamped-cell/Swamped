@@ -11,7 +11,7 @@ const RIGHT_PAD = 20;
 const TOP = 16.67;
 const BOTTOM = 250;
 const STEPS = 7;
-const INK = "#0b192c";
+const INK = "#082741";
 
 const compactMoney = (n: number) => (n === 0 ? "$0" : n >= 1000 ? `$${+(n / 1000).toFixed(1)}k` : `$${n}`);
 
@@ -78,7 +78,7 @@ export default function RevenueChart({ data }: { data: RevenuePoint[] }) {
   };
 
   return (
-    <section className="flex flex-col gap-6 rounded-lg border border-[#e2e8f0] bg-white p-6 drop-shadow-[0_0.63px_0.63px_rgba(0,0,0,0.05)]">
+    <section className="flex flex-col gap-6 rounded-lg border border-line bg-white p-6 drop-shadow-[0_0.63px_0.63px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-[16px] font-bold leading-[19.2px] tracking-[0.031px] text-[#0f172a]">Revenue Performance</h2>
@@ -130,7 +130,7 @@ export default function RevenueChart({ data }: { data: RevenuePoint[] }) {
 
         {active && hover !== null && (
           <div
-            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg border border-[#e2e8f0] bg-white px-3 py-2 text-[12px] shadow-lg"
+            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg border border-line bg-white px-3 py-2 text-[12px] shadow-lg"
             style={{ left: Math.min(Math.max(x(hover), 70), width - 70), top: y(active.revenue) - 10 }}
           >
             <p className="font-medium text-[#64748b]">{active.label}</p>

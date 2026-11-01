@@ -40,7 +40,7 @@ function inRange(iso: string | null, range: string, now: number) {
   return days < 0 ? t >= now + days * DAY && t <= now : t >= now && t <= now + days * DAY;
 }
 
-const statCard = "h-[113px] rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const statCard = "h-[113px] rounded-xl border border-line bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 
 export default function JobsView({
   jobs,
@@ -130,14 +130,14 @@ export default function JobsView({
         <button
           type="button"
           onClick={() => setCreating(true)}
-          className="flex h-[51px] w-[150px] items-center justify-center gap-2 rounded-lg bg-[#00c185] text-[16px] font-semibold leading-6 text-white transition-colors hover:bg-[#00a873]"
+          className="flex h-[51px] w-[150px] items-center justify-center gap-2 rounded-lg bg-brand text-[16px] font-semibold leading-6 text-white transition-colors hover:bg-brand-dark"
         >
           <span className="text-[18px] font-bold leading-[27px]">+</span>
           Create Job
         </button>
       </div>
 
-      <div className="mt-[14px] flex flex-col gap-3 rounded-xl border border-[#e2e8f0] bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:h-[60px] xl:flex-row xl:items-center xl:gap-0 xl:py-0">
+      <div className="mt-[14px] flex flex-col gap-3 rounded-xl border border-line bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:h-[60px] xl:flex-row xl:items-center xl:gap-0 xl:py-0">
         <label className="relative min-w-0 xl:w-[425px] xl:shrink-0">
           <span className="sr-only">Search jobs</span>
           <Image src="/onboarding/search.svg" alt="" width={17} height={16} className="pointer-events-none absolute left-[17px] top-1/2 -translate-y-1/2" />
@@ -146,7 +146,7 @@ export default function JobsView({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by ID, customer or amount..."
-            className="h-9 w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185]"
+            className="h-9 w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
           />
         </label>
         <div className="flex flex-wrap gap-[13px] xl:ml-4">
@@ -178,7 +178,7 @@ export default function JobsView({
         </p>
       )}
 
-      <section className={`${chips.length ? "mt-[23px]" : "mt-[19px]"} overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
+      <section className={`${chips.length ? "mt-[23px]" : "mt-[19px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">
@@ -195,7 +195,7 @@ export default function JobsView({
               <button
                 type="button"
                 onClick={() => (customers.length ? setCreating(true) : router.push("/customers?new=1"))}
-                className="mt-5 h-10 rounded-lg bg-[#00c185] px-5 text-[14px] font-semibold text-white hover:bg-[#00a873]"
+                className="mt-5 h-10 rounded-lg bg-brand px-5 text-[14px] font-semibold text-white hover:bg-brand-dark"
               >
                 {customers.length ? "+ Create Job" : "+ Add Customer"}
               </button>
@@ -210,7 +210,7 @@ export default function JobsView({
                 ))}
               </colgroup>
               <thead className="bg-[#f8fafc] text-[11px] font-bold uppercase leading-[16.5px] tracking-[0.55px] text-[#64748b]">
-                <tr className="h-[52px] border-b border-[#e2e8f0]">
+                <tr className="h-[52px] border-b border-line">
                   <th className="pl-6">Job #</th>
                   <th className="pl-2">Customer</th>
                   <th className="pl-2">Job Title</th>
@@ -226,11 +226,11 @@ export default function JobsView({
               </thead>
               <tbody className="text-[13px] leading-[19.5px] text-[#64748b]">
                 {filtered.map((j) => (
-                  <tr key={j.id} className="h-[72px] border-b border-[#e2e8f0] last:border-b-0 hover:bg-[#f8fafc]">
+                  <tr key={j.id} className="h-[72px] border-b border-line last:border-b-0 hover:bg-[#f8fafc]">
                     <td className="pl-6 pr-2 text-[14px] font-medium leading-[21px] text-[#475569]">{j.number}</td>
                     <td className="truncate px-2 text-[14px] leading-[21px] text-[#475569]" title={j.customer}>{j.customer}</td>
                     <td className="px-2">
-                      <Link href={`/jobs/${j.id}`} className="line-clamp-2 text-[14px] font-semibold leading-[21px] text-[#334155] hover:text-[#00c185]">
+                      <Link href={`/jobs/${j.id}`} className="line-clamp-2 text-[14px] font-semibold leading-[21px] text-[#334155] hover:text-brand">
                         {j.title}
                       </Link>
                     </td>
@@ -245,7 +245,7 @@ export default function JobsView({
                     <td className="px-1 text-center">{j.quoteNumber ?? "—"}</td>
                     <td className="px-1 text-center">
                       {j.invoice ? (
-                        <Link href={`/invoices/${j.invoice.id}`} className="hover:text-[#00c185]">{j.invoice.number}</Link>
+                        <Link href={`/invoices/${j.invoice.id}`} className="hover:text-brand">{j.invoice.number}</Link>
                       ) : (
                         "—"
                       )}

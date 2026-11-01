@@ -116,7 +116,7 @@ export default function CustomerFiles({
                           .join(" • ")}
                       </p>
                     </div>
-                    <button type="button" disabled={busyId === a.id} onClick={() => view(a.id)} aria-label={`Open ${a.name}`} className="rounded p-1.5 text-[#475569] hover:bg-white hover:text-[#00c185] disabled:opacity-50">
+                    <button type="button" disabled={busyId === a.id} onClick={() => view(a.id)} aria-label={`Open ${a.name}`} className="rounded p-1.5 text-[#475569] hover:bg-white hover:text-brand disabled:opacity-50">
                       <ExternalLink className="size-4" />
                     </button>
                     <button type="button" disabled={busyId === a.id} onClick={() => remove(a.id)} aria-label={`Delete ${a.name}`} className="rounded p-1.5 text-[#475569] hover:bg-white hover:text-[#ef4444] disabled:opacity-50">
@@ -135,7 +135,7 @@ export default function CustomerFiles({
               type="button"
               disabled={uploading}
               onClick={() => picker.current?.click()}
-              className="h-10 rounded-lg bg-[#00c185] px-5 text-[14px] font-bold text-white transition-colors hover:bg-[#00a873] disabled:opacity-60"
+              className="h-10 rounded-lg bg-brand px-5 text-[14px] font-bold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
             >
               {uploading ? "Uploading…" : "+ Upload Files"}
             </button>

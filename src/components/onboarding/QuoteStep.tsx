@@ -30,12 +30,12 @@ const emptyLine = (): Line => ({ key: nextKey(), description: "", quantity: "1",
 
 const smallLabel = "text-[13px] font-semibold text-[#334155]";
 const cellInput =
-  "h-9 w-full rounded-md border border-[#e2e8f0] bg-white px-2 text-[14px] text-[#0f172a] outline-none focus:border-[#00c9a7]";
+  "h-9 w-full rounded-md border border-line bg-white px-2 text-[14px] text-[#0f172a] outline-none focus:border-brand";
 
 function Section({ icon, title, children }: { icon?: ReactNode; title: string; children: ReactNode }) {
   const [open, setOpen] = useState(true);
   return (
-    <section className="border-t border-[#e2e8f0] pt-6">
+    <section className="border-t border-line pt-6">
       <button
         type="button"
         aria-expanded={open}
@@ -200,13 +200,13 @@ export default function QuoteStep({
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="flex h-12 items-center justify-center gap-1.5 rounded-lg bg-[#10b981] px-4 text-[14px] font-medium text-white hover:bg-[#059669]"
+            className="flex h-12 items-center justify-center gap-1.5 rounded-lg bg-brand px-4 text-[14px] font-medium text-white hover:bg-brand-dark"
           >
             <Plus className="size-4" /> Create New Line Item
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-[#e2e8f0]">
+        <div className="overflow-x-auto rounded-xl border border-line">
           <table className="w-full min-w-[720px] text-left">
             <thead className="bg-[#f8fafc] text-[11px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
               <tr>
@@ -266,14 +266,14 @@ export default function QuoteStep({
           <button
             type="button"
             onClick={() => setLines((ls) => [...ls, emptyLine()])}
-            className="flex w-full items-center gap-1.5 border-t border-[#f1f5f9] px-4 py-3 text-[13px] font-semibold text-[#00c9a7] hover:bg-[#f8fafc]"
+            className="flex w-full items-center gap-1.5 border-t border-[#f1f5f9] px-4 py-3 text-[13px] font-semibold text-brand hover:bg-[#f8fafc]"
           >
             <Plus className="size-4" /> Add row
           </button>
         </div>
         {fe.items && <p className="-mt-3 text-[12px] text-[#ef4444]">{fe.items}</p>}
 
-        <div className="ml-auto w-full max-w-[420px] rounded-2xl border border-[#e2e8f0] p-6 text-[15px] text-[#475569]">
+        <div className="ml-auto w-full max-w-[420px] rounded-2xl border border-line p-6 text-[15px] text-[#475569]">
           <div className="flex justify-between">
             <span>Subtotal</span>
             <span className="font-semibold text-[#0f172a]">{formatMoney(totals.subtotal)}</span>
@@ -288,7 +288,7 @@ export default function QuoteStep({
             <AmountInput name="tax" value={tax.value} type={tax.type} onValue={(value) => setTax({ ...tax, value })} onType={(type) => setTax({ ...tax, type })} className="h-10 w-36" />
             <span className="ml-auto">{formatMoney(totals.tax)}</span>
           </div>
-          <div className="mt-5 flex justify-between border-t border-[#e2e8f0] pt-5">
+          <div className="mt-5 flex justify-between border-t border-line pt-5">
             <span className="font-bold text-[#0f172a]">Grand Total</span>
             <span className="text-[20px] font-bold text-[#059669]">{formatMoney(totals.total)}</span>
           </div>
@@ -330,7 +330,7 @@ export default function QuoteStep({
           <button
             type="submit"
             disabled={pending}
-            className="h-11 rounded-lg bg-[#00c9a7] px-6 text-[14px] font-semibold text-white shadow-[0_10px_15px_-3px_rgba(0,201,167,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+            className="h-11 rounded-lg bg-brand px-6 text-[14px] font-semibold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
           >
             {pending ? "Saving…" : selected?.email ? "Save & Send to Customer" : "Save Quote"}
           </button>

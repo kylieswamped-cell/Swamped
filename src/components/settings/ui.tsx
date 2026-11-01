@@ -29,7 +29,7 @@ export function SettingsCard({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className={`scroll-mt-6 rounded-[24px] border border-[#e2e8f0] bg-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] ${className}`}
+      className={`scroll-mt-6 rounded-[24px] border border-line bg-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] ${className}`}
     >
       <div className="flex flex-col gap-4 px-5 py-6 sm:flex-row sm:items-start sm:justify-between sm:px-8">
         <button
@@ -87,7 +87,7 @@ export function Toggle({
   onChange,
   label,
   size = "lg",
-  color = "#10b981",
+  color = "#0481ff",
   disabled,
 }: {
   checked: boolean;
@@ -107,8 +107,8 @@ export function Toggle({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       style={checked ? { backgroundColor: color } : undefined}
-      className={`relative inline-flex shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981] disabled:cursor-not-allowed disabled:opacity-50 ${s.track} ${
-        checked ? "" : "bg-[#e2e8f0]"
+      className={`relative inline-flex shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-50 ${s.track} ${
+        checked ? "" : "bg-line"
       }`}
     >
       <span
@@ -139,7 +139,7 @@ export function ToggleRow({
 }
 
 export const fieldInput =
-  "h-12 w-full rounded-[12px] border border-[#e2e8f0] bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#10b981] aria-invalid:border-[#ef4444] disabled:bg-[#f8fafc] disabled:text-[#6b7280]";
+  "h-12 w-full rounded-[12px] border border-line bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand aria-invalid:border-[#ef4444] disabled:bg-[#f8fafc] disabled:text-[#6b7280]";
 
 export function FieldLabel({ htmlFor, children, className = "" }: { htmlFor?: string; children: ReactNode; className?: string }) {
   return (
@@ -223,7 +223,7 @@ export function CancelButton({ onClick, disabled }: { onClick: () => void; disab
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="h-12 rounded-[12px] border border-[#e2e8f0] px-6 text-[16px] font-bold tracking-[0.08px] text-[#475569] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-50"
+      className="h-12 rounded-[12px] border border-line px-6 text-[16px] font-bold tracking-[0.08px] text-[#475569] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-50"
     >
       Cancel
     </button>
@@ -245,7 +245,7 @@ export function SaveButton({
     <button
       type="submit"
       disabled={pending || disabled}
-      className={`rounded-[12px] bg-[#00c185] font-bold text-white transition-colors hover:bg-[#00ad77] disabled:cursor-not-allowed disabled:opacity-60 ${
+      className={`rounded-[12px] bg-brand font-bold text-white transition-colors hover:bg-[#00ad77] disabled:cursor-not-allowed disabled:opacity-60 ${
         compact
           ? "h-[41px] px-8 text-[14px] tracking-[-0.16px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
           : "h-[50px] px-8 text-[16px] shadow-[0_10px_15px_-3px_rgba(34,197,94,0.2),0_4px_6px_-4px_rgba(34,197,94,0.2)] sm:w-[176px]"

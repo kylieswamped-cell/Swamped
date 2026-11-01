@@ -35,10 +35,10 @@ const steps: Step[] = [
 
 export default function GettingStarted({ status }: { status: ChecklistStatus }) {
   return (
-    <section className="border-[#e2e8f0] bg-white px-8 py-8 xl:min-h-[570px] xl:border-b xl:border-l">
+    <section className="border-line bg-white px-8 py-8 xl:min-h-[570px] xl:border-b xl:border-l">
       <div className="flex items-center gap-3">
-        <span className="h-6 w-1.5 rounded-full bg-[#00c185]" />
-        <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#0a1b33]">
+        <span className="h-6 w-1.5 rounded-full bg-brand" />
+        <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-navy">
           Getting Started
         </h2>
       </div>
@@ -54,7 +54,7 @@ export default function GettingStarted({ status }: { status: ChecklistStatus }) 
               <span
                 aria-label={done ? "Done" : "Not done"}
                 className={`mt-1 flex size-6 shrink-0 items-center justify-center rounded-md border-2 ${
-                  done ? "border-[#00c185] bg-[#00c185] text-white" : "border-[#e2e8f0] bg-white"
+                  done ? "border-brand bg-brand text-white" : "border-line bg-white"
                 }`}
               >
                 {done && <Check className="size-4" strokeWidth={3} />}
@@ -62,8 +62,8 @@ export default function GettingStarted({ status }: { status: ChecklistStatus }) 
               <div className="flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <p
-                    className={`text-[14px] font-bold leading-5 underline decoration-[#00c185] underline-offset-2 ${
-                      done ? "text-muted line-through" : "text-[#0a1b33]"
+                    className={`text-[14px] font-bold leading-5 underline decoration-brand underline-offset-2 ${
+                      done ? "text-muted line-through" : "text-navy"
                     }`}
                   >
                     {step.title}

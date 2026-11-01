@@ -46,8 +46,8 @@ const STATES: Record<
     amountLabelClass: "font-bold text-[#d97706]",
   },
   void: {
-    banner: { box: "bg-[#f3f4f6] border-b border-[#e5e7eb]", text: "font-medium text-[#4b5563]", icon: "/portal/status-void.svg", iconBox: "bg-[#e5e7eb]", iconSize: [16, 16] },
-    badge: { label: "Void", box: "bg-[#e5e7eb]", text: "text-[#6b7280] tracking-[0.1px]" },
+    banner: { box: "bg-[#f3f4f6] border-b border-line", text: "font-medium text-[#4b5563]", icon: "/portal/status-void.svg", iconBox: "bg-line", iconSize: [16, 16] },
+    badge: { label: "Void", box: "bg-line", text: "text-[#6b7280] tracking-[0.1px]" },
     amountLabel: "Amount Due",
     amountLabelClass: "font-semibold text-[#9ca3af]",
   },
@@ -114,7 +114,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <Image src="/images/logo.png" alt="" width={40} height={40} className="mix-blend-multiply" />
-              <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-[#001e74]">Swamped</span>
+              <span className="text-[20px] font-bold uppercase leading-7 tracking-[-0.5px] text-navy">Swamped</span>
             </div>
             <div className="mt-3 text-[15px] leading-[24.38px] text-[#64748b]">
               {businessLines.map((line, i) => (
@@ -237,7 +237,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
                 {t.depositCredit > 0 && <TotalRow label="Deposit Already Paid" value={`-${formatMoney(t.depositCredit)}`} />}
                 {t.amountPaid > 0 && <TotalRow label="Payments Received" value={`-${formatMoney(t.amountPaid)}`} />}
               </div>
-              <div className="h-px bg-[#e5e7eb]" />
+              <div className="h-px bg-line" />
               <div className="flex items-center justify-between gap-4 pt-1">
                 <div>
                   <p className="text-[16px] font-bold leading-4 tracking-[0.1px] text-[#111827]">Remaining Balance</p>
@@ -255,7 +255,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
           {/* Customer-facing information */}
           {(invoice.message || invoice.attachments.length > 0 || invoice.terms) && (
             <section className="mt-10 border-t border-[#f8fafc] pt-6">
-              <h2 className="flex items-center gap-3 text-[18px] font-bold leading-7 tracking-[-0.2px] text-[#0a1b2f]">
+              <h2 className="flex items-center gap-3 text-[18px] font-bold leading-7 tracking-[-0.2px] text-navy">
                 <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
                   <Image src="/portal/customer-info.svg" alt="" width={18} height={14} />
                 </span>
@@ -280,7 +280,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
                               type="button"
                               onClick={() => openFile(f.path)}
                               disabled={opening}
-                              className="flex min-h-[38px] w-full items-center gap-2 rounded-lg border border-[#e2e8f0] bg-white px-3 py-2 text-left transition-colors hover:bg-[#f8fafc] disabled:cursor-wait"
+                              className="flex min-h-[38px] w-full items-center gap-2 rounded-lg border border-line bg-white px-3 py-2 text-left transition-colors hover:bg-[#f8fafc] disabled:cursor-wait"
                             >
                               <Image
                                 src={/\.pdf$/i.test(f.name) ? "/portal/file-pdf-sm.svg" : "/portal/file-invoice.svg"}
@@ -316,7 +316,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[#00c185] px-6 text-[16px] font-semibold leading-6 tracking-[0.3px] text-white transition-colors hover:bg-[#00a873]"
+                className="flex h-11 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-[16px] font-semibold leading-6 tracking-[0.3px] text-white transition-colors hover:bg-brand-dark"
               >
                 <Image src="/portal/download-white.svg" alt="" width={16} height={16} />
                 Download Receipt
@@ -329,7 +329,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
                   disabled
                   title="Online payments aren't available yet"
                   className={`flex h-11 cursor-not-allowed items-center justify-center gap-2 rounded-lg px-6 text-[18px] font-bold leading-7 text-white opacity-60 ${
-                    invoice.state === "past_due" ? "bg-[#ef4444]" : "bg-[#00c185]"
+                    invoice.state === "past_due" ? "bg-[#ef4444]" : "bg-brand"
                   }`}
                 >
                   <Image src="/portal/pay-card.svg" alt="" width={18} height={14} />

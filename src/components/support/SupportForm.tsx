@@ -8,8 +8,8 @@ import { submitSupportRequest } from "@/lib/support/actions";
 import { MAX_SUPPORT_FILES, SUPPORT_CATEGORIES, SUPPORT_UPLOAD_TYPES } from "@/lib/support/options";
 
 const field =
-  "w-full rounded-[12px] border border-[#e2e8f0] bg-[#f9fafb] px-4 text-[16px] text-[#0a192f] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185] focus:bg-white aria-invalid:border-[#ef4444]";
-const label = "text-[14px] font-semibold leading-[21px] text-[#0a192f]";
+  "w-full rounded-[12px] border border-line bg-[#f9fafb] px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+const label = "text-[14px] font-semibold leading-[21px] text-navy";
 
 function Error({ id, message }: { id: string; message?: string }) {
   return message ? (
@@ -86,15 +86,15 @@ export default function SupportForm({ email }: { email: string }) {
   if (sent) {
     return (
       <div className="flex flex-col items-center gap-4 px-4 py-16 text-center" role="status">
-        <CircleCheck className="size-12 text-[#00c185]" />
-        <h2 className="text-[22px] font-bold text-[#0a192f]">Support request sent</h2>
+        <CircleCheck className="size-12 text-brand" />
+        <h2 className="text-[22px] font-bold text-navy">Support request sent</h2>
         <p className="max-w-[440px] text-[15px] leading-6 text-[#475569]">
-          Thanks for reaching out. Our team will reply to <span className="font-semibold text-[#0a192f]">{email}</span> as soon as possible.
+          Thanks for reaching out. Our team will reply to <span className="font-semibold text-navy">{email}</span> as soon as possible.
         </p>
         <button
           type="button"
           onClick={reset}
-          className="mt-2 h-11 rounded-[12px] border border-[#e2e8f0] px-6 text-[14px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc]"
+          className="mt-2 h-11 rounded-[12px] border border-line px-6 text-[14px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc]"
         >
           Send another request
         </button>
@@ -190,22 +190,22 @@ export default function SupportForm({ email }: { email: string }) {
               setDragging(false);
               addFiles(e.dataTransfer.files);
             }}
-            className={`flex h-[163px] w-full flex-col items-center justify-center rounded-[12px] border-2 border-dashed transition-colors hover:border-[#00c185] ${
-              dragging ? "border-[#00c185] bg-[#ecfdf5]" : "border-[#e2e8f0] bg-[#f9fafb]"
+            className={`flex h-[163px] w-full flex-col items-center justify-center rounded-[12px] border-2 border-dashed transition-colors hover:border-brand ${
+              dragging ? "border-brand bg-brand-light" : "border-line bg-[#f9fafb]"
             }`}
           >
             <span className="mb-3 flex size-12 items-center justify-center rounded-full bg-[#eff6ff]">
               <Upload className="size-5 text-[#2563eb]" strokeWidth={2.5} />
             </span>
-            <span className="text-[14px] font-semibold leading-[21px] text-[#0a192f]">Click to upload or drag and drop</span>
+            <span className="text-[14px] font-semibold leading-[21px] text-navy">Click to upload or drag and drop</span>
             <span className="text-[12px] leading-[18px] text-[#9ca3af]">SVG, PNG, JPG or GIF (max. 10MB)</span>
           </button>
         )}
         {files.length > 0 && (
           <ul className="flex flex-col gap-2">
             {files.map((f, i) => (
-              <li key={`${f.name}-${i}`} className="flex h-12 items-center justify-between gap-3 rounded-[12px] border border-[#e2e8f0] bg-white px-4 text-[14px]">
-                <span className="truncate text-[#0a192f]">{f.name}</span>
+              <li key={`${f.name}-${i}`} className="flex h-12 items-center justify-between gap-3 rounded-[12px] border border-line bg-white px-4 text-[14px]">
+                <span className="truncate text-navy">{f.name}</span>
                 <span className="ml-auto shrink-0 text-[12px] text-[#9ca3af]">{sizeLabel(f.size)}</span>
                 <button
                   type="button"
@@ -238,7 +238,7 @@ export default function SupportForm({ email }: { email: string }) {
               href="https://support.stripe.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 inline-flex w-fit items-center gap-2 px-6 py-3 text-[14px] font-semibold leading-5 tracking-[-0.23px] text-[#00c185] hover:underline"
+              className="mt-3 inline-flex w-fit items-center gap-2 px-6 py-3 text-[14px] font-semibold leading-5 tracking-[-0.23px] text-brand hover:underline"
             >
               Contact Stripe Help Center
               <Image src="/support/external-link.svg" alt="" width={12} height={12} />
@@ -256,7 +256,7 @@ export default function SupportForm({ email }: { email: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="h-[52px] w-full rounded-[12px] bg-[#00c185] text-[16px] font-semibold tracking-[-0.03px] text-white drop-shadow-[0_4px_6px_rgba(0,193,133,0.2)] transition-colors hover:bg-[#00ad77] disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-[52px] w-full rounded-[12px] bg-brand text-[16px] font-semibold tracking-[-0.03px] text-white drop-shadow-[0_4px_6px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00ad77] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Sending…" : "Submit Support Request"}
       </button>

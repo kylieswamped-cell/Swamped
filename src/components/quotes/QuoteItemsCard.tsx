@@ -21,14 +21,14 @@ function PaymentSummary({ deposit }: { deposit: NonNullable<QuoteDetail["deposit
   const row = (label: string, value: React.ReactNode) => (
     <div className="flex items-center justify-between gap-4">
       <span className="text-[13px] leading-5 text-[#94a3b8]">{label}</span>
-      <span className="truncate text-right text-[13px] font-medium leading-5 text-[#0a192f]">{value}</span>
+      <span className="truncate text-right text-[13px] font-medium leading-5 text-navy">{value}</span>
     </div>
   );
   return (
-    <div className="w-full rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] p-6 lg:w-[288px]">
+    <div className="w-full rounded-2xl border border-line bg-[#f8fafc] p-6 lg:w-[288px]">
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-bold uppercase leading-[17px] text-[#64748b]">Payment Summary</span>
-        <span className="rounded-full border border-[#059669]/20 bg-[#ecfdf5] px-3 py-[7px] text-[11px] font-bold leading-[17px] text-[#059669]">Received</span>
+        <span className="rounded-full border border-[#059669]/20 bg-brand-light px-3 py-[7px] text-[11px] font-bold leading-[17px] text-[#059669]">Received</span>
       </div>
       <div className="mt-6 flex flex-col gap-3">
         {row("Amount", <span className="text-[18px] font-bold leading-[27px]">{formatMoney(deposit.amount)}</span>)}
@@ -82,7 +82,7 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
 
   return (
     <>
-      <div className="mt-[17px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <div className="mt-[17px] overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] table-fixed text-left">
             <colgroup>
@@ -91,7 +91,7 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
               ))}
             </colgroup>
             <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
-              <tr className="h-[46px] border-b border-[#e2e8f0]">
+              <tr className="h-[46px] border-b border-line">
                 <th className="pl-6">Item Description</th>
                 <th className="pl-6">Quantity</th>
                 <th className="pr-6 text-right">Unit Price</th>
@@ -108,7 +108,7 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
                       aria-label={`Line ${i + 1} description`}
                       value={l.description}
                       onChange={(e) => update(i, { description: e.target.value })}
-                      className="h-[27px] w-full rounded-md border border-[#e2e8f0] px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185]"
+                      className="h-[27px] w-full rounded-md border border-line px-[5px] text-[16px] font-medium text-[#334155] outline-none focus:border-brand"
                     />
                   </td>
                   <td className="pl-6">
@@ -120,7 +120,7 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
                       step="any"
                       value={l.quantity}
                       onChange={(e) => update(i, { quantity: e.target.value })}
-                      className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-[#00c185]"
+                      className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
                     />
                   </td>
                   <td className="pr-[21px]">
@@ -134,7 +134,7 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
                         step="0.01"
                         value={l.unitPrice}
                         onChange={(e) => update(i, { unitPrice: e.target.value })}
-                        className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-[#00c185]"
+                        className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-brand"
                       />
                     </div>
                   </td>
@@ -175,7 +175,7 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
-              className="flex h-[42px] w-[168px] items-center justify-center gap-2 rounded-[5px] bg-[#01c185] text-[14px] text-white transition-colors hover:bg-[#00a873]"
+              className="flex h-[42px] w-[168px] items-center justify-center gap-2 rounded-[5px] bg-brand text-[14px] text-white transition-colors hover:bg-brand-dark"
             >
               <span className="text-[18px] leading-none">+</span>
               Create Line Item
@@ -186,11 +186,11 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
 
           <div className="flex w-full flex-col gap-4 lg:w-auto lg:flex-row lg:items-start">
             {deposit && <PaymentSummary deposit={deposit} />}
-            <div className="w-full rounded-3xl border border-[#e2e8f0] bg-white p-8 lg:w-[336px]">
+            <div className="w-full rounded-3xl border border-line bg-white p-8 lg:w-[336px]">
               {[
-                ["Subtotal", formatMoney(totals.subtotal), "text-[#0a1b33]"],
+                ["Subtotal", formatMoney(totals.subtotal), "text-navy"],
                 [`Discount${pct(a.discountType, a.discountValue)}`, `-${formatMoney(totals.discount)}`, "text-[#ef4444]"],
-                [`Tax${pct(a.taxType, a.taxValue)}`, formatMoney(totals.tax), "text-[#0a1b33]"],
+                [`Tax${pct(a.taxType, a.taxValue)}`, formatMoney(totals.tax), "text-navy"],
               ].map(([label, value, color], i) => (
                 <div key={label} className={`flex items-center justify-between text-[14px] leading-5 ${i ? "mt-4" : ""}`}>
                   <span className="text-[#64748b]">{label}</span>
@@ -198,8 +198,8 @@ export default function QuoteItemsCard({ quote }: { quote: QuoteDetail }) {
                 </div>
               ))}
               <div className="mt-[26px] flex items-center justify-between">
-                <span className="text-[14px] font-bold leading-5 text-[#0a1b33]">Grand Total</span>
-                <span className="text-[24px] font-extrabold leading-8 text-[#0a1b33]">{formatMoney(totals.total)}</span>
+                <span className="text-[14px] font-bold leading-5 text-navy">Grand Total</span>
+                <span className="text-[24px] font-extrabold leading-8 text-navy">{formatMoney(totals.total)}</span>
               </div>
               {deposit && (
                 <div className="mt-4 flex h-8 items-center justify-between rounded-lg border border-[#d6f3ea] bg-[#edf9f5] px-3">

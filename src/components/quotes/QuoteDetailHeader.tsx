@@ -19,7 +19,7 @@ type Dialog = "archive" | "unarchive" | "delete" | "send" | "deposit" | null;
 const HEADINGS: Record<QuoteDetail["state"], { label: string; color: string }> = {
   draft: { label: "Status: Draft", color: "text-[#9ca3af]" },
   sent: { label: "Status: Sent", color: "text-[#2563eb]" },
-  accepted: { label: "Status: Accepted", color: "text-[#00c185]" },
+  accepted: { label: "Status: Accepted", color: "text-brand" },
   declined: { label: "Status: Declined", color: "text-[#dc2626]" },
   archived: { label: "Status: Archived", color: "text-[#6b7280]" },
 };
@@ -111,7 +111,7 @@ export default function QuoteDetailHeader({
       onClick={onClick}
       disabled={Boolean(opts.disabled)}
       title={opts.disabled}
-      className={`flex h-[41px] w-full items-center gap-[18px] px-4 text-left text-[14px] leading-[21px] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-50 ${opts.tone ?? "text-[#0a192f]"}`}
+      className={`flex h-[41px] w-full items-center gap-[18px] px-4 text-left text-[14px] leading-[21px] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-50 ${opts.tone ?? "text-navy"}`}
     >
       <span className="flex w-4 justify-center">{icon}</span>
       {label}
@@ -173,7 +173,7 @@ export default function QuoteDetailHeader({
               item(<RotateCw className="size-3.5 text-[#2563eb]" />, "Resend Quote", () => open("send")),
               copyLink,
               resetLink,
-              item(<CreditCard className="size-3.5 text-[#00c185]" />, "Collect Deposit", () => {}, { disabled: "Connect Stripe to collect deposits online" }),
+              item(<CreditCard className="size-3.5 text-brand" />, "Collect Deposit", () => {}, { disabled: "Connect Stripe to collect deposits online" }),
               item(<HandCoins className={gray} />, "Record Deposit", () => open("deposit")),
               item(<CircleCheck className={gray} />, "Manually Approve", () => run(() => setQuoteStatus(quote.id, "accepted"))),
               divider("d1"),
@@ -198,7 +198,7 @@ export default function QuoteDetailHeader({
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="h-[41px] w-[75px] rounded-lg border border-[#00c185] bg-[#00c185] text-[14px] font-semibold text-white transition-colors hover:bg-[#00a873]"
+            className="h-[41px] w-[75px] rounded-lg border border-brand bg-brand text-[14px] font-semibold text-white transition-colors hover:bg-brand-dark"
           >
             Edit
           </button>
@@ -209,14 +209,14 @@ export default function QuoteDetailHeader({
               aria-expanded={menuOpen}
               disabled={pending}
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-[#00c185] bg-white pl-[23px] pr-5 text-[14px] font-semibold text-[#00c185] transition-colors hover:bg-[#ecfdf5] disabled:opacity-60"
+              className="flex h-[41px] w-[181px] items-center justify-between rounded-lg border border-brand bg-white pl-[23px] pr-5 text-[14px] font-semibold text-brand transition-colors hover:bg-brand-light disabled:opacity-60"
             >
               {pending ? "Working…" : "Quick Actions"}
               <Image src="/customers/chevron-down.svg" alt="" width={11} height={7} className={`transition-transform ${menuOpen ? "rotate-180" : ""}`} />
             </button>
 
             {menuOpen && (
-              <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white pb-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
+              <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-[240px] overflow-hidden rounded-xl border border-line bg-white pb-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.15)]">
                 <p className={`px-3 pb-3 pt-5 text-[10px] font-bold uppercase leading-[15px] ${HEADINGS[quote.state].color}`}>{HEADINGS[quote.state].label}</p>
                 {menuItems}
               </div>

@@ -14,7 +14,7 @@ import JobFileCard from "./JobFileCard";
 import JobInternalLogs from "./JobInternalLogs";
 import JobItemsCard from "./JobItemsCard";
 
-const card = "rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const card = "rounded-xl border border-line bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 
 // "In Progress" is the Figma style; the others follow the same pattern.
 const STATUS_PILL: Record<JobStatus, { bg: string; dot: string; text: string }> = {
@@ -51,7 +51,7 @@ function LinkedRow({ label, children }: { label: string; children: ReactNode }) 
 
 function RefTable({ title, count, columns, empty, children }: { title: string; count: string; columns: string[]; empty: string; children?: ReactNode }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="overflow-hidden rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex h-16 items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc]/50 px-8">
         <h3 className="text-[16px] font-bold leading-6 text-[#0f172a]">{title}</h3>
         <span className="text-[12px] font-bold uppercase leading-4 text-[#94a3b8]">{count}</span>
@@ -156,7 +156,7 @@ export default function JobDetailView({
           <CardHead icon={<UserRound className="size-4" />} title="Customer Information" />
           {job.customer ? (
             <>
-              <Link href={`/customers/${job.customerId}`} className="mt-6 block truncate text-[18px] font-bold leading-[27px] text-[#0f172a] hover:text-[#00c185]">
+              <Link href={`/customers/${job.customerId}`} className="mt-6 block truncate text-[18px] font-bold leading-[27px] text-[#0f172a] hover:text-brand">
                 {job.customer.name}
               </Link>
               <p className="mt-3 flex items-center gap-2 text-[14px] leading-[21px] text-[#475569]">
@@ -223,13 +223,13 @@ export default function JobDetailView({
         <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
           <UserRoundCheck className="size-[17px] text-[#00c38b]" />
         </span>
-        <h3 className="text-[18px] font-bold leading-7 text-[#0a1b2f]">Customer-Facing Information</h3>
+        <h3 className="text-[18px] font-bold leading-7 text-navy">Customer-Facing Information</h3>
       </div>
 
       <div className="mt-[19px] grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,527fr)_minmax(0,469fr)] lg:gap-[29px] lg:px-[55px]">
         <div>
           <h4 className="text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#64748b]">Customer Message</h4>
-          <div className="mt-4 min-h-[230px] whitespace-pre-line rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-[#0a1b2f]">
+          <div className="mt-4 min-h-[230px] whitespace-pre-line rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-navy">
             {job.notes || <span className="text-[#94a3b8]">No message for the customer.</span>}
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function JobDetailView({
               />
             ))}
             {publicFiles.length === 0 && (
-              <li className="flex h-[74px] items-center justify-center rounded-xl border border-dashed border-[#e2e8f0] bg-white text-[14px] text-[#94a3b8]">
+              <li className="flex h-[74px] items-center justify-center rounded-xl border border-dashed border-line bg-white text-[14px] text-[#94a3b8]">
                 No files shared with the customer.
               </li>
             )}

@@ -7,7 +7,7 @@ import Reveal, { Stagger, StaggerItem } from "./Reveal";
 const features = [
   {
     icon: "/icons/feature-close-jobs.svg",
-    bg: "bg-[rgba(0,200,151,0.1)]",
+    bg: "bg-[rgba(4,129,255,0.1)]",
     title: "Close More Jobs",
     desc: "Professional quotes help customers feel confident saying yes.",
   },

@@ -15,7 +15,7 @@ const STRIPE_NOT_READY = "Stripe Connect is coming soon.";
 /** Banner at the top of Settings with the Stripe connection state. */
 export function StripeStatusCard({ connected }: { connected: boolean }) {
   return (
-    <section className="flex flex-col gap-6 rounded-[16px] border border-[#e2e8f0] bg-white p-5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+    <section className="flex flex-col gap-6 rounded-[16px] border border-line bg-white p-5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-8 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-start gap-5 sm:items-center">
         <Image src="/settings/stripe-logo.svg" alt="Stripe" width={37.5} height={30} className="ml-1 mt-1 shrink-0 sm:mt-0" />
         <div className="min-w-0">
@@ -42,7 +42,7 @@ export function StripeStatusCard({ connected }: { connected: boolean }) {
           type="button"
           disabled
           title={STRIPE_NOT_READY}
-          className="h-11 rounded-[12px] border border-[#e2e8f0] px-5 text-[16px] font-semibold text-[#334155] disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-11 rounded-[12px] border border-line px-5 text-[16px] font-semibold text-[#334155] disabled:cursor-not-allowed disabled:opacity-60"
         >
           Open Stripe Dashboard
         </button>
@@ -77,14 +77,14 @@ export function RefundCard({ template }: { template: EmailTemplate }) {
             <button
               type="button"
               onClick={() => form.set("refund", DEFAULT_TEMPLATES.refund)}
-              className="h-[41px] flex-1 rounded-[12px] border border-[#e2e8f0] bg-white px-6 text-[14px] font-bold tracking-[-0.16px] text-[#64748b] transition-colors hover:bg-[#f8fafc] sm:flex-none"
+              className="h-[41px] flex-1 rounded-[12px] border border-line bg-white px-6 text-[14px] font-bold tracking-[-0.16px] text-[#64748b] transition-colors hover:bg-[#f8fafc] sm:flex-none"
             >
               Reset to Default
             </button>
             <button
               type="submit"
               disabled={form.pending}
-              className="h-[41px] flex-1 rounded-[12px] bg-[#00c185] px-8 text-[14px] font-bold tracking-[-0.16px] text-white shadow-[0_2px_8px_rgba(0,193,133,0.25)] transition-colors hover:bg-[#00ad77] disabled:opacity-60 sm:flex-none"
+              className="h-[41px] flex-1 rounded-[12px] bg-brand px-8 text-[14px] font-bold tracking-[-0.16px] text-white shadow-[0_2px_8px_rgba(4,129,255,0.25)] transition-colors hover:bg-[#00ad77] disabled:opacity-60 sm:flex-none"
             >
               {form.pending ? "Saving…" : "Save Changes"}
             </button>
@@ -195,7 +195,7 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
       aside={
         <span
           className={`flex h-9 items-center gap-3 rounded-full border px-4 text-[12px] font-bold uppercase leading-4 tracking-[0.6px] ${
-            data.connected ? "border-[#ccfbf1] bg-[#f0fdfa] text-[#115e59]" : "border-[#e2e8f0] bg-[#f8fafc] text-[#64748b]"
+            data.connected ? "border-[#ccfbf1] bg-[#f0fdfa] text-[#115e59]" : "border-line bg-[#f8fafc] text-[#64748b]"
           }`}
         >
           <Image src="/settings/stripe-wordmark.svg" alt="Stripe" width={25} height={10.3} />
@@ -237,7 +237,7 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
               id="payoutSchedule"
               value={v.schedule}
               onChange={(e) => set("schedule", e.target.value)}
-              className="h-12 w-full appearance-none rounded-[8px] border border-[#e5e7eb] bg-white px-4 pr-10 text-[16px] text-[#111827] outline-none focus:border-[#10b981]"
+              className="h-12 w-full appearance-none rounded-[8px] border border-line bg-white px-4 pr-10 text-[16px] text-[#111827] outline-none focus:border-brand"
             >
               {PAYOUT_SCHEDULES.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -265,7 +265,7 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
               value={Number.isNaN(v.minimum) ? "" : v.minimum}
               onChange={(e) => set("minimum", e.target.value === "" ? NaN : Number(e.target.value))}
               aria-invalid={errors.minimum ? true : undefined}
-              className="h-12 w-full rounded-[8px] border border-[#e5e7eb] bg-white pl-[31px] pr-24 text-[16px] tracking-[0.13px] text-[#111827] outline-none focus:border-[#10b981] aria-invalid:border-[#ef4444]"
+              className="h-12 w-full rounded-[8px] border border-line bg-white pl-[31px] pr-24 text-[16px] tracking-[0.13px] text-[#111827] outline-none focus:border-brand aria-invalid:border-[#ef4444]"
             />
             <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-bold tracking-[1.2px] text-[#9ca3af]">
               USD MIN
@@ -276,7 +276,7 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
 
         <div className="flex flex-col gap-2">
           <span className={payoutLabel}>Payout Account Information</span>
-          <div className="flex h-12 items-center justify-between rounded-[8px] border border-[#e5e7eb] bg-[#f9fafb] px-4 text-[16px] text-[#6b7280]">
+          <div className="flex h-12 items-center justify-between rounded-[8px] border border-line bg-[#f9fafb] px-4 text-[16px] text-[#6b7280]">
             {data.connected ? "Managed in Stripe" : "No payout account connected"}
             <Image src="/settings/lock.svg" alt="" width={14} height={16} />
           </div>

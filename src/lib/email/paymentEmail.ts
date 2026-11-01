@@ -24,8 +24,8 @@ export function sendRefundReceipt(r: {
 <html><body style="margin:0;background:#f8fafc;font-family:Inter,Arial,Helvetica,sans-serif">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px"><tr><td align="center">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0">
-      <tr><td style="background:#0b192c;padding:28px 32px">
-        <p style="margin:0;color:#00c9a7;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Refund Receipt</p>
+      <tr><td style="background:#082741;padding:28px 32px">
+        <p style="margin:0;color:#3794f9;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Refund Receipt</p>
         <h1 style="margin:8px 0 0;color:#ffffff;font-size:22px">${escape(r.businessName)} sent you a refund</h1>
       </td></tr>
       <tr><td style="padding:28px 32px">

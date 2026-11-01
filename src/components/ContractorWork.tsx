@@ -55,7 +55,7 @@ export default function ContractorWork() {
             {points.map((p) => (
               <StaggerItem key={p.title}>
                 <div className="flex items-center gap-3">
-                  <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[rgba(0,200,151,0.1)]">
+                  <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[rgba(4,129,255,0.1)]">
                     <Image src="/icons/check-green.svg" alt="" width={10} height={10} />
                   </div>
                   <h4 className="text-[16px] font-bold text-navy">{p.title}</h4>

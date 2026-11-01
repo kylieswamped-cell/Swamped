@@ -57,7 +57,7 @@ function FilterSelect<T extends string>({
         aria-expanded={open}
         onClick={() => setOpen(!open)}
         className={`flex h-[38px] w-full items-center justify-between gap-2 rounded-xl border px-4 transition-colors ${
-          selected.length ? "border-[#00c185] bg-[#ecfdf5]" : "border-[#e2e8f0] bg-[#f8fafc] hover:bg-white"
+          selected.length ? "border-brand bg-brand-light" : "border-line bg-[#f8fafc] hover:bg-white"
         }`}
       >
         <span className={`truncate text-[11px] font-semibold uppercase leading-[16.5px] tracking-[0.55px] ${selected.length ? "text-[#0f172a]" : "text-[#9ca3af]"}`}>
@@ -67,7 +67,7 @@ function FilterSelect<T extends string>({
         <Image src="/payments/filter-chevron.svg" alt="" width={12} height={12} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute left-0 top-[calc(100%+8px)] z-30 w-[224px] rounded-xl border border-[#e2e8f0] bg-white p-4 shadow-[0_8px_10px_-6px_rgba(0,0,0,0.1),0_20px_25px_-5px_rgba(0,0,0,0.1)]">
+        <div className="absolute left-0 top-[calc(100%+8px)] z-30 w-[224px] rounded-xl border border-line bg-white p-4 shadow-[0_8px_10px_-6px_rgba(0,0,0,0.1),0_20px_25px_-5px_rgba(0,0,0,0.1)]">
           <div className="flex flex-col gap-3">
             {options.map((o) => {
               const checked = selected.includes(o.value);
@@ -87,7 +87,7 @@ function FilterSelect<T extends string>({
 
 function FilterChip({ label, value, onRemove }: { label: string; value: string; onRemove: () => void }) {
   return (
-    <span className="flex h-8 items-center gap-2 rounded-full border border-[#e2e8f0] bg-white pl-3 pr-2 text-[12px] leading-4 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+    <span className="flex h-8 items-center gap-2 rounded-full border border-line bg-white pl-3 pr-2 text-[12px] leading-4 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
       <span className="text-[#64748b]">{label}:</span>
       <span className="font-semibold text-[#1e293b]">{value}</span>
       <button type="button" onClick={onRemove} aria-label={`Remove ${label} filter`} className="flex size-5 items-center justify-center rounded-full hover:bg-[#f1f5f9]">
@@ -138,7 +138,7 @@ function RowActions({ row, onResult }: { row: TransactionRow; onResult: (message
             <span className="flex size-8 items-center justify-center rounded-lg bg-[#eff6ff]">
               <Image src="/payments/send.svg" alt="" width={14} height={14} />
             </span>
-            <span className="text-[14px] font-bold leading-[21px] text-[#0a1b33]">{kind === "refund" ? "Resend Refund Receipt" : "Resend Receipt"}</span>
+            <span className="text-[14px] font-bold leading-[21px] text-navy">{kind === "refund" ? "Resend Refund Receipt" : "Resend Receipt"}</span>
           </button>
         </div>
       )}
@@ -228,14 +228,14 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
           <div key={c.label} className={statCard}>
             <p className="truncate text-[12px] font-bold uppercase leading-[18px] tracking-[1.2px] text-[#9ca3af]" title={c.label}>{c.label}</p>
             <div className="mt-4 flex items-end justify-between gap-2">
-              <p className="truncate text-[30px] font-extrabold leading-9 text-[#0a1b33] sm:text-[36px]">{c.value}</p>
+              <p className="truncate text-[30px] font-extrabold leading-9 text-navy sm:text-[36px]">{c.value}</p>
               {c.hint && <span className="mb-1 shrink-0 rounded-full bg-[#f1f5f9] px-2 py-0.5 text-[10px] font-semibold leading-4 text-[#64748b]">{c.hint}</span>}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-[9px] flex flex-col gap-[10px] rounded-xl border border-[#e2e8f0] bg-white p-[15px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:pt-3">
+      <div className="mt-[9px] flex flex-col gap-[10px] rounded-xl border border-line bg-white p-[15px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:pt-3">
         <div className="flex flex-col gap-[10px] lg:flex-row lg:items-center lg:gap-[7px]">
           <label className="relative min-w-0 lg:w-[344px] lg:shrink-0">
             <span className="sr-only">Search payments</span>
@@ -245,7 +245,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by ID, customer or amount..."
-              className="h-[38px] w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] pl-[39px] pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185]"
+              className="h-[38px] w-full rounded-lg border border-line bg-[#f9fafb] pl-[39px] pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
             />
           </label>
           <div className="flex flex-wrap gap-[7px]">
@@ -254,7 +254,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
             <FilterSelect label="Status" options={STATUS_FILTERS} selected={statuses} onToggle={(v) => setStatuses(toggle(statuses, v))} />
           </div>
         </div>
-        <div className="flex h-[38px] items-center rounded-xl border border-[#e2e8f0] bg-[#f8fafc] px-3 lg:w-[342px]">
+        <div className="flex h-[38px] items-center rounded-xl border border-line bg-[#f8fafc] px-3 lg:w-[342px]">
           <Image src="/payments/calendar.svg" alt="" width={12.25} height={14} className="mr-2 shrink-0" />
           {dateBox(from, setFrom, fromInput, "Start date", "From date")}
           <span className="px-2">
@@ -294,7 +294,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
 
       <section className="mt-[18px] overflow-hidden rounded-[24px] border border-[#f3f4f6] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
         <div className="border-b border-[#f3f4f6] px-8 pb-[15px] pt-8">
-          <h2 className="text-[21px] font-extrabold leading-[30px] text-[#0a1b33]">Recent Transactions</h2>
+          <h2 className="text-[21px] font-extrabold leading-[30px] text-navy">Recent Transactions</h2>
         </div>
 
         {filtered.length === 0 ? (
@@ -306,7 +306,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
                 : "Try a different search or clear the filters."}
             </p>
             {transactions.length === 0 && (
-              <button type="button" onClick={() => router.push("/invoices")} className="mt-5 h-10 rounded-lg bg-[#00c185] px-5 text-[14px] font-semibold text-white hover:bg-[#00a873]">
+              <button type="button" onClick={() => router.push("/invoices")} className="mt-5 h-10 rounded-lg bg-brand px-5 text-[14px] font-semibold text-white hover:bg-brand-dark">
                 Go to Invoices
               </button>
             )}
@@ -336,7 +336,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
                 {filtered.map((row) => (
                   <tr key={row.key} className="h-[75px] border-b border-[#f3f4f6] last:border-b-0 hover:bg-[#f8fafc]">
                     <td className="pl-6 pr-2 text-[14px] leading-[21px] text-[#475569]">
-                      <Link href={row.href} className="hover:text-[#00c185]">
+                      <Link href={row.href} className="hover:text-brand">
                         {dayLabel(row.date)}
                         {row.type !== "deposit" && <>, {time(row.at)}</>}
                       </Link>
@@ -365,7 +365,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
                     </td>
                     <td className="px-6 text-[12px] leading-[18px] text-[#64748b]">
                       {row.related ? (
-                        <Link href={row.related.href} className="line-clamp-2 hover:text-[#00c185]" title={row.related.label}>
+                        <Link href={row.related.href} className="line-clamp-2 hover:text-brand" title={row.related.label}>
                           {row.related.label}
                         </Link>
                       ) : (

@@ -65,8 +65,8 @@ function initials(first: string, last: string, email: string) {
 }
 
 const personalInput =
-  "h-12 w-full rounded-[12px] border border-[#e5e7eb] bg-[#f8f9fa] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#10b981] focus:bg-white aria-invalid:border-[#ef4444]";
-const personalLabel = "text-[#0a1b33] tracking-[0.35px]";
+  "h-12 w-full rounded-[12px] border border-line bg-[#f8f9fa] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+const personalLabel = "text-navy tracking-[0.35px]";
 
 export function PersonalInfoCard({ data }: { data: SettingsData["personal"] }) {
   const form = useSettingsForm(
@@ -92,7 +92,7 @@ export function PersonalInfoCard({ data }: { data: SettingsData["personal"] }) {
   );
 
   return (
-    <SettingsCard id="personal" title="Personal Information" titleClass="text-[20px] font-bold leading-7 tracking-[0.04px] text-[#0a1b33]">
+    <SettingsCard id="personal" title="Personal Information" titleClass="text-[20px] font-bold leading-7 tracking-[0.04px] text-navy">
       <form onSubmit={form.submit} noValidate>
         <div className="flex flex-wrap items-center gap-6">
           <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0f172a] text-[24px] font-bold text-white">
@@ -109,7 +109,7 @@ export function PersonalInfoCard({ data }: { data: SettingsData["personal"] }) {
                 type="button"
                 onClick={photo.pick}
                 disabled={photo.pending}
-                className="text-[14px] font-bold leading-5 text-[#00c185] transition-colors hover:text-[#059669] disabled:opacity-60"
+                className="text-[14px] font-bold leading-5 text-brand transition-colors hover:text-brand-dark disabled:opacity-60"
               >
                 {photo.pending ? "Uploading…" : "Change Photo"}
               </button>
@@ -146,7 +146,7 @@ export function BusinessProfileCard({ data }: { data: SettingsData["business"] }
   const logo = useImageUpload("logo", logoUrl);
   const { values: v, set, errors } = form;
 
-  const logoButton = "h-9 rounded-[8px] border border-[#e2e8f0] bg-white px-3 text-[14px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc] disabled:opacity-60";
+  const logoButton = "h-9 rounded-[8px] border border-line bg-white px-3 text-[14px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc] disabled:opacity-60";
 
   return (
     <SettingsCard id="business" title="Business Profile" subtitle="Update your public profile and contact information.">

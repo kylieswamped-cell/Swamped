@@ -60,7 +60,7 @@ export default function CustomerStep({ onDone }: { onDone: (customer: CustomerOp
           </Field>
         </div>
         <FormError message={error} />
-        <div className="flex justify-center border-t border-[#e2e8f0] pt-6">
+        <div className="flex justify-center border-t border-line pt-6">
           <PrimaryButton pending={pending}>
             Create Customer &amp; Next <ArrowRight className="size-4" />
           </PrimaryButton>

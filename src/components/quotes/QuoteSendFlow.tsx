@@ -12,7 +12,7 @@ type Draft = { to: string; subject: string; message: string; files: { name: stri
 type Step = { kind: "preview" } | { kind: "sent"; to: string } | { kind: "failed"; error: string; code: string };
 
 const darkInput =
-  "h-9 w-full rounded-md border border-[#333333] bg-[#2a2a2a] px-3 text-[14px] text-[#e0e0e0] outline-none transition-colors placeholder:text-[#666] focus:border-[#01c185]";
+  "h-9 w-full rounded-md border border-[#333333] bg-[#2a2a2a] px-3 text-[14px] text-[#e0e0e0] outline-none transition-colors placeholder:text-[#666] focus:border-brand";
 
 /** Wraps the selected text (or the current line, for lists) in the message box's light formatting. */
 function format(el: HTMLTextAreaElement, kind: "bold" | "italic" | "bullet" | "number") {
@@ -85,7 +85,7 @@ export default function QuoteSendFlow({ quoteId, quoteNumber, onClose }: { quote
             <br />
             <span className="break-all">{step.to}.</span>
           </p>
-          <button type="button" onClick={onClose} className="mt-8 h-12 w-60 rounded-lg bg-[#00c185] text-[16px] font-semibold text-white transition-colors hover:bg-[#00a873]">
+          <button type="button" onClick={onClose} className="mt-8 h-12 w-60 rounded-lg bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-dark">
             Back to Quote Details
           </button>
         </div>
@@ -170,7 +170,7 @@ export default function QuoteSendFlow({ quoteId, quoteNumber, onClose }: { quote
                   aria-label="Message body"
                   value={draft.message}
                   onChange={(e) => setDraft({ ...draft, message: e.target.value })}
-                  className="h-[182px] w-full resize-y bg-transparent px-4 py-3 text-[16px] leading-6 text-[#e5e7eb] outline-none"
+                  className="h-[182px] w-full resize-y bg-transparent px-4 py-3 text-[16px] leading-6 text-line outline-none"
                 />
               </div>
               <p className="mt-1.5 text-[11px] text-[#666666]">The line items, totals, and terms are added below your message.</p>
@@ -208,7 +208,7 @@ export default function QuoteSendFlow({ quoteId, quoteNumber, onClose }: { quote
             type="button"
             onClick={send}
             disabled={pending || !draft}
-            className="flex h-10 w-[174px] items-center justify-center gap-2 rounded-md bg-[#01c185] text-[14px] font-medium text-white transition-colors hover:bg-[#00a873] disabled:opacity-60"
+            className="flex h-10 w-[174px] items-center justify-center gap-2 rounded-md bg-brand text-[14px] font-medium text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
           >
             {pending ? "Sending…" : "Send Quote Now"}
             {!pending && <Send className="size-3" />}

@@ -97,7 +97,7 @@ function RefundActions({ refund, payment, onMessage }: { refund: PaymentRefund; 
         <Image src="/payments/actions-chevron-sm.svg" alt="" width={10} height={10} className={`transition-transform ${menuOpen ? "rotate-180" : ""}`} />
       </button>
       {menuOpen && (
-        <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-56 overflow-hidden rounded-lg border border-[#e2e8f0] bg-white py-1 text-left shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
+        <div role="menu" className="absolute right-0 top-[calc(100%+8px)] z-30 w-56 overflow-hidden rounded-lg border border-line bg-white py-1 text-left shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]">
           <p className="bg-[rgba(248,250,252,0.5)] px-3 py-1.5 text-[10px] font-bold uppercase leading-[15px] tracking-[1px] text-[#94a3b8]">Accounting</p>
           <MenuItem icon="edit-square" label="Edit Refund" onClick={() => choose("edit")} />
           <div className="mx-auto h-px w-[206px] bg-[#f1f5f9]" />
@@ -263,7 +263,7 @@ export default function PaymentDetailView({ payment }: { payment: PaymentDetail 
               <Link href={`/customers/${payment.customer.id}`} className="group mt-[11px] flex min-w-0 items-center gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-[#f4f4f5] bg-[#dbeafe] text-[13px] font-bold text-[#2563eb]">{initials(payment.customer.name)}</span>
                 <span className="min-w-0">
-                  <span className="block truncate text-[14px] font-bold leading-[14px] text-[#18181b] group-hover:text-[#00c185]">{payment.customer.name}</span>
+                  <span className="block truncate text-[14px] font-bold leading-[14px] text-[#18181b] group-hover:text-brand">{payment.customer.name}</span>
                   <span className="mt-1 block truncate text-[12px] leading-4 text-[#71717a]">{payment.customer.email ?? "No email"}</span>
                 </span>
               </Link>
@@ -293,7 +293,7 @@ export default function PaymentDetailView({ payment }: { payment: PaymentDetail 
 
           <div className={card}>
             <p className={cardLabel}>Current Status</p>
-            <span className="mt-[15px] inline-flex h-6 items-center rounded-full border border-[#059669] bg-[rgba(0,193,133,0.1)] px-[11px] text-[12px] font-bold uppercase leading-4 tracking-[-0.3px] text-[#00c185]">
+            <span className="mt-[15px] inline-flex h-6 items-center rounded-full border border-[#059669] bg-[rgba(0,193,133,0.1)] px-[11px] text-[12px] font-bold uppercase leading-4 tracking-[-0.3px] text-brand">
               {paymentStatusLabel(payment.status)}
             </span>
             <p className="mt-1 text-[11px] leading-[16.5px] text-[#71717a]">Last updated {relative(payment.updatedAt)}</p>

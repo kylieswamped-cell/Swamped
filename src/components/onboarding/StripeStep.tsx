@@ -34,7 +34,7 @@ export default function StripeStep({ onDone }: { onDone: () => void }) {
         <ul className="mt-5 flex flex-col gap-4">
           {benefits.map((b) => (
             <li key={b} className="flex items-center gap-3 text-[14px] text-[#475569]">
-              <Check className="size-4 shrink-0 text-[#00c9a7]" strokeWidth={3} />
+              <Check className="size-4 shrink-0 text-brand" strokeWidth={3} />
               {b}
             </li>
           ))}
@@ -49,7 +49,7 @@ export default function StripeStep({ onDone }: { onDone: () => void }) {
         type="button"
         disabled={pending}
         onClick={() => run(() => continueFromStripe(), onDone)}
-        className="mt-2 h-[60px] w-full rounded-2xl bg-[#00c9a7] text-[18px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(0,201,167,0.2),0_4px_6px_-4px_rgba(0,201,167,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+        className="mt-2 h-[60px] w-full rounded-2xl bg-brand text-[18px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
       >
         {pending ? "Saving…" : "Connect Stripe"}
       </button>

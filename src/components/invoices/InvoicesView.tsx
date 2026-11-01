@@ -36,7 +36,7 @@ function dueMatches(dueOn: string, range: string, now: number) {
   return dueOn >= today && dueOn <= todayIso(now + Number(range) * DAY);
 }
 
-const statCard = "h-[100px] rounded-xl border border-[#e5e7eb] bg-white px-6 py-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const statCard = "h-[100px] rounded-xl border border-line bg-white px-6 py-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 
 function initials(name: string) {
   const parts = name.split(/\s+/).filter(Boolean);
@@ -119,7 +119,7 @@ export default function InvoicesView({
         ))}
       </div>
 
-      <div className="mt-6 flex flex-col gap-3 rounded-xl border border-[#e2e8f0] bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:h-[61px] xl:flex-row xl:items-center xl:gap-0 xl:py-0 xl:pl-3 xl:pr-2">
+      <div className="mt-6 flex flex-col gap-3 rounded-xl border border-line bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)] xl:h-[61px] xl:flex-row xl:items-center xl:gap-0 xl:py-0 xl:pl-3 xl:pr-2">
         <label className="relative min-w-0 xl:w-[358px] xl:shrink-0">
           <span className="sr-only">Search invoices</span>
           <Image src="/onboarding/search.svg" alt="" width={17} height={16} className="pointer-events-none absolute left-[15px] top-1/2 -translate-y-1/2" />
@@ -128,7 +128,7 @@ export default function InvoicesView({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by ID, customer or amount..."
-            className="h-[37px] w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-[#00c185]"
+            className="h-[37px] w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
           />
         </label>
         <div className="flex flex-wrap gap-3 xl:ml-4">
@@ -140,7 +140,7 @@ export default function InvoicesView({
         <button
           type="button"
           onClick={startNew}
-          className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[#00c185] px-5 text-[16px] font-semibold leading-6 text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#00a873] xl:ml-auto xl:w-[145px] xl:px-0"
+          className="flex h-11 items-center justify-center gap-2 rounded-lg bg-brand px-5 text-[16px] font-semibold leading-6 text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark xl:ml-auto xl:w-[145px] xl:px-0"
         >
           <Plus className="size-3.5" strokeWidth={3} />
           Create Invoice
@@ -167,7 +167,7 @@ export default function InvoicesView({
         </div>
       )}
 
-      <section className={`${chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
+      <section className={`${chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">{invoices.length === 0 ? "No invoices yet" : filtering ? "No matching invoices" : "No active invoices"}</h2>
@@ -179,7 +179,7 @@ export default function InvoicesView({
                 : "Try a different search or clear the filters."}
             </p>
             {invoices.length === 0 && (
-              <button type="button" onClick={startNew} className="mt-5 h-10 rounded-lg bg-[#00c185] px-5 text-[14px] font-semibold text-white hover:bg-[#00a873]">
+              <button type="button" onClick={startNew} className="mt-5 h-10 rounded-lg bg-brand px-5 text-[14px] font-semibold text-white hover:bg-brand-dark">
                 {customers.length ? "+ Create Invoice" : "+ Add Customer"}
               </button>
             )}
@@ -193,7 +193,7 @@ export default function InvoicesView({
                 ))}
               </colgroup>
               <thead className="whitespace-nowrap bg-[#f9fafb] text-[12px] font-bold uppercase leading-4 tracking-[0.6px] text-[#6b7280]">
-                <tr className="h-[65px] border-b border-[#e5e7eb]">
+                <tr className="h-[65px] border-b border-line">
                   <th className="pl-4">Invoice Number</th>
                   <th className="pl-4">Customer</th>
                   <th className="pl-4">Grand Total</th>
@@ -207,15 +207,15 @@ export default function InvoicesView({
               </thead>
               <tbody className="text-[14px] leading-5 text-[#6b7280]">
                 {filtered.map((inv) => (
-                  <tr key={inv.id} className="h-[74px] border-b border-[#e5e7eb] last:border-b-0 hover:bg-[#f9fafb]">
+                  <tr key={inv.id} className="h-[74px] border-b border-line last:border-b-0 hover:bg-[#f9fafb]">
                     <td className="pl-4 pr-2">
-                      <Link href={`/invoices/${inv.id}`} className="font-medium text-[#0b0e14] hover:text-[#00c185]">
+                      <Link href={`/invoices/${inv.id}`} className="font-medium text-[#0b0e14] hover:text-brand">
                         {inv.number}
                       </Link>
                     </td>
                     <td className="px-4">
                       <div className="flex min-w-0 items-center gap-3">
-                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#e2e8f0] text-[11px] font-bold text-[#475569]">{initials(inv.customer)}</span>
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-line text-[11px] font-bold text-[#475569]">{initials(inv.customer)}</span>
                         <div className="min-w-0">
                           <p className="truncate font-semibold text-[#111827]" title={inv.customer}>{inv.customer}</p>
                           <p className="truncate text-[12px] leading-4" title={inv.customerEmail ?? undefined}>{inv.customerEmail ?? "No email"}</p>

@@ -28,7 +28,7 @@ export default function StatCards({
       {statCards(stats).map((stat) => (
         <StaggerItem
           key={stat.label}
-          className="h-[164px] rounded-xl border border-[#e2e8f0] bg-white p-[23px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+          className="h-[164px] rounded-xl border border-line bg-white p-[23px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
         >
           <div className={`flex size-10 items-center justify-center rounded-lg ${stat.bg}`}>
             <Image src={`/onboarding/${stat.icon}.svg`} alt="" width={stat.w} height={16} />

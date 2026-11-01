@@ -14,7 +14,7 @@ import type { InvoiceDefaults } from "./InvoiceFormModal";
 import InvoiceInternalLogs from "./InvoiceInternalLogs";
 import InvoiceItemsCard from "./InvoiceItemsCard";
 
-const card = "flex h-full min-h-[160px] flex-col rounded-xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const card = "flex h-full min-h-[160px] flex-col rounded-xl border border-line bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 const cardLabel = "text-[12px] font-bold uppercase leading-[18px] tracking-[0.6px] text-[#64748b]";
 
 // "Draft / Unsent" is the Figma style; the others follow the same pattern.
@@ -24,8 +24,8 @@ const STATUS_PILL: Record<InvoiceState, { label: string; className: string }> = 
   partially_paid: { label: "Partially Paid", className: "border-[#dbeafe] bg-[#eff6ff] text-[#1d4ed8]" },
   paid: { label: "Paid", className: "border-[#bbf7d0] bg-[#f0fdf4] text-[#15803d]" },
   overdue: { label: "Overdue", className: "border-[#fee2e2] bg-[#fef2f2] text-[#b91c1c]" },
-  void: { label: "Void", className: "border-[#e2e8f0] bg-[#f8fafc] text-[#64748b]" },
-  archived: { label: "Archived", className: "border-[#e2e8f0] bg-[#f8fafc] text-[#475569]" },
+  void: { label: "Void", className: "border-line bg-[#f8fafc] text-[#64748b]" },
+  archived: { label: "Archived", className: "border-line bg-[#f8fafc] text-[#475569]" },
 };
 
 type Event = { at: string; title: string; detail: string; dot: string; tone?: string };
@@ -47,7 +47,7 @@ function activity(invoice: InvoiceDetail): Event[] {
   if (invoice.state === "overdue") {
     events.push({ at: `${invoice.dueOn}T23:59:59Z`, title: "Invoice Overdue", detail: `Payment was due ${day(invoice.dueOn)}.`, dot: "bg-[#f59e0b]", tone: "text-[#b45309]" });
   }
-  if (invoice.paidAt) events.push({ at: invoice.paidAt, title: "Invoice Paid", detail: "The balance has been paid in full.", dot: "bg-[#00c185]" });
+  if (invoice.paidAt) events.push({ at: invoice.paidAt, title: "Invoice Paid", detail: "The balance has been paid in full.", dot: "bg-brand" });
   if (invoice.voidedAt) events.push({ at: invoice.voidedAt, title: "Invoice Voided", detail: "The invoice was cancelled.", dot: "bg-[#ef4444]", tone: "text-[#ef4444]" });
   return events.sort((a, b) => b.at.localeCompare(a.at));
 }
@@ -86,7 +86,7 @@ export default function InvoiceDetailView({
     });
 
   const chip = (label: string, value: string, href: string) => (
-    <Link href={href} className="flex h-[29px] items-center gap-2 rounded-md border border-[#e2e8f0] bg-[#f1f5f9] px-3 text-[11px] leading-[17px] transition-colors hover:border-[#00c185]">
+    <Link href={href} className="flex h-[29px] items-center gap-2 rounded-md border border-line bg-[#f1f5f9] px-3 text-[11px] leading-[17px] transition-colors hover:border-brand">
       <span className="font-bold text-[#475569]">{label}</span>
       <span className="truncate text-[#334155]">#{value}</span>
     </Link>
@@ -116,7 +116,7 @@ export default function InvoiceDetailView({
           <p className={cardLabel}>Customer</p>
           {invoice.customer ? (
             <div className="mt-[11px] min-w-0">
-              <Link href={`/customers/${invoice.customerId}`} className="block truncate text-[15px] font-bold leading-[23px] text-[#334155] hover:text-[#00c185]">
+              <Link href={`/customers/${invoice.customerId}`} className="block truncate text-[15px] font-bold leading-[23px] text-[#334155] hover:text-brand">
                 {invoice.customer.name}
               </Link>
               <p className="truncate text-[13px] leading-5 text-[#64748b]">{invoice.customer.phone || "No phone number"}</p>
@@ -162,12 +162,12 @@ export default function InvoiceDetailView({
           <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
             <UserRoundCheck className="size-[17px] text-[#00c38b]" />
           </span>
-          <h3 className="ml-3 text-[18px] font-bold leading-7 tracking-[-0.2px] text-[#0a1b2f]">Customer-Facing Information</h3>
+          <h3 className="ml-3 text-[18px] font-bold leading-7 tracking-[-0.2px] text-navy">Customer-Facing Information</h3>
         </div>
         <div className="grid grid-cols-1 gap-8 px-6 pb-10 pt-6 lg:grid-cols-[minmax(0,460fr)_minmax(0,469fr)] lg:gap-[62px]">
           <div>
             <h4 className="text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#64748b]">Customer Message</h4>
-            <div className="mt-4 min-h-[230px] whitespace-pre-line rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-[#0a1b2f]">
+            <div className="mt-4 min-h-[230px] whitespace-pre-line rounded-xl border border-[#f1f5f9] bg-[#f8fafc] p-6 text-[16px] leading-[26px] text-navy">
               {invoice.message || <span className="text-[#94a3b8]">No message for the customer.</span>}
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function InvoiceDetailView({
                 />
               ))}
               {publicFiles.length === 0 && (
-                <li className="flex h-[74px] items-center justify-center rounded-xl border border-dashed border-[#e2e8f0] bg-white text-[14px] text-[#94a3b8]">
+                <li className="flex h-[74px] items-center justify-center rounded-xl border border-dashed border-line bg-white text-[14px] text-[#94a3b8]">
                   No files for the customer. Add them with Edit.
                 </li>
               )}
@@ -209,7 +209,7 @@ export default function InvoiceDetailView({
 
       <section className="mt-[26px] rounded-2xl border border-[#f1f5f9] bg-white px-6 py-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:px-10 print:hidden">
         <h3 className="text-[18px] font-bold leading-[27px] text-[#0f172a]">Invoice Activity</h3>
-        <ol className="relative mt-6 ml-[5px] flex flex-col gap-8 border-l-2 border-[#e2e8f0] pl-8">
+        <ol className="relative mt-6 ml-[5px] flex flex-col gap-8 border-l-2 border-line pl-8">
           {events.map((e, i) => (
             <li key={`${e.title}-${i}`} className="relative flex flex-col justify-between gap-1 sm:flex-row sm:gap-6">
               <span className={`absolute -left-[39px] top-1.5 size-3 rounded-full shadow-[0_0_0_4px_#fff,0_1px_2px_rgba(0,0,0,0.05)] ${e.dot}`} />

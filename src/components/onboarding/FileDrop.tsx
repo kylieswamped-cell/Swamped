@@ -69,9 +69,9 @@ export default function FileDrop({
             setDragging(false);
             pick(e.dataTransfer.files?.[0]);
           }}
-          className={`flex w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed text-[14px] text-[#94a3b8] transition-colors hover:border-[#00c9a7] ${
+          className={`flex w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed text-[14px] text-[#94a3b8] transition-colors hover:border-brand ${
             compact ? "h-[76px]" : "h-[140px]"
-          } ${dragging ? "border-[#00c9a7] bg-[#e6f9f5]" : "border-[#cbd5e1] bg-[#fafafa]"}`}
+          } ${dragging ? "border-brand bg-brand-light" : "border-[#cbd5e1] bg-[#fafafa]"}`}
         >
           <CloudUpload className="size-6 text-[#94a3b8]" />
           {compact ? (
@@ -79,7 +79,7 @@ export default function FileDrop({
           ) : (
             <>
               <span>
-                <span className="font-semibold text-[#00c9a7]">Click to upload</span> or drag and drop
+                <span className="font-semibold text-brand">Click to upload</span> or drag and drop
               </span>
               <span className="text-[11px]">PDF, JPG, PNG up to 10MB</span>
             </>

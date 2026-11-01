@@ -30,7 +30,7 @@ export default function ContactForm() {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-[#e5e7eb] bg-surface px-4 py-3 text-[16px] text-navy placeholder:text-muted-light outline-none transition-colors focus:border-brand";
+    "w-full rounded-xl border border-line bg-surface px-4 py-3 text-[16px] text-navy placeholder:text-muted-light outline-none transition-colors focus:border-brand";
   const labelClass =
     "block text-[14px] font-semibold uppercase tracking-[0.7px] text-navy";
 
@@ -114,7 +114,7 @@ export default function ContactForm() {
                 type="submit"
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
-                className="mt-2 flex h-[60px] items-center justify-center rounded-xl bg-brand text-[18px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(0,193,133,0.2),0_4px_6px_-4px_rgba(0,193,133,0.2)] transition-colors hover:bg-brand-dark"
+                className="mt-2 flex h-[60px] items-center justify-center rounded-xl bg-brand text-[18px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark"
               >
                 Send Message
               </motion.button>

@@ -46,7 +46,7 @@ export function AdjustmentInput({
     </button>
   );
   return (
-    <div className="ml-3 flex h-8 overflow-hidden rounded-lg border border-[#e5e7eb] bg-[#f9fafb]">
+    <div className="ml-3 flex h-8 overflow-hidden rounded-lg border border-line bg-[#f9fafb]">
       <input
         aria-label={`${label} amount`}
         type="number"
@@ -59,7 +59,7 @@ export function AdjustmentInput({
         onKeyDown={(e) => e.key === "Enter" && (e.currentTarget as HTMLInputElement).blur()}
         className="w-16 bg-transparent px-2 text-center text-[14px] font-medium text-[#111827] outline-none"
       />
-      <div className="flex items-center border-l border-[#e5e7eb] bg-[#f3f4f6]/50 p-0.5">
+      <div className="flex items-center border-l border-line bg-[#f3f4f6]/50 p-0.5">
         {option("fixed", "$")}
         <span className="mx-px h-4 w-px bg-[#d1d5db]" />
         {option("percent", "%")}
@@ -137,7 +137,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
 
   return (
     <>
-      <div className="mt-[25px] overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <div className="mt-[25px] overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] table-fixed text-left">
             <colgroup>
@@ -146,7 +146,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
               ))}
             </colgroup>
             <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
-              <tr className="h-[46px] border-b border-[#e2e8f0]">
+              <tr className="h-[46px] border-b border-line">
                 <th className="pl-6">Item Description</th>
                 <th className="pl-6">Quantity</th>
                 <th className="pr-6 text-right">Unit Price</th>
@@ -163,7 +163,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
                       aria-label={`Line ${i + 1} description`}
                       value={l.description}
                       onChange={(e) => update(i, { description: e.target.value })}
-                      className="h-[35px] w-full rounded-md border border-[#e2e8f0] px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-[#00c185]"
+                      className="h-[35px] w-full rounded-md border border-line px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-brand"
                     />
                   </td>
                   <td className="pl-12">
@@ -175,7 +175,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
                       step="any"
                       value={l.quantity}
                       onChange={(e) => update(i, { quantity: e.target.value })}
-                      className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-[#00c185]"
+                      className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
                     />
                   </td>
                   <td className="pr-[21px]">
@@ -189,7 +189,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
                         step="0.01"
                         value={l.unitPrice}
                         onChange={(e) => update(i, { unitPrice: e.target.value })}
-                        className="h-[34px] w-20 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-[#00c185]"
+                        className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-[16px] text-[#334155] outline-none focus:border-brand"
                       />
                     </div>
                   </td>
@@ -234,7 +234,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
             <button
               type="button"
               onClick={() => setLineModal({ index: null })}
-              className="flex h-[42px] w-[168px] items-center justify-center gap-2 rounded-[5px] bg-[#01c185] text-[14px] text-white transition-colors hover:bg-[#00a873]"
+              className="flex h-[42px] w-[168px] items-center justify-center gap-2 rounded-[5px] bg-brand text-[14px] text-white transition-colors hover:bg-brand-dark"
             >
               <span className="text-[18px] leading-none">+</span>
               Create Line Item

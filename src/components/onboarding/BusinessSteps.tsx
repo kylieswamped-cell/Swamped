@@ -66,7 +66,7 @@ export function BusinessDetailsStep({ defaults: d, onDone }: StepProps) {
           </div>
         </section>
 
-        <section className="border-t border-[#e2e8f0] pt-8">
+        <section className="border-t border-line pt-8">
           <h3 className="text-[16px] font-semibold text-[#0f172a]">Registered Address</h3>
           <p className="mt-1 text-[13px] text-[#64748b]">This address will be used for billing and tax purposes.</p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
@@ -153,8 +153,8 @@ export function BusinessAboutStep({ defaults: d, onDone }: StepProps) {
 
 function SettingsCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-[#e2e8f0]">
-      <h3 className="flex items-center gap-2 border-b border-[#e2e8f0] bg-[#f8fafc] px-5 py-4 text-[13px] font-bold uppercase tracking-[0.6px] text-[#334155]">
+    <section className="overflow-hidden rounded-xl border border-line">
+      <h3 className="flex items-center gap-2 border-b border-line bg-[#f8fafc] px-5 py-4 text-[13px] font-bold uppercase tracking-[0.6px] text-[#334155]">
         <span className="text-[#059669]">{icon}</span>
         {title}
       </h3>
@@ -208,7 +208,7 @@ export function BusinessDefaultsStep({ defaults: d, onDone }: StepProps) {
         </SettingsCard>
 
         <FormError message={error} />
-        <div className="flex flex-col-reverse items-stretch gap-4 border-t border-[#e2e8f0] pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col-reverse items-stretch gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-2 rounded-full bg-[#f8fafc] px-4 py-2 text-[12px] text-[#64748b]">
             <Lightbulb className="size-3.5 text-[#f59e0b]" />
             These settings can always be updated later from the Settings menu.
