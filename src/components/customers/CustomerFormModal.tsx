@@ -5,14 +5,15 @@ import Image from "next/image";
 import { useRef, useState, useTransition, type FormEvent } from "react";
 import { createCustomer, updateCustomer, type CustomerInput, type UploadedFile } from "@/lib/customers/actions";
 import { ACCEPTED_UPLOADS, MAX_UPLOAD_BYTES, uploadAttachment } from "@/components/onboarding/uploadAttachment";
+import AddressFields from "./AddressFields";
 import Modal from "./Modal";
 
 export type CustomerFormValues = CustomerInput;
 
-const EMPTY: CustomerFormValues = { name: "", email: "", phone: "", streetAddress: "", notes: "" };
+const EMPTY: CustomerFormValues = { name: "", email: "", phone: "", streetAddress: "", city: "", state: "", zipCode: "", notes: "" };
 
 const baseInput =
-  "w-full rounded-lg border border-line bg-[#f8fafc] pr-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-lg border border-line bg-[#f8fafc] pr-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 const inputClass = `${baseInput} h-11 pl-[39px]`;
 const labelClass = "text-[14px] font-semibold leading-5 text-[#334155]";
 
@@ -20,7 +21,6 @@ const fields = [
   { key: "name", label: "Customer Name", icon: "field-user", w: 12, placeholder: "e.g., John Doe", type: "text", autoComplete: "off" },
   { key: "email", label: "Email Address", icon: "field-mail", w: 14, placeholder: "e.g., john@example.com", type: "email", autoComplete: "off" },
   { key: "phone", label: "Phone Number", icon: "field-phone", w: 14, placeholder: "e.g., (555) 123-4567", type: "tel", autoComplete: "off" },
-  { key: "streetAddress", label: "Street Address", icon: "field-pin", w: 11, placeholder: "e.g., 123 Maple St", type: "text", autoComplete: "off" },
 ] as const;
 
 export default function CustomerFormModal({
@@ -104,7 +104,7 @@ export default function CustomerFormModal({
         className="overflow-hidden rounded-2xl border border-[#f1f5f9] bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
       >
         <div className="flex items-start justify-between px-8 pt-[31px]">
-          <h2 className="text-[24px] font-bold leading-8 tracking-[-0.6px] text-[#0f172a]">
+          <h2 className="text-[24px] font-bold leading-8 tracking-[-0.6px] text-navy">
             {editing ? "Edit Customer" : "Add New Customer"}
           </h2>
           <button type="button" onClick={close} aria-label="Close" className="mt-[18px] rounded p-0.5 hover:bg-[#f1f5f9]">
@@ -134,6 +134,15 @@ export default function CustomerFormModal({
               {fieldErrors[f.key] && <p className="text-[12px] text-[#ef4444]">{fieldErrors[f.key]}</p>}
             </div>
           ))}
+
+          <AddressFields
+            idPrefix="customer"
+            value={values}
+            onChange={(a) => setValues({ ...values, ...a })}
+            inputClass={inputClass}
+            plainInputClass={`${baseInput} h-11 pl-3.5`}
+            labelClass={labelClass}
+          />
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="customer-notes" className={labelClass}>

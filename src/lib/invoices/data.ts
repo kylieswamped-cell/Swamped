@@ -221,7 +221,7 @@ type InvoiceDetailRow = StateInput & {
   subtotal: number;
   discount_amount: number;
   tax_amount: number;
-  customers: { name: string; email: string | null; phone: string | null; street_address: string | null } | null;
+  customers: { name: string; email: string | null; phone: string | null; full_address: string | null } | null;
   jobs: { id: string; job_number: string; title: string } | null;
   quotes: { id: string; quote_number: string } | null;
 };
@@ -231,7 +231,7 @@ export async function getInvoice(supabase: SupabaseClient, id: string, now = Dat
     supabase
       .from("invoices")
       .select(
-        "id, invoice_number, customer_id, title, status, archived_at, invoice_date, due_days, due_on, customer_message, terms, internal_notes, sent_at, paid_at, voided_at, created_at, updated_at, public_token, discount_value, discount_type, tax_value, tax_type, subtotal, discount_amount, tax_amount, total, deposit_credit, amount_paid, customers(name, email, phone, street_address), jobs(id, job_number, title), quotes(id, quote_number)",
+        "id, invoice_number, customer_id, title, status, archived_at, invoice_date, due_days, due_on, customer_message, terms, internal_notes, sent_at, paid_at, voided_at, created_at, updated_at, public_token, discount_value, discount_type, tax_value, tax_type, subtotal, discount_amount, tax_amount, total, deposit_credit, amount_paid, customers(name, email, phone, full_address), jobs(id, job_number, title), quotes(id, quote_number)",
       )
       .eq("id", id)
       .maybeSingle<InvoiceDetailRow>(),
@@ -272,7 +272,7 @@ export async function getInvoice(supabase: SupabaseClient, id: string, now = Dat
     updatedAt: i.updated_at,
     publicToken: i.public_token,
     customer: i.customers
-      ? { name: i.customers.name, email: i.customers.email, phone: i.customers.phone, address: i.customers.street_address }
+      ? { name: i.customers.name, email: i.customers.email, phone: i.customers.phone, address: i.customers.full_address }
       : null,
     job: i.jobs ? { id: i.jobs.id, number: i.jobs.job_number, title: i.jobs.title } : null,
     quote: i.quotes ? { id: i.quotes.id, number: i.quotes.quote_number } : null,

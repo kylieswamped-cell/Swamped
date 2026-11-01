@@ -11,6 +11,9 @@ export type CustomerInput = {
   email: string;
   phone: string;
   streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
   notes: string;
 };
 
@@ -40,6 +43,9 @@ const toRow = (input: CustomerInput) => ({
   email: clean(input.email),
   phone: clean(input.phone),
   street_address: clean(input.streetAddress),
+  city: clean(input.city),
+  state: clean(input.state),
+  zip_code: clean(input.zipCode),
   notes: clean(input.notes),
 });
 

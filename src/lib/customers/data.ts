@@ -31,7 +31,7 @@ export async function listCustomers(
 ): Promise<{ customers: CustomerRow[]; now: number }> {
   let query = supabase
     .from("customers")
-    .select("id, name, email, phone, street_address, created_at")
+    .select("id, name, email, phone, full_address, created_at")
     .order("created_at", { ascending: false });
   query = archived ? query.not("archived_at", "is", null) : query.is("archived_at", null);
 
@@ -49,7 +49,7 @@ export async function listCustomers(
     name: c.name,
     email: c.email,
     phone: c.phone,
-    address: c.street_address,
+    address: c.full_address,
     status: statusFor(byCustomer.get(c.id) ?? []),
     createdAt: c.created_at,
   }));
@@ -115,6 +115,10 @@ export type CustomerDetail = {
   email: string | null;
   phone: string | null;
   address: string | null;
+  streetAddress: string | null;
+  city: string | null;
+  state: string | null;
+  zipCode: string | null;
   notes: string | null;
   archived: boolean;
   createdAt: string;
@@ -128,7 +132,7 @@ export async function getCustomer(supabase: SupabaseClient, id: string): Promise
   const [{ data: c }, { data: quotes }, { data: jobs }, { data: files }, invoices] = await Promise.all([
     supabase
       .from("customers")
-      .select("id, name, email, phone, street_address, notes, archived_at, created_at")
+      .select("id, name, email, phone, street_address, city, state, zip_code, full_address, notes, archived_at, created_at")
       .eq("id", id)
       .maybeSingle(),
     supabase
@@ -156,7 +160,11 @@ export async function getCustomer(supabase: SupabaseClient, id: string): Promise
     name: c.name,
     email: c.email,
     phone: c.phone,
-    address: c.street_address,
+    address: c.full_address,
+    streetAddress: c.street_address,
+    city: c.city,
+    state: c.state,
+    zipCode: c.zip_code,
     notes: c.notes,
     archived: Boolean(c.archived_at),
     createdAt: c.created_at,

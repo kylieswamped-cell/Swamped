@@ -46,7 +46,7 @@ function InfoCard({ icon, iconBg, w, title, children }: { icon: string; iconBg: 
         <span className={`flex size-8 items-center justify-center rounded ${iconBg}`}>
           <Image src={`/customers/${icon}.svg`} alt="" width={w} height={14} />
         </span>
-        <h3 className="text-[16px] font-bold leading-6 tracking-[-0.25px] text-[#0f172a]">{title}</h3>
+        <h3 className="text-[16px] font-bold leading-6 tracking-[-0.25px] text-navy">{title}</h3>
       </div>
       <div className="mt-4">{children}</div>
     </div>
@@ -117,7 +117,10 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
           name: customer.name,
           email: customer.email ?? "",
           phone: customer.phone ?? "",
-          streetAddress: customer.address ?? "",
+          streetAddress: customer.streetAddress ?? "",
+          city: customer.city ?? "",
+          state: customer.state ?? "",
+          zipCode: customer.zipCode ?? "",
           notes: customer.notes ?? "",
         }}
       />
@@ -210,7 +213,7 @@ export default function CustomerDetail({ customer }: { customer: Customer }) {
 
       <section className="mt-4 overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:-ml-3">
         <div className="flex items-center justify-between border-b border-[#f1f5f9] px-6 py-4">
-          <h3 className="text-[16px] font-bold text-[#0f172a]">Payment History</h3>
+          <h3 className="text-[16px] font-bold text-navy">Payment History</h3>
           <span className="rounded-full border border-[#ddd6fe] bg-[#f5f3ff] px-2.5 text-[12px] font-medium leading-[22px] text-[#7c3aed]">
             0 Payments Logged
           </span>
