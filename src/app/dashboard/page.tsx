@@ -8,6 +8,7 @@ import RevenueChart from "@/components/dashboard/RevenueChart";
 import StatCards from "@/components/dashboard/StatCards";
 import { getDashboardStats, getRecentActivity, getRevenueSeries } from "@/lib/dashboard/stats";
 import { requireOnboardingUser } from "@/lib/onboarding/server";
+import type { PartnerStatus } from "@/lib/partners/options";
 
 export const metadata: Metadata = {
   title: "Dashboard — Swamped",
@@ -18,7 +19,11 @@ export default async function DashboardPage() {
   // Anyone who hasn't finished onboarding goes back to the step they left off on.
   if (!profile.onboarding_completed_at) redirect("/onboarding");
 
-  const [stats, activity] = await Promise.all([getDashboardStats(supabase), getRecentActivity(supabase)]);
+  const [stats, activity, { data: partner }] = await Promise.all([
+    getDashboardStats(supabase),
+    getRecentActivity(supabase),
+    supabase.from("partner_applications").select("status").eq("owner_id", user.id).maybeSingle<{ status: PartnerStatus }>(),
+  ]);
 
   return (
     <DashboardShell
@@ -33,7 +38,7 @@ export default async function DashboardPage() {
         <div className="mt-[25px] flex flex-col gap-3.5">
           <ActivityPanel items={activity.items} now={activity.now} />
           <RevenueChart data={getRevenueSeries()} />
-          <PartnerCta />
+          <PartnerCta status={partner?.status ?? null} />
         </div>
       </div>
     </DashboardShell>

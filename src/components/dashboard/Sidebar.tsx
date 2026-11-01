@@ -19,6 +19,7 @@ const mainLinks = [
 ];
 
 const footerLinks = [
+  { label: "Partner Program", href: "/partner-program", icon: "nav-partner", w: 18 },
   { label: "Settings", href: "/settings", icon: "nav-settings", w: 16 },
   { label: "Support", href: "/support", icon: "nav-support", w: 16 },
 ];

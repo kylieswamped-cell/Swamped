@@ -1,12 +1,30 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
+import { getNotifications } from "@/lib/notifications/data";
 import type { ChecklistStatus } from "@/lib/onboarding/steps";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 import GettingStarted from "./GettingStarted";
+import HeaderMenus from "./HeaderMenus";
 import Sidebar from "./Sidebar";
 
-function initials(name: string) {
-  const parts = name.split(/[\s@._-]+/).filter(Boolean);
-  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
+/** Loads the signed-in user's email and notifications for the header menus. */
+async function HeaderMenusLoader({ name }: { name: string }) {
+  let email = "";
+  let feed: Awaited<ReturnType<typeof getNotifications>> = { items: [], now: 0 };
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      email = data.user.email ?? "";
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("notifications_seen_at")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      feed = await getNotifications(supabase, profile?.notifications_seen_at ?? null);
+    }
+  }
+  return <HeaderMenus name={name || email} email={email} notifications={feed.items} now={feed.now} />;
 }
 
 type DashboardShellProps = {
@@ -43,21 +61,7 @@ export default function DashboardShell({
                 <p className="hidden truncate text-[14px] leading-5 text-[#64748b] sm:block">{subtitle}</p>
               )}
             </div>
-            <div className="flex shrink-0 items-center gap-3.5">
-              <button
-                type="button"
-                aria-label="Notifications"
-                className="rounded-lg p-2 transition-colors hover:bg-surface"
-              >
-                <Image src="/onboarding/bell.svg" alt="" width={18} height={20} />
-              </button>
-              <span
-                title={name}
-                className="flex size-10 items-center justify-center rounded-full border-2 border-[#14263d] bg-[#0f172a] text-[14px] font-bold text-white"
-              >
-                {initials(name)}
-              </span>
-            </div>
+            <HeaderMenusLoader name={name} />
           </header>
           {children}
         </div>
