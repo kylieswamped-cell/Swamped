@@ -157,7 +157,7 @@ export default function InvoiceItemsCard({ invoice }: { invoice: InvoiceDetail }
                       aria-label={`Line ${i + 1} taxable`}
                       disabled={pending || locked}
                       onClick={() => save(lines.map((x, j) => (j === i ? { ...x, taxable: !x.taxable } : x)))}
-                      className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-[#008080]" : "bg-[#cbd5e1]"}`}
+                      className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-brand" : "bg-[#cbd5e1]"}`}
                     >
                       <span className={`absolute top-1 size-3 rounded-full bg-white transition-all ${l.taxable ? "left-6" : "left-1"}`} />
                     </button>

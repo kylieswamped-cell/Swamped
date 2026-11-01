@@ -186,7 +186,7 @@ export function BusinessProfileCard({ data }: { data: SettingsData["business"] }
           <InputField label="Business Name" name="businessName" value={v.businessName} onChange={(e) => set("businessName", e.target.value)} error={errors.businessName} maxLength={200} autoComplete="organization" />
           <div className="flex flex-col gap-3">
             <InputField label="Contact Name" name="contactName" value={v.contactName} onChange={(e) => set("contactName", e.target.value)} error={errors.contactName} maxLength={200} autoComplete="name" />
-            <ToggleRow label="Show on Quotes & Invoices" checked={v.showContact} onChange={(c) => set("showContact", c)} color="#009d63" />
+            <ToggleRow label="Show on Quotes & Invoices" checked={v.showContact} onChange={(c) => set("showContact", c)} color="#0481ff" />
           </div>
           <InputField label="Phone Number" name="businessPhone" type="tel" value={v.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} maxLength={40} autoComplete="tel" />
           <InputField label="Email Address" name="businessEmail" type="email" value={v.email} onChange={(e) => set("email", e.target.value)} error={errors.email} autoComplete="email" />
@@ -204,7 +204,7 @@ export function BusinessProfileCard({ data }: { data: SettingsData["business"] }
             placeholder="yourbusiness.com"
             autoComplete="url"
           />
-          <ToggleRow label="Show on Quotes & Invoices" checked={v.showWebsite} onChange={(c) => set("showWebsite", c)} color="#009d63" />
+          <ToggleRow label="Show on Quotes & Invoices" checked={v.showWebsite} onChange={(c) => set("showWebsite", c)} color="#0481ff" />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -220,7 +220,7 @@ export function BusinessProfileCard({ data }: { data: SettingsData["business"] }
             />
             <FieldError id="address-error" message={errors.address} />
           </div>
-          <ToggleRow label="Show on Quotes & Invoices" checked={v.showAddress} onChange={(c) => set("showAddress", c)} color="#009d63" />
+          <ToggleRow label="Show on Quotes & Invoices" checked={v.showAddress} onChange={(c) => set("showAddress", c)} color="#0481ff" />
         </div>
 
         <CardFooter pending={form.pending} dirty={form.dirty} onCancel={form.cancel} status={form.status} className="" />

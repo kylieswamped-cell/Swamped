@@ -160,7 +160,7 @@ export function PrimaryButton({
     <button
       type="submit"
       disabled={pending || button.disabled}
-      className={`inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      className={`inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
       {...button}
     >
       {pending ? "Saving…" : children}

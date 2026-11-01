@@ -245,10 +245,10 @@ export function SaveButton({
     <button
       type="submit"
       disabled={pending || disabled}
-      className={`rounded-[12px] bg-brand font-bold text-white transition-colors hover:bg-[#00ad77] disabled:cursor-not-allowed disabled:opacity-60 ${
+      className={`rounded-[12px] bg-brand font-bold text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60 ${
         compact
           ? "h-[41px] px-8 text-[14px] tracking-[-0.16px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
-          : "h-[50px] px-8 text-[16px] shadow-[0_10px_15px_-3px_rgba(34,197,94,0.2),0_4px_6px_-4px_rgba(34,197,94,0.2)] sm:w-[176px]"
+          : "h-[50px] px-8 text-[16px] shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] sm:w-[176px]"
       } ${className}`}
     >
       {pending ? "Saving…" : "Save Changes"}

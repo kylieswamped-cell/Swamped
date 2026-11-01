@@ -49,7 +49,7 @@ export default function StripeStep({ onDone }: { onDone: () => void }) {
         type="button"
         disabled={pending}
         onClick={() => run(() => continueFromStripe(), onDone)}
-        className="mt-2 h-[60px] w-full rounded-2xl bg-brand text-[18px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+        className="mt-2 h-[60px] w-full rounded-2xl bg-brand text-[18px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark disabled:opacity-60"
       >
         {pending ? "Saving…" : "Connect Stripe"}
       </button>

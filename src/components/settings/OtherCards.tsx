@@ -84,7 +84,7 @@ export function RefundCard({ template }: { template: EmailTemplate }) {
             <button
               type="submit"
               disabled={form.pending}
-              className="h-[41px] flex-1 rounded-[12px] bg-brand px-8 text-[14px] font-bold tracking-[-0.16px] text-white shadow-[0_2px_8px_rgba(4,129,255,0.25)] transition-colors hover:bg-[#00ad77] disabled:opacity-60 sm:flex-none"
+              className="h-[41px] flex-1 rounded-[12px] bg-brand px-8 text-[14px] font-bold tracking-[-0.16px] text-white shadow-[0_2px_8px_rgba(4,129,255,0.25)] transition-colors hover:bg-brand-dark disabled:opacity-60 sm:flex-none"
             >
               {form.pending ? "Saving…" : "Save Changes"}
             </button>

@@ -256,7 +256,7 @@ export default function SupportForm({ email }: { email: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="h-[52px] w-full rounded-[12px] bg-brand text-[16px] font-semibold tracking-[-0.03px] text-white drop-shadow-[0_4px_6px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00ad77] disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-[52px] w-full rounded-[12px] bg-brand text-[16px] font-semibold tracking-[-0.03px] text-white drop-shadow-[0_4px_6px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Sending…" : "Submit Support Request"}
       </button>

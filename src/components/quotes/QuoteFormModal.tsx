@@ -355,7 +355,7 @@ export default function QuoteFormModal({
                           aria-checked={l.taxable}
                           aria-label={`Line ${i + 1} taxable`}
                           onClick={() => updateLine(i, { taxable: !l.taxable })}
-                          className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-[#008080]" : "bg-[#cbd5e1]"}`}
+                          className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-brand" : "bg-[#cbd5e1]"}`}
                         >
                           <span className={`absolute top-1 size-3 rounded-full bg-white transition-all ${l.taxable ? "left-6" : "left-1"}`} />
                         </button>
@@ -576,7 +576,7 @@ export default function QuoteFormModal({
               type="button"
               onClick={() => submit(true)}
               disabled={pending}
-              className="h-[42px] w-[218px] rounded-lg bg-brand text-[14px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+              className="h-[42px] w-[218px] rounded-lg bg-brand text-[14px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark disabled:opacity-60"
             >
               Save &amp; Send to Customer
             </button>

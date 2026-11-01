@@ -467,7 +467,7 @@ export default function InvoiceFormModal({
                           aria-checked={l.taxable}
                           aria-label={`Line ${i + 1} taxable`}
                           onClick={() => updateLine(i, { taxable: !l.taxable })}
-                          className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-[#008080]" : "bg-[#cbd5e1]"}`}
+                          className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-brand" : "bg-[#cbd5e1]"}`}
                         >
                           <span className={`absolute top-1 size-3 rounded-full bg-white transition-all ${l.taxable ? "left-6" : "left-1"}`} />
                         </button>
@@ -627,7 +627,7 @@ export default function InvoiceFormModal({
                 id="invoice-internal-files"
                 label="Internal Attachments"
                 internal
-                title={<span className="font-semibold text-[#00c38b]">Upload internal files</span>}
+                title={<span className="font-semibold text-brand">Upload internal files</span>}
                 hint="Costing sheets, private specs, etc."
                 saved={saved.filter((f) => f.internal)}
                 files={internalFiles}

@@ -243,7 +243,7 @@ export default function QuoteStep({
                       aria-checked={l.taxable}
                       aria-label={`Item ${i + 1} taxable`}
                       onClick={() => update(l.key, { taxable: !l.taxable })}
-                      className={`relative inline-flex h-5 w-9 rounded-full transition-colors ${l.taxable ? "bg-[#0f766e]" : "bg-[#cbd5e1]"}`}
+                      className={`relative inline-flex h-5 w-9 rounded-full transition-colors ${l.taxable ? "bg-brand" : "bg-[#cbd5e1]"}`}
                     >
                       <span className={`absolute top-0.5 size-4 rounded-full bg-white transition-all ${l.taxable ? "left-[18px]" : "left-0.5"}`} />
                     </button>
@@ -330,7 +330,7 @@ export default function QuoteStep({
           <button
             type="submit"
             disabled={pending}
-            className="h-11 rounded-lg bg-brand px-6 text-[14px] font-semibold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-[#00b394] disabled:opacity-60"
+            className="h-11 rounded-lg bg-brand px-6 text-[14px] font-semibold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark disabled:opacity-60"
           >
             {pending ? "Saving…" : selected?.email ? "Save & Send to Customer" : "Save Quote"}
           </button>

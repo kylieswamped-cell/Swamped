@@ -248,7 +248,7 @@ export function InvoiceConfigCard({ data, templates }: { data: SettingsData["inv
     saveInvoiceConfig,
   );
   const { values: v, set, errors } = form;
-  const teal = "bg-[#f0fdfa] text-[#14b8a6]";
+  const teal = "bg-brand-light text-brand";
 
   return (
     <SettingsCard

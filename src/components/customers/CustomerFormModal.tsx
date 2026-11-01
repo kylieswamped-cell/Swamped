@@ -158,7 +158,7 @@ export default function CustomerFormModal({
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
-              className={`flex h-[108px] flex-col items-center justify-center gap-2 rounded border border-dashed border-[rgba(4,129,255,0.5)] text-center text-[16px] leading-5 text-[#94a3b8] transition-colors hover:border-[#2dd4bf] ${dragging ? "bg-brand-light" : "bg-[#f8fafc]"}`}
+              className={`flex h-[108px] flex-col items-center justify-center gap-2 rounded border border-dashed border-[rgba(4,129,255,0.5)] text-center text-[16px] leading-5 text-[#94a3b8] transition-colors hover:border-brand ${dragging ? "bg-brand-light" : "bg-[#f8fafc]"}`}
             >
               <span className="flex size-12 items-center justify-center rounded-full bg-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
                 <Image src="/customers/upload.svg" alt="" width={25} height={20} />

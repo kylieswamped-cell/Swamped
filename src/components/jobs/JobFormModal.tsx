@@ -28,7 +28,7 @@ function ScheduleField({ label, value, onChange, invalid }: { label: string; val
     <div className="relative min-w-0 flex-1 px-4 py-4">
       <p className="text-[10px] font-bold uppercase leading-[15px] text-[#6b7280]">{label}</p>
       <div className="mt-1 flex h-6 items-center gap-3">
-        <CalendarDays className="size-4 shrink-0 text-[#008080]" />
+        <CalendarDays className="size-4 shrink-0 text-brand" />
         <span className={`truncate text-[16px] font-semibold leading-6 ${value ? "text-[#111827]" : "text-[#9ca3af]"} ${invalid ? "text-[#ef4444]" : ""}`}>
           {value ? dateTime(new Date(value).toISOString()) : "Select date & time"}
         </span>
@@ -338,7 +338,7 @@ export default function JobFormModal({
                           aria-checked={l.taxable}
                           aria-label={`Line ${i + 1} taxable`}
                           onClick={() => updateLine(i, { taxable: !l.taxable })}
-                          className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-[#008080]" : "bg-[#cbd5e1]"}`}
+                          className={`relative inline-flex h-5 w-10 rounded-full transition-colors ${l.taxable ? "bg-brand" : "bg-[#cbd5e1]"}`}
                         >
                           <span className={`absolute top-1 size-3 rounded-full bg-white transition-all ${l.taxable ? "left-6" : "left-1"}`} />
                         </button>
@@ -379,8 +379,8 @@ export default function JobFormModal({
           </div>
 
           <div className="mt-[60px] flex items-center justify-center gap-3">
-            <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
-              <UserRoundCheck className="size-[17px] text-[#00c38b]" />
+            <span className="flex size-8 items-center justify-center rounded-full bg-brand-light">
+              <UserRoundCheck className="size-[17px] text-brand" />
             </span>
             <h3 className="text-[18px] font-bold leading-7 tracking-[-0.2px] text-navy">Customer-Facing Information</h3>
           </div>

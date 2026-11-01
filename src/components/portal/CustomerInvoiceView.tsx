@@ -245,7 +245,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
                     <p className="mt-1 text-[10px] font-semibold uppercase leading-[15px] tracking-[-0.3px] text-[#737373]">{dueText}</p>
                   )}
                 </div>
-                <p className={`text-[24px] font-bold leading-6 tracking-[-0.4px] ${invoice.state === "void" ? "text-[#d1d5db]" : "text-[#008080]"}`}>
+                <p className={`text-[24px] font-bold leading-6 tracking-[-0.4px] ${invoice.state === "void" ? "text-[#d1d5db]" : "text-brand"}`}>
                   {formatMoney(invoice.state === "void" ? 0 : invoice.balance)}
                 </p>
               </div>
@@ -256,7 +256,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
           {(invoice.message || invoice.attachments.length > 0 || invoice.terms) && (
             <section className="mt-10 border-t border-[#f8fafc] pt-6">
               <h2 className="flex items-center gap-3 text-[18px] font-bold leading-7 tracking-[-0.2px] text-navy">
-                <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
+                <span className="flex size-8 items-center justify-center rounded-full bg-brand-light">
                   <Image src="/portal/customer-info.svg" alt="" width={18} height={14} />
                 </span>
                 Customer-Facing Information

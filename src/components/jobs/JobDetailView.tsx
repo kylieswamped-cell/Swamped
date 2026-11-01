@@ -34,7 +34,7 @@ const QUOTE_PILL: Record<string, { label: string; className: string }> = {
 function CardHead({ icon, title }: { icon: ReactNode; title: string }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#2dd4bf]/10 text-[#2dd4bf]">{icon}</span>
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">{icon}</span>
       <h3 className="text-[14px] font-medium leading-[21px] text-[#64748b]">{title}</h3>
     </div>
   );
@@ -178,7 +178,7 @@ export default function JobDetailView({
           <div className="mt-6 flex flex-col gap-3">
             <LinkedRow label="Linked Quote">
               {job.quote ? (
-                <Link href={`/quotes/${job.quote.id}`} className="flex items-center gap-2 text-[12px] font-semibold text-[#2dd4bf] hover:text-[#14b8a6]">
+                <Link href={`/quotes/${job.quote.id}`} className="flex items-center gap-2 text-[12px] font-semibold text-brand hover:text-brand-dark">
                   {job.quote.number}
                   <ExternalLink className="size-2.5" />
                 </Link>
@@ -188,7 +188,7 @@ export default function JobDetailView({
             </LinkedRow>
             <LinkedRow label="Linked Invoice">
               {invoices[0] ? (
-                <Link href={`/invoices/${invoices[0].id}`} className="flex items-center gap-2 text-[12px] font-semibold text-[#2dd4bf] hover:text-[#14b8a6]">
+                <Link href={`/invoices/${invoices[0].id}`} className="flex items-center gap-2 text-[12px] font-semibold text-brand hover:text-brand-dark">
                   {invoices[0].number}
                   <ExternalLink className="size-2.5" />
                 </Link>
@@ -220,8 +220,8 @@ export default function JobDetailView({
       <JobItemsCard key={job.updatedAt} job={job} />
 
       <div className="mt-[31px] flex h-20 items-center justify-center gap-3 border-b border-[#f8fafc]">
-        <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
-          <UserRoundCheck className="size-[17px] text-[#00c38b]" />
+        <span className="flex size-8 items-center justify-center rounded-full bg-brand-light">
+          <UserRoundCheck className="size-[17px] text-brand" />
         </span>
         <h3 className="text-[18px] font-bold leading-7 text-navy">Customer-Facing Information</h3>
       </div>
@@ -277,8 +277,8 @@ export default function JobDetailView({
         >
           {job.quote && quotePill && (
             <tr className="h-[60px]">
-              <td className="pl-8 text-[16px] font-semibold text-[#2dd4bf]">
-                <Link href={`/quotes/${job.quote.id}`} className="hover:text-[#14b8a6]">{job.quote.number}</Link>
+              <td className="pl-8 text-[16px] font-semibold text-brand">
+                <Link href={`/quotes/${job.quote.id}`} className="hover:text-brand-dark">{job.quote.number}</Link>
               </td>
               <td className="pl-8 text-[16px] text-[#475569]">{shortDate(job.quote.date, false)}</td>
               <td className="pr-8 text-right text-[16px] font-bold text-[#0f172a]">{formatMoney(job.quote.total)}</td>
@@ -298,8 +298,8 @@ export default function JobDetailView({
             ? undefined
             : invoices.map((inv) => (
               <tr key={inv.id} className="h-[60px]">
-                <td className="pl-8 text-[16px] font-semibold text-[#2dd4bf]">
-                  <Link href={`/invoices/${inv.id}`} className="hover:text-[#14b8a6]">{inv.number}</Link>
+                <td className="pl-8 text-[16px] font-semibold text-brand">
+                  <Link href={`/invoices/${inv.id}`} className="hover:text-brand-dark">{inv.number}</Link>
                 </td>
                 <td className="pl-8 text-[16px] text-[#475569]">{shortDate(`${inv.dueOn}T00:00:00Z`, false)}</td>
                 <td className="pr-8 text-right text-[16px] font-bold text-[#0f172a]">{formatMoney(inv.total)}</td>

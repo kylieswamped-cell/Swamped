@@ -87,7 +87,7 @@ export function OperatingHoursCard({ data }: { data: SettingsData["hours"] }) {
             checked={v.showOnDocs}
             onChange={(c) => set("showOnDocs", c)}
             label="Show operating hours on quotes and invoices"
-            color="#009d63"
+            color="#0481ff"
           />
         </label>
       }
@@ -179,7 +179,7 @@ export function TaxCard({ data }: { data: SettingsData["tax"] }) {
           <button
             type="button"
             onClick={addRate}
-            className="flex h-[50px] items-center gap-2 rounded-[12px] bg-brand px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(34,197,94,0.2),0_4px_6px_-4px_rgba(34,197,94,0.2)] transition-colors hover:bg-[#00ad77]"
+            className="flex h-[50px] items-center gap-2 rounded-[12px] bg-brand px-6 text-[16px] font-bold text-white shadow-[0_10px_15px_-3px_rgba(4,129,255,0.2),0_4px_6px_-4px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark"
           >
             <Image src="/settings/plus.svg" alt="" width={21} height={21} />
             Add

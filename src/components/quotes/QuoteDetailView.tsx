@@ -167,8 +167,8 @@ export default function QuoteDetailView({
 
       <section className="mt-[31px] rounded-2xl border border-[#f1f5f9] bg-white px-6 pb-12 pt-6 lg:px-[30px]">
         <div className="flex items-center justify-center gap-3">
-          <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
-            <UserRoundCheck className="size-[17px] text-[#00c38b]" />
+          <span className="flex size-8 items-center justify-center rounded-full bg-brand-light">
+            <UserRoundCheck className="size-[17px] text-brand" />
           </span>
           <h3 className="text-[18px] font-bold leading-7 text-navy">Customer-Facing Information</h3>
         </div>

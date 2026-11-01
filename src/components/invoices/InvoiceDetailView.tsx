@@ -159,8 +159,8 @@ export default function InvoiceDetailView({
 
       <section className="mt-6 rounded-2xl border border-[#f1f5f9] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="flex items-center border-b border-[#f8fafc] p-6">
-          <span className="flex size-8 items-center justify-center rounded-full bg-[#f0fdfa]">
-            <UserRoundCheck className="size-[17px] text-[#00c38b]" />
+          <span className="flex size-8 items-center justify-center rounded-full bg-brand-light">
+            <UserRoundCheck className="size-[17px] text-brand" />
           </span>
           <h3 className="ml-3 text-[18px] font-bold leading-7 tracking-[-0.2px] text-navy">Customer-Facing Information</h3>
         </div>
