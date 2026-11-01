@@ -1,3 +1,4 @@
+import { itemHtml } from "@/lib/lineItems";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
 
 type JobEmail = {
@@ -45,7 +46,7 @@ function renderHtml(j: JobEmail) {
     .map(
       (i) => `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#0f172a">${escape(i.description)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#0f172a">${itemHtml(i.description, escape)}</td>
       <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#64748b;text-align:center">${i.quantity}</td>
       <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#0f172a;text-align:right">${formatMoney(lineTotal(i))}</td>
     </tr>`,

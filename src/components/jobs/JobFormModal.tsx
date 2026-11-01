@@ -1,5 +1,6 @@
 "use client";
 
+import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, Download, Info, LockKeyhole, PencilLine, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
@@ -282,7 +283,7 @@ export default function JobFormModal({
                 </colgroup>
                 <thead className="bg-[#f8fafc] text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
                   <tr className="h-[46px] border-b border-line">
-                    <th className="pl-6">Item Description</th>
+                    <th className="pl-6">Item</th>
                     <th className="pl-6">Quantity</th>
                     <th className="pr-6 text-right">Unit Price</th>
                     <th className="pr-6 text-right">Line Total</th>
@@ -294,12 +295,7 @@ export default function JobFormModal({
                   {lines.map((l, i) => (
                     <tr key={i} className="h-[77px]">
                       <td className="pl-7 pr-3">
-                        <input
-                          aria-label={`Line ${i + 1} description`}
-                          value={l.description}
-                          onChange={(e) => updateLine(i, { description: e.target.value })}
-                          className="h-[35px] w-full rounded-md border border-line px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-brand"
-                        />
+                        <LineNameCell label={`Line ${i + 1} name`} value={l.description} onChange={(d) => updateLine(i, { description: d })} className="h-[35px] w-full rounded-md border border-line px-3 text-[16px] font-medium text-[#334155] outline-none focus:border-brand" />
                       </td>
                       <td className="pl-12">
                         <input

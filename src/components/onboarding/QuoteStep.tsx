@@ -1,5 +1,6 @@
 "use client";
 
+import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, ChevronDown, Lock, Plus, Trash2, User } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { createFirstQuote } from "@/lib/onboarding/actions";
@@ -210,7 +211,7 @@ export default function QuoteStep({
           <table className="w-full min-w-[720px] text-left">
             <thead className="bg-[#f8fafc] text-[11px] font-bold uppercase tracking-[0.6px] text-[#64748b]">
               <tr>
-                <th className="px-4 py-3">Item Description</th>
+                <th className="px-4 py-3">Item</th>
                 <th className="w-24 px-2 py-3 text-center">Quantity</th>
                 <th className="w-36 px-2 py-3">Unit Price</th>
                 <th className="w-32 px-2 py-3 text-right">Line Total</th>
@@ -222,7 +223,7 @@ export default function QuoteStep({
               {lines.map((l, i) => (
                 <tr key={l.key} className="border-t border-[#f1f5f9]">
                   <td className="px-4 py-3">
-                    <input aria-label={`Item ${i + 1} description`} value={l.description} onChange={(e) => update(l.key, { description: e.target.value })} placeholder="e.g., Interior Painting - Master Bedroom" className={cellInput} />
+                    <LineNameCell label={`Item ${i + 1} name`} value={l.description} onChange={(d) => update(l.key, { description: d })} className={cellInput} />
                   </td>
                   <td className="px-2 py-3">
                     <input aria-label={`Item ${i + 1} quantity`} type="number" min={0} step="any" value={l.quantity} onChange={(e) => update(l.key, { quantity: e.target.value })} className={`${cellInput} text-center`} />

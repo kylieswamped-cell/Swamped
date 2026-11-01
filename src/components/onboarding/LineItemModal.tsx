@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { joinItem, MAX_LINE_TEXT } from "@/lib/lineItems";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
 
 export type NewLineItem = { description: string; quantity: string; unitPrice: string; taxable: boolean };
@@ -20,6 +21,8 @@ export default function LineItemModal({
   onCancel: () => void;
 }) {
   const [item, setItem] = useState<NewLineItem>({ description: "", quantity: "1", unitPrice: "", taxable: true });
+  const [name, setName] = useState("");
+  const [details, setDetails] = useState("");
   const [error, setError] = useState<string>();
   const first = useRef<HTMLInputElement>(null);
 
@@ -45,10 +48,10 @@ export default function LineItemModal({
         onClick={(e) => e.stopPropagation()}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!item.description.trim()) return setError("Enter an item description.");
+          if (!name.trim()) return setError("Enter a line item name.");
           if (!(Number(item.quantity) > 0)) return setError("Quantity must be more than 0.");
           if (!(Number(item.unitPrice) >= 0) || item.unitPrice === "") return setError("Enter a unit price.");
-          onSave(item);
+          onSave({ ...item, description: joinItem(name.trim(), details.trim()) });
         }}
         className="w-full max-w-[440px] overflow-hidden rounded-2xl bg-white shadow-2xl"
       >
@@ -57,8 +60,19 @@ export default function LineItemModal({
         </h2>
         <div className="flex flex-col gap-5 px-8 py-6">
           <label className={labelClass}>
-            Item Description
-            <input ref={first} value={item.description} onChange={(e) => set({ description: e.target.value })} placeholder="Item Description" className={fieldClass} />
+            Line Item Name
+            <input ref={first} value={name} onChange={(e) => setName(e.target.value)} maxLength={200} placeholder="e.g., Water Heater Installation" className={fieldClass} />
+          </label>
+          <label className={labelClass}>
+            Line Item Description <span className="font-medium normal-case tracking-normal text-[#94a3b8]">(optional)</span>
+            <textarea
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              maxLength={MAX_LINE_TEXT - 200}
+              rows={3}
+              placeholder="Details, materials, or scope of work"
+              className={`${fieldClass} h-auto resize-y py-3 leading-5`}
+            />
           </label>
           <label className={labelClass}>
             Quantity

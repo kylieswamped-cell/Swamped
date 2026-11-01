@@ -1,4 +1,5 @@
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
+import { itemHtml } from "@/lib/lineItems";
 import type { EmailTemplate } from "@/lib/settings/templates";
 import { escapeHtml as escape, formatMessage, sendEmail, type EmailAttachment, type EmailResult } from "./send";
 
@@ -39,7 +40,7 @@ function renderHtml(i: InvoiceEmail) {
     .map(
       (it) => `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#0f172a">${escape(it.description)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#0f172a">${itemHtml(it.description, escape)}</td>
       <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#64748b;text-align:center">${it.quantity}</td>
       <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#0f172a;text-align:right">${formatMoney(lineTotal(it))}</td>
     </tr>`,

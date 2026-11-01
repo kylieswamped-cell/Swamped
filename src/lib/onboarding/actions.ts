@@ -234,7 +234,7 @@ export async function createFirstQuote(
 
   const fieldErrors: Record<string, string> = {};
   if (!input.customerId) fieldErrors.customerId = "Select a customer.";
-  if (!items.length) fieldErrors.items = "Add at least one line item with a description.";
+  if (!items.length) fieldErrors.items = "Add at least one line item with a name.";
   else if (items.some((i) => i.quantity <= 0 || i.unit_price < 0)) {
     fieldErrors.items = "Each line item needs a quantity above 0 and a price of 0 or more.";
   }

@@ -1,5 +1,6 @@
 "use server";
 
+import { itemName, MAX_LINE_TEXT } from "@/lib/lineItems";
 import { revalidatePath } from "next/cache";
 import { sendInvoiceEmail, sendPaymentReceipt } from "@/lib/email/invoiceEmail";
 import type { EmailAttachment } from "@/lib/email/send";
@@ -63,7 +64,7 @@ const longDate = (isoDate: string) =>
   new Date(`${isoDate}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
 function itemsError(items: InvoiceItemInput[]) {
-  if (items.some((i) => !clean(i.description))) return "Every line item needs a description.";
+  if (items.some((i) => !itemName(i.description ?? ""))) return "Every line item needs a name.";
   if (items.some((i) => !(Number(i.quantity) > 0))) return "Line item quantities must be more than 0.";
   if (items.some((i) => !(Number(i.unitPrice) >= 0))) return "Line item prices can't be negative.";
   return null;
@@ -98,7 +99,7 @@ function validate(input: InvoiceInput) {
 const toItemRows = (items: InvoiceItemInput[]) =>
   items.map((i, position) => ({
     position,
-    description: i.description.trim().slice(0, 500),
+    description: i.description.trim().slice(0, MAX_LINE_TEXT),
     quantity: Number(i.quantity),
     unit_price: Number(i.unitPrice),
     taxable: Boolean(i.taxable),
