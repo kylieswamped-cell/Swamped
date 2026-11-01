@@ -18,7 +18,7 @@ const DATE_RANGES = [
 const badge: Record<ActivityStatus, string> = {
   Pending: "bg-[#f1f5f9] text-[#64748b]",
   Draft: "bg-[#f8fafc] text-[#94a3b8]",
-  Accepted: "text-brand",
+  Accepted: "text-[#059669]",
   Declined: "bg-[#fef2f2] text-[#ef4444]",
   New: "bg-[#eff6ff] text-[#3b82f6]",
 };

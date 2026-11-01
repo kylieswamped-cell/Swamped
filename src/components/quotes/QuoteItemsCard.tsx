@@ -28,7 +28,7 @@ function PaymentSummary({ deposit }: { deposit: NonNullable<QuoteDetail["deposit
     <div className="w-full rounded-2xl border border-line bg-[#f8fafc] p-6 lg:w-[288px]">
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-bold uppercase leading-[17px] text-[#64748b]">Payment Summary</span>
-        <span className="rounded-full border border-[#059669]/20 bg-brand-light px-3 py-[7px] text-[11px] font-bold leading-[17px] text-[#059669]">Received</span>
+        <span className="rounded-full border border-[#059669]/20 bg-[#ecfdf5] px-3 py-[7px] text-[11px] font-bold leading-[17px] text-[#059669]">Received</span>
       </div>
       <div className="mt-6 flex flex-col gap-3">
         {row("Amount", <span className="text-[18px] font-bold leading-[27px]">{formatMoney(deposit.amount)}</span>)}

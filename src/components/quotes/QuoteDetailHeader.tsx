@@ -19,7 +19,7 @@ type Dialog = "archive" | "unarchive" | "delete" | "send" | "deposit" | null;
 const HEADINGS: Record<QuoteDetail["state"], { label: string; color: string }> = {
   draft: { label: "Status: Draft", color: "text-[#9ca3af]" },
   sent: { label: "Status: Sent", color: "text-[#2563eb]" },
-  accepted: { label: "Status: Accepted", color: "text-brand" },
+  accepted: { label: "Status: Accepted", color: "text-[#059669]" },
   declined: { label: "Status: Declined", color: "text-[#dc2626]" },
   archived: { label: "Status: Archived", color: "text-[#6b7280]" },
 };
