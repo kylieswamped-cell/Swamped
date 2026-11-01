@@ -63,7 +63,7 @@ function Section({ title, icon, iconBg, open, onToggle, children }: { title: str
       <button type="button" onClick={onToggle} aria-expanded={open} className="flex items-center gap-3 text-left">
         <ChevronDown className={`size-4 text-black transition-transform ${open ? "" : "-rotate-90"}`} strokeWidth={2.5} />
         <span className={`flex size-10 items-center justify-center rounded-full ${iconBg}`}>{icon}</span>
-        <h3 className="text-[18px] font-bold uppercase leading-7 text-[#0f172a]">{title}</h3>
+        <h3 className="text-[18px] font-bold uppercase leading-7 text-navy">{title}</h3>
       </button>
       {open && children}
     </section>
@@ -220,7 +220,7 @@ export default function QuoteFormModal({
         className="flex max-h-[calc(100vh-32px)] flex-col overflow-hidden rounded-2xl border border-line bg-[#f8f9fa] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
       >
         <div className="relative flex h-[150px] shrink-0 items-start bg-white px-6 pt-[61px] sm:px-10">
-          <h2 className="text-[24px] font-bold leading-8 text-[#0f172a]">{heading}</h2>
+          <h2 className="text-[24px] font-bold leading-8 text-navy">{heading}</h2>
           <button type="button" onClick={onClose} disabled={pending} aria-label="Close" className="absolute right-[30px] top-[57px] rounded p-1 hover:bg-[#f1f5f9]">
             <Image src="/customers/close.svg" alt="" width={14} height={18} />
           </button>
@@ -327,7 +327,7 @@ export default function QuoteFormModal({
                           step="any"
                           value={l.quantity}
                           onChange={(e) => updateLine(i, { quantity: e.target.value })}
-                          className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
+                          className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-navy outline-none focus:border-brand"
                         />
                       </td>
                       <td className="pr-[21px]">
@@ -453,7 +453,7 @@ export default function QuoteFormModal({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Enter a message that the customer will see on the final quote document..."
-                  className="mt-2 h-[142px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
+                  className="mt-2 h-[142px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
                 />
               </div>
               <div>
@@ -554,7 +554,7 @@ export default function QuoteFormModal({
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}
                 placeholder="Add private notes for your team only. These will not be visible to the customer..."
-                className="mt-2 h-32 w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
+                className="mt-2 h-32 w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
               />
             </div>
           </Section>

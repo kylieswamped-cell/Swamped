@@ -65,7 +65,7 @@ function initials(first: string, last: string, email: string) {
 }
 
 const personalInput =
-  "h-12 w-full rounded-[12px] border border-line bg-[#f8f9fa] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+  "h-12 w-full rounded-[12px] border border-line bg-[#f8f9fa] px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 const personalLabel = "text-navy tracking-[0.35px]";
 
 export function PersonalInfoCard({ data }: { data: SettingsData["personal"] }) {
@@ -95,7 +95,7 @@ export function PersonalInfoCard({ data }: { data: SettingsData["personal"] }) {
     <SettingsCard id="personal" title="Personal Information" titleClass="text-[20px] font-bold leading-7 tracking-[0.04px] text-navy">
       <form onSubmit={form.submit} noValidate>
         <div className="flex flex-wrap items-center gap-6">
-          <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0f172a] text-[24px] font-bold text-white">
+          <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-navy text-[24px] font-bold text-white">
             {photo.url ? (
               // Signed storage URLs change on every load, so skip the image optimizer.
               <Image src={photo.url} alt="Your photo" fill sizes="80px" unoptimized className="object-cover" />

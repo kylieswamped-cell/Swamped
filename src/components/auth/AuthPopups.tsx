@@ -137,7 +137,7 @@ export function CheckEmailCard({
       >
         <Image src="/auth/email-check-icon.svg" alt="" width={38} height={30} />
       </motion.div>
-      <h2 className="mt-6 text-[30px] font-bold leading-[45px] tracking-[-0.75px] text-[#0f172a]">
+      <h2 className="mt-6 text-[30px] font-bold leading-[45px] tracking-[-0.75px] text-navy">
         Check Your Email
       </h2>
       <p className="mx-auto mt-2 max-w-[340px] text-[14px] leading-[21px] text-[#64748b]">{message}</p>

@@ -83,7 +83,7 @@ export default function CustomerFiles({
           <span className="flex size-8 items-center justify-center rounded bg-[#f1f5f9]">
             <Image src="/customers/files.svg" alt="" width={11} height={14} />
           </span>
-          <h3 className="text-[16px] font-bold leading-6 tracking-[-0.19px] text-[#0f172a]">Files/Photos</h3>
+          <h3 className="text-[16px] font-bold leading-6 tracking-[-0.19px] text-navy">Files/Photos</h3>
         </div>
         <p className="mt-4 flex items-center justify-between text-[14px] leading-[21px] tracking-[-0.45px] text-[#64748b]">
           {count === 0 ? "No attachments" : `${count} Attachment${count === 1 ? "" : "s"}`}
@@ -94,7 +94,7 @@ export default function CustomerFiles({
       <Modal open={open} onClose={() => setOpen(false)} label="Files and photos" busy={uploading} className="max-w-[520px]">
         <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
           <div className="flex items-center justify-between border-b border-[#f1f5f9] px-6 py-5">
-            <h2 className="text-[20px] font-bold text-[#0f172a]">Files/Photos</h2>
+            <h2 className="text-[20px] font-bold text-navy">Files/Photos</h2>
             <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="rounded p-1 text-[#94a3b8] hover:bg-[#f1f5f9]">
               <X className="size-5" />
             </button>

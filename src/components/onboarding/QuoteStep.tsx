@@ -30,7 +30,7 @@ const emptyLine = (): Line => ({ key: nextKey(), description: "", quantity: "1",
 
 const smallLabel = "text-[13px] font-semibold text-[#334155]";
 const cellInput =
-  "h-9 w-full rounded-md border border-line bg-white px-2 text-[14px] text-[#0f172a] outline-none focus:border-brand";
+  "h-9 w-full rounded-md border border-line bg-white px-2 text-[14px] text-navy outline-none focus:border-brand";
 
 function Section({ icon, title, children }: { icon?: ReactNode; title: string; children: ReactNode }) {
   const [open, setOpen] = useState(true);
@@ -40,7 +40,7 @@ function Section({ icon, title, children }: { icon?: ReactNode; title: string; c
         type="button"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.4px] text-[#0f172a]"
+        className="flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.4px] text-navy"
       >
         <ChevronDown className={`size-4 transition-transform ${open ? "" : "-rotate-90"}`} />
         {icon}
@@ -233,7 +233,7 @@ export default function QuoteStep({
                       <input aria-label={`Item ${i + 1} unit price`} type="number" min={0} step="0.01" value={l.unitPrice} onChange={(e) => update(l.key, { unitPrice: e.target.value })} placeholder="0.00" className={cellInput} />
                     </div>
                   </td>
-                  <td className="px-2 py-3 text-right text-[14px] font-bold text-[#0f172a]">
+                  <td className="px-2 py-3 text-right text-[14px] font-bold text-navy">
                     {formatMoney(lineTotal({ quantity: Number(l.quantity), unitPrice: Number(l.unitPrice) }))}
                   </td>
                   <td className="px-2 py-3 text-center">
@@ -276,7 +276,7 @@ export default function QuoteStep({
         <div className="ml-auto w-full max-w-[420px] rounded-2xl border border-line p-6 text-[15px] text-[#475569]">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span className="font-semibold text-[#0f172a]">{formatMoney(totals.subtotal)}</span>
+            <span className="font-semibold text-navy">{formatMoney(totals.subtotal)}</span>
           </div>
           <div className="mt-4 flex items-center justify-between gap-3">
             <label htmlFor="discount" className="w-24">Discount</label>
@@ -289,13 +289,13 @@ export default function QuoteStep({
             <span className="ml-auto">{formatMoney(totals.tax)}</span>
           </div>
           <div className="mt-5 flex justify-between border-t border-line pt-5">
-            <span className="font-bold text-[#0f172a]">Grand Total</span>
+            <span className="font-bold text-navy">Grand Total</span>
             <span className="text-[20px] font-bold text-[#059669]">{formatMoney(totals.total)}</span>
           </div>
           <div className="mt-4 flex items-center justify-between gap-3">
             <label htmlFor="deposit" className="w-24 leading-5">Required Deposit</label>
             <AmountInput name="deposit" value={deposit.value} type={deposit.type} onValue={(value) => setDeposit({ ...deposit, value })} onType={(type) => setDeposit({ ...deposit, type })} className="h-10 w-36" />
-            <span className="ml-auto font-semibold text-[#0f172a]">{formatMoney(totals.deposit)}</span>
+            <span className="ml-auto font-semibold text-navy">{formatMoney(totals.deposit)}</span>
           </div>
         </div>
 

@@ -121,7 +121,7 @@ export default function JobsView({
         {cards.map((c) => (
           <div key={c.label} className={statCard}>
             <p className="truncate text-[14px] font-medium leading-[21px] text-[#64748b]">{c.label}</p>
-            <p className="mt-2 text-[24px] font-bold leading-9 text-[#0f172a]">{c.value}</p>
+            <p className="mt-2 text-[24px] font-bold leading-9 text-navy">{c.value}</p>
           </div>
         ))}
       </div>
@@ -146,7 +146,7 @@ export default function JobsView({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by ID, customer or amount..."
-            className="h-9 w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
+            className="h-9 w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
           />
         </label>
         <div className="flex flex-wrap gap-[13px] xl:ml-4">

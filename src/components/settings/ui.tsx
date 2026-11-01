@@ -11,7 +11,7 @@ export function SettingsCard({
   title,
   subtitle,
   aside,
-  titleClass = "text-[20px] font-bold leading-7 text-[#0f172a]",
+  titleClass = "text-[20px] font-bold leading-7 text-navy",
   className = "",
   children,
 }: {
@@ -139,7 +139,7 @@ export function ToggleRow({
 }
 
 export const fieldInput =
-  "h-12 w-full rounded-[12px] border border-line bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand aria-invalid:border-[#ef4444] disabled:bg-[#f8fafc] disabled:text-[#6b7280]";
+  "h-12 w-full rounded-[12px] border border-line bg-white px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand aria-invalid:border-[#ef4444] disabled:bg-[#f8fafc] disabled:text-[#6b7280]";
 
 export function FieldLabel({ htmlFor, children, className = "" }: { htmlFor?: string; children: ReactNode; className?: string }) {
   return (

@@ -169,7 +169,7 @@ export function QuoteTemplateCard({
       <div className="flex items-center justify-between gap-3 px-2">
         <div className="flex items-center gap-3">
           <Image src={icon.src} alt="" width={icon.w} height={icon.h} />
-          <h4 className="text-[16px] font-semibold leading-6 tracking-[-0.4px] text-[#0f172a]">{title}</h4>
+          <h4 className="text-[16px] font-semibold leading-6 tracking-[-0.4px] text-navy">{title}</h4>
         </div>
         <span className="rounded bg-[#f8fafc] px-2 pb-[6.5px] pt-[10.5px] text-[10px] font-bold uppercase leading-[15px] text-[#94a3b8]">
           System Email
@@ -249,7 +249,7 @@ export function QuoteTemplateCard({
 }
 
 const invoiceInput =
-  "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] leading-5 text-[#0f172a] outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]";
+  "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] leading-5 text-navy outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]";
 
 /** Merge Field Library button with a menu of fields to insert. */
 function MergeFieldMenu({ fields, onPick }: { fields: string[]; onPick: (f: string) => void }) {
@@ -326,7 +326,7 @@ export function InvoiceTemplateCard({
           <span className={`flex size-8 items-center justify-center rounded-[8px] ${iconClass}`}>
             <Icon className="size-4" />
           </span>
-          <h4 className="text-[18px] font-semibold leading-7 text-[#0f172a]">{title}</h4>
+          <h4 className="text-[18px] font-semibold leading-7 text-navy">{title}</h4>
         </div>
         <MergeFieldMenu fields={TEMPLATE_FIELDS[templateKey]} onPick={insertField} />
       </div>
@@ -364,7 +364,7 @@ export function InvoiceTemplateCard({
               maxLength={5000}
               rows={6}
               onChange={(e) => onChange({ ...value, body: e.target.value })}
-              className="block min-h-[152px] w-full resize-y bg-white p-4 text-[14px] leading-5 text-[#0f172a] outline-none"
+              className="block min-h-[152px] w-full resize-y bg-white p-4 text-[14px] leading-5 text-navy outline-none"
               onFocus={onBodyFocus}
             />
           </div>
@@ -437,7 +437,7 @@ export function RefundTemplateFields({
             maxLength={200}
             onChange={(e) => onChange({ ...value, subject: e.target.value })}
             aria-invalid={errors["refund.subject"] ? true : undefined}
-            className="w-full rounded-[12px] border border-line bg-[rgba(248,250,252,0.5)] px-4 py-3 text-[13.234px] leading-5 text-[#0f172a] outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]"
+            className="w-full rounded-[12px] border border-line bg-[rgba(248,250,252,0.5)] px-4 py-3 text-[13.234px] leading-5 text-navy outline-none transition-colors focus:border-brand aria-invalid:border-[#ef4444]"
             onFocus={onSubjectFocus}
           />
           <FieldError id={`${id}-subject-error`} message={errors["refund.subject"]} />
@@ -459,7 +459,7 @@ export function RefundTemplateFields({
               maxLength={5000}
               rows={7}
               onChange={(e) => onChange({ ...value, body: e.target.value })}
-              className="block min-h-[180px] w-full resize-y bg-transparent p-4 text-[13.234px] leading-[22.75px] text-[#0f172a] outline-none"
+              className="block min-h-[180px] w-full resize-y bg-transparent p-4 text-[13.234px] leading-[22.75px] text-navy outline-none"
               onFocus={onBodyFocus}
             />
           </div>

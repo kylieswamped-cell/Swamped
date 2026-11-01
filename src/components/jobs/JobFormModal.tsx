@@ -310,7 +310,7 @@ export default function JobFormModal({
                           step="any"
                           value={l.quantity}
                           onChange={(e) => updateLine(i, { quantity: e.target.value })}
-                          className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
+                          className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-navy outline-none focus:border-brand"
                         />
                       </td>
                       <td className="pr-[21px]">
@@ -370,7 +370,7 @@ export default function JobFormModal({
             ) : (
               <div className="flex justify-end border-t border-[#f1f5f9] px-6 py-4 text-[14px] text-[#475569]">
                 Subtotal
-                <span className="ml-6 min-w-[90px] text-right font-semibold text-[#0f172a]">
+                <span className="ml-6 min-w-[90px] text-right font-semibold text-navy">
                   {formatMoney(lines.reduce((sum, l) => sum + lineTotal({ quantity: Number(l.quantity), unitPrice: Number(l.unitPrice) }), 0))}
                 </span>
               </div>

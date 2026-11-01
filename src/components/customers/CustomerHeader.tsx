@@ -79,7 +79,7 @@ export default function CustomerHeader({
           >
             <Image src="/customers/back.svg" alt="" width={16} height={26} />
           </Link>
-          <h2 className="truncate text-[30px] font-bold leading-9 tracking-[-0.2px] text-[#0f172a]">{name}</h2>
+          <h2 className="truncate text-[30px] font-bold leading-9 tracking-[-0.2px] text-navy">{name}</h2>
           {archived && (
             <span className="shrink-0 rounded-full border border-line bg-[#f1f5f9] px-2.5 py-0.5 text-[12px] font-medium text-[#64748b]">
               Archived

@@ -48,7 +48,7 @@ export default function JobLineItemModal({
   return (
     <Modal open onClose={onClose} label={initial ? "Edit Line item" : "Create New Line item"} className="max-w-[438px]">
       <form noValidate onSubmit={submit} className="overflow-hidden rounded-2xl border border-[#f1f5f9] bg-white shadow-[0_0_20px_rgba(0,0,0,0.02),0_25px_50px_-12px_rgba(0,0,0,0.25)]">
-        <h2 className="flex h-[75px] items-center justify-center border-b border-[#f1f5f9] bg-[#f8fafc]/50 text-[18px] font-semibold leading-7 tracking-[0.2px] text-[#0f172a]">
+        <h2 className="flex h-[75px] items-center justify-center border-b border-[#f1f5f9] bg-[#f8fafc]/50 text-[18px] font-semibold leading-7 tracking-[0.2px] text-navy">
           {initial ? "Edit Line item" : "Create New Line item"}
         </h2>
 

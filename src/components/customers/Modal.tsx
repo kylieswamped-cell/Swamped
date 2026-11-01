@@ -42,7 +42,7 @@ export default function Modal({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-[#0f172a]/60 p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-navy/60 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

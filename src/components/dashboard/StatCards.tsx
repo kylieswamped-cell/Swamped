@@ -34,7 +34,7 @@ export default function StatCards({
             <Image src={`/onboarding/${stat.icon}.svg`} alt="" width={stat.w} height={16} />
           </div>
           <p className="mt-4 text-[14px] font-medium leading-5 text-[#64748b]">{stat.label}</p>
-          <p className="mt-1 truncate text-[30px] font-bold leading-9 text-[#0f172a]">{stat.value}</p>
+          <p className="mt-1 truncate text-[30px] font-bold leading-9 text-navy">{stat.value}</p>
         </StaggerItem>
       ))}
     </Stagger>

@@ -9,7 +9,7 @@ import { DEPOSIT_METHODS } from "@/lib/quotes/data";
 
 const labelClass = "text-[14px] font-semibold leading-5 text-[#334155]";
 const fieldClass =
-  "w-full rounded-xl border border-line bg-[#f8fafc] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-xl border border-line bg-[#f8fafc] px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 
 function today() {
   const d = new Date();
@@ -81,7 +81,7 @@ export default function RecordDepositModal({
           <div>
             <label htmlFor="deposit-date" className={labelClass}>Payment Date</label>
             <div className={`relative mt-2 flex h-12 items-center justify-between rounded-xl border bg-[#f8fafc] px-4 ${fieldErrors.paidOn ? "border-[#ef4444]" : "border-line"}`}>
-              <span className="text-[16px] text-[#0f172a]">{paidOn ? shortDate(paidOn) : "Select"}</span>
+              <span className="text-[16px] text-navy">{paidOn ? shortDate(paidOn) : "Select"}</span>
               <CalendarDays className="size-4 text-[#94a3b8]" />
               <input
                 ref={dateInput}
@@ -114,7 +114,7 @@ export default function RecordDepositModal({
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="min-w-0 flex-1 bg-transparent text-[24px] font-bold text-[#0f172a] outline-none placeholder:text-[#cbd5e1]"
+              className="min-w-0 flex-1 bg-transparent text-[24px] font-bold text-navy outline-none placeholder:text-[#cbd5e1]"
             />
             <span className="rounded bg-[#eef2ff] px-2 py-[3px] text-[12px] font-bold text-[#4f46e5]">USD</span>
           </div>

@@ -40,7 +40,7 @@ export function FilterMenu<T extends string>({
         aria-expanded={open}
         onClick={() => setOpen(!open)}
         className={`flex h-9 items-center justify-between gap-2 rounded-lg border px-4 text-[14px] font-medium leading-5 transition-colors ${
-          selected.length ? "border-brand bg-brand-light text-[#0f172a]" : "border-line bg-[#f9fafb] text-[#475569] hover:bg-white"
+          selected.length ? "border-brand bg-brand-light text-navy" : "border-line bg-[#f9fafb] text-[#475569] hover:bg-white"
         } ${width}`}
       >
         <span className="whitespace-nowrap">{label}</span>

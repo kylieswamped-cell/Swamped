@@ -100,7 +100,7 @@ export default function InvoiceDetailView({
         <div className={`${card} justify-between`}>
           <div>
             <p className={cardLabel}>Total Amount</p>
-            <p className="mt-1 text-[20px] font-bold leading-[30px] text-[#0f172a]">{formatMoney(invoice.totals.total)}</p>
+            <p className="mt-1 text-[20px] font-bold leading-[30px] text-navy">{formatMoney(invoice.totals.total)}</p>
           </div>
           <div className="mt-3">
             <p className={cardLabel}>Outstanding Balance</p>
@@ -208,13 +208,13 @@ export default function InvoiceDetailView({
       <InvoiceInternalLogs key={`notes-${invoice.updatedAt}`} invoiceId={invoice.id} notes={invoice.internalNotes ?? ""} files={internalFiles} />
 
       <section className="mt-[26px] rounded-2xl border border-[#f1f5f9] bg-white px-6 py-8 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:px-10 print:hidden">
-        <h3 className="text-[18px] font-bold leading-[27px] text-[#0f172a]">Invoice Activity</h3>
+        <h3 className="text-[18px] font-bold leading-[27px] text-navy">Invoice Activity</h3>
         <ol className="relative mt-6 ml-[5px] flex flex-col gap-8 border-l-2 border-line pl-8">
           {events.map((e, i) => (
             <li key={`${e.title}-${i}`} className="relative flex flex-col justify-between gap-1 sm:flex-row sm:gap-6">
               <span className={`absolute -left-[39px] top-1.5 size-3 rounded-full shadow-[0_0_0_4px_#fff,0_1px_2px_rgba(0,0,0,0.05)] ${e.dot}`} />
               <div className="min-w-0">
-                <h4 className={`text-[15px] font-bold leading-[23px] ${e.tone ?? "text-[#0f172a]"}`}>{e.title}</h4>
+                <h4 className={`text-[15px] font-bold leading-[23px] ${e.tone ?? "text-navy"}`}>{e.title}</h4>
                 <p className="text-[14px] leading-[21px] text-[#64748b]">{e.detail}</p>
               </div>
               <span className="shrink-0 text-[12px] font-medium leading-[18px] text-[#94a3b8]">{when(e.at, local)}</span>

@@ -10,7 +10,7 @@ export type NewLineItem = { description: string; quantity: string; unitPrice: st
 
 const labelClass = "text-[12px] font-bold uppercase tracking-[0.6px] text-[#64748b]";
 const fieldClass =
-  "mt-2 h-12 w-full rounded-xl border border-[#94a3b8]/60 bg-white px-4 text-[15px] text-[#0f172a] outline-none placeholder:text-[#cbd5e1] focus:border-brand";
+  "mt-2 h-12 w-full rounded-xl border border-[#94a3b8]/60 bg-white px-4 text-[15px] text-navy outline-none placeholder:text-[#cbd5e1] focus:border-brand";
 
 export default function LineItemModal({
   onSave,
@@ -34,7 +34,7 @@ export default function LineItemModal({
 
   // Portal out of the step card: its transform would otherwise trap `fixed`.
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#0f172a]/70 p-4" onClick={onCancel}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-navy/70 p-4" onClick={onCancel}>
       <motion.form
         role="dialog"
         aria-modal="true"
@@ -52,7 +52,7 @@ export default function LineItemModal({
         }}
         className="w-full max-w-[440px] overflow-hidden rounded-2xl bg-white shadow-2xl"
       >
-        <h2 id="line-item-title" className="border-b border-[#f1f5f9] bg-[#f8fafc] py-6 text-center text-[18px] font-semibold text-[#0f172a]">
+        <h2 id="line-item-title" className="border-b border-[#f1f5f9] bg-[#f8fafc] py-6 text-center text-[18px] font-semibold text-navy">
           Create New Line Item
         </h2>
         <div className="flex flex-col gap-5 px-8 py-6">
@@ -75,8 +75,8 @@ export default function LineItemModal({
             </p>
           </div>
           <fieldset>
-            <legend className="text-[15px] text-[#0f172a]">Taxable</legend>
-            <div className="mt-2 flex gap-8 pl-4 text-[15px] text-[#0f172a]">
+            <legend className="text-[15px] text-navy">Taxable</legend>
+            <div className="mt-2 flex gap-8 pl-4 text-[15px] text-navy">
               {[true, false].map((v) => (
                 <label key={String(v)} className="flex items-center gap-2">
                   <input type="radio" name="taxable" checked={item.taxable === v} onChange={() => set({ taxable: v })} className="size-4 accent-brand" />

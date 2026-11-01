@@ -20,7 +20,7 @@ export function StripeStatusCard({ connected }: { connected: boolean }) {
         <Image src="/settings/stripe-logo.svg" alt="Stripe" width={37.5} height={30} className="ml-1 mt-1 shrink-0 sm:mt-0" />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-[18px] font-bold leading-7 text-[#0f172a]">Stripe Connection Status</h2>
+            <h2 className="text-[18px] font-bold leading-7 text-navy">Stripe Connection Status</h2>
             <span
               className={`inline-flex h-5 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold leading-4 ${
                 connected ? "bg-[#d1fae5] text-[#047857]" : "bg-[#f1f5f9] text-[#475569]"
@@ -50,7 +50,7 @@ export function StripeStatusCard({ connected }: { connected: boolean }) {
           type="button"
           disabled
           title={STRIPE_NOT_READY}
-          className="h-11 rounded-[12px] bg-[#0f172a] px-5 text-[16px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-11 rounded-[12px] bg-navy px-5 text-[16px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           {connected ? "Reconnect Stripe" : "Connect Stripe"}
         </button>
@@ -65,7 +65,7 @@ export function RefundCard({ template }: { template: EmailTemplate }) {
     <SettingsCard
       id="refunds"
       title="Refund Settings"
-      titleClass="text-[20px] font-semibold leading-5 tracking-[-0.08px] text-[#0f172a]"
+      titleClass="text-[20px] font-semibold leading-5 tracking-[-0.08px] text-navy"
       subtitle="Manage your automated refund receipt templates sent to customers."
       className="border-[rgba(226,232,240,0.6)]! shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
     >
@@ -101,7 +101,7 @@ export function NotificationsCard({ prefs }: { prefs: Record<string, boolean> })
     <SettingsCard
       id="notifications"
       title="Notification Settings"
-      titleClass="text-[16px] font-semibold leading-6 text-[#0f172a]"
+      titleClass="text-[16px] font-semibold leading-6 text-navy"
       subtitle="These notifications control email alerts. In-app notifications remain enabled."
       className="border-[rgba(226,232,240,0.6)]!"
     >
@@ -109,7 +109,7 @@ export function NotificationsCard({ prefs }: { prefs: Record<string, boolean> })
         <ul>
           {NOTIFICATIONS.map((n, i) => (
             <li key={n.key} className={`flex h-[52px] items-center justify-between ${i ? "border-t border-[#f1f5f9]" : ""}`}>
-              <span className="text-[14px] font-medium leading-5 text-[#0f172a]">{n.label}</span>
+              <span className="text-[14px] font-medium leading-5 text-navy">{n.label}</span>
               <Toggle size="notify" checked={form.values[n.key]} onChange={(c) => form.set(n.key, c)} label={`${n.label} emails`} />
             </li>
           ))}
@@ -152,7 +152,7 @@ export function CommunicationCard({ prefs }: { prefs: Record<string, boolean> })
     <SettingsCard
       id="communication"
       title="Communication Preferences"
-      titleClass="text-[16px] font-semibold leading-6 text-[#0f172a]"
+      titleClass="text-[16px] font-semibold leading-6 text-navy"
       subtitle="Marketing communication preferences."
       className="rounded-[12px]! border-[rgba(226,232,240,0.6)]!"
     >
@@ -178,7 +178,7 @@ export function CommunicationCard({ prefs }: { prefs: Record<string, boolean> })
   );
 }
 
-const payoutLabel = "text-[14px] font-bold leading-[21px] tracking-[-0.35px] text-[#0f172a]";
+const payoutLabel = "text-[14px] font-bold leading-[21px] tracking-[-0.35px] text-navy";
 
 export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
   const form = useSettingsForm({ schedule: data.schedule as string, minimum: data.minimum }, savePayoutSettings);
@@ -189,7 +189,7 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
     <SettingsCard
       id="payouts"
       title="Stripe & Payout Settings"
-      titleClass="text-[20px] font-bold leading-7 tracking-[0.04px] text-[#0f172a]"
+      titleClass="text-[20px] font-bold leading-7 tracking-[0.04px] text-navy"
       subtitle="Configure how and when you receive your funds."
       className="border-transparent!"
       aside={
@@ -210,7 +210,7 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
               <Image src="/settings/link.svg" alt="" width={18.88} height={14.69} />
             </span>
             <div>
-              <p className="text-[16px] font-semibold leading-6 text-[#0f172a]">Stripe Payout Connection</p>
+              <p className="text-[16px] font-semibold leading-6 text-navy">Stripe Payout Connection</p>
               <p className="text-[12px] leading-4 text-[#6b7280]">
                 {data.connected && data.connectedAt
                   ? `Connected ${new Date(data.connectedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
@@ -283,12 +283,12 @@ export function PayoutCard({ data }: { data: SettingsData["stripe"] }) {
         </div>
 
         <div className="flex flex-col gap-3">
-          <span className="text-[14px] font-bold leading-5 text-[#0f172a]">Payout Visibility</span>
+          <span className="text-[14px] font-bold leading-5 text-navy">Payout Visibility</span>
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {tiles.map((t) => (
               <div key={t} className="rounded-[12px] border border-[#f1f5f9] bg-[rgba(248,250,252,0.5)] p-4">
                 <p className="text-[12px] font-medium uppercase leading-4 tracking-[0.6px] text-[#64748b]">{t}</p>
-                <p className="mt-1 text-[18px] font-bold leading-7 text-[#0f172a]">—</p>
+                <p className="mt-1 text-[18px] font-bold leading-7 text-navy">—</p>
               </div>
             ))}
           </div>

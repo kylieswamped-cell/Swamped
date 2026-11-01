@@ -12,7 +12,7 @@ const actions = [
 export default function QuickActions() {
   return (
     <section className="rounded-xl border border-line bg-white px-[14px] pb-[17px] pt-[9px] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-      <h2 className="text-[24px] font-bold leading-8 tracking-[0.047px] text-[#0f172a]">Quick Actions</h2>
+      <h2 className="text-[24px] font-bold leading-8 tracking-[0.047px] text-navy">Quick Actions</h2>
       <div className="mt-[22px] grid grid-cols-1 gap-4 sm:grid-cols-2 lg:flex lg:flex-wrap lg:gap-6">
         {actions.map((action) => (
           <Link

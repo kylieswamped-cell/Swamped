@@ -10,7 +10,7 @@ import { formatMoney } from "@/lib/quotes/totals";
 
 const labelClass = "text-[14px] font-semibold leading-5 text-[#334155]";
 const fieldClass =
-  "w-full rounded-xl border border-line bg-[#f8fafc] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+  "w-full rounded-xl border border-line bg-[#f8fafc] px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 
 function today() {
   const d = new Date();
@@ -90,14 +90,14 @@ export default function RecordPaymentFlow({
             <span className="flex size-16 items-center justify-center rounded-full bg-[#f0f9ff]">
               <HandCoins className="size-7 text-[#0284c7]" />
             </span>
-            <h2 className="mt-6 text-[24px] font-bold leading-8 text-[#0f172a]">Confirm Manual Payment Entry?</h2>
+            <h2 className="mt-6 text-[24px] font-bold leading-8 text-navy">Confirm Manual Payment Entry?</h2>
             <p className="mt-3 text-[15px] leading-6 text-[#64748b]">
               Are you sure you want to record this manual payment? This action will instantly adjust the remaining invoice balance and update the customer records.
             </p>
             <dl className="mt-6 w-full rounded-2xl border border-[#f1f5f9] bg-[#f8fafc] px-6 py-5 text-left">
               {[
-                ["Method", <span key="m" className="text-[16px] font-semibold text-[#0f172a]">{method}</span>],
-                ["Reference Code", <span key="r" className="text-[16px] font-medium text-[#0f172a]">{reference.trim() || "—"}</span>],
+                ["Method", <span key="m" className="text-[16px] font-semibold text-navy">{method}</span>],
+                ["Reference Code", <span key="r" className="text-[16px] font-medium text-navy">{reference.trim() || "—"}</span>],
                 ["Total Collected", <span key="t" className="text-[20px] font-bold text-[#0284c7]">{formatMoney(value)}</span>],
               ].map(([label, content], i) => (
                 <div key={label as string} className={`flex items-center justify-between gap-4 ${i ? "mt-4" : ""}`}>
@@ -175,7 +175,7 @@ export default function RecordPaymentFlow({
               <CircleAlert className="size-6 text-white" strokeWidth={2.5} />
             </span>
           </span>
-          <h2 className="mt-6 text-[24px] font-bold leading-8 text-[#0f172a]">Recording Failed</h2>
+          <h2 className="mt-6 text-[24px] font-bold leading-8 text-navy">Recording Failed</h2>
           <p className="mt-2 text-[15px] leading-6 text-[#64748b]">{step.error}</p>
           <div className="mt-6 w-full rounded-xl border border-[#f1f5f9] bg-[#f8fafc] px-5 py-4 text-left">
             <p className="text-[11px] font-bold uppercase leading-4 tracking-[0.6px] text-[#94a3b8]">Log Reference</p>
@@ -209,7 +209,7 @@ export default function RecordPaymentFlow({
     <Modal open onClose={onClose} label="Record Manual Payment" className="max-w-[468px]">
       <div className="max-h-[calc(100vh-32px)] overflow-y-auto rounded-2xl bg-white shadow-2xl">
         <div className="relative border-b border-[#f1f5f9] px-8 pb-6 pt-8">
-          <h2 className="text-[20px] font-bold leading-7 text-[#0f172a]">Record Manual Payment</h2>
+          <h2 className="text-[20px] font-bold leading-7 text-navy">Record Manual Payment</h2>
           <p className="mt-1 text-[14px] font-medium leading-5 text-[#4f46e5]">Invoice #{invoiceNumber}</p>
           <button type="button" onClick={onClose} aria-label="Close" className="absolute right-7 top-8 rounded p-1 text-[#94a3b8] hover:text-[#475569]">
             <X className="size-4" />
@@ -232,7 +232,7 @@ export default function RecordPaymentFlow({
             <div>
               <label htmlFor="payment-date" className={labelClass}>Payment Date</label>
               <div className={`relative mt-2 flex h-12 items-center justify-between rounded-xl border bg-[#f8fafc] px-4 ${fieldErrors.paidOn ? "border-[#ef4444]" : "border-line"}`}>
-                <span className="text-[16px] text-[#0f172a]">{paidOn ? shortDate(paidOn) : "Select"}</span>
+                <span className="text-[16px] text-navy">{paidOn ? shortDate(paidOn) : "Select"}</span>
                 <CalendarDays className="size-4 text-[#94a3b8]" />
                 <input
                   ref={dateInput}
@@ -265,7 +265,7 @@ export default function RecordPaymentFlow({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="min-w-0 flex-1 bg-transparent text-[24px] font-bold text-[#0f172a] outline-none placeholder:text-[#cbd5e1]"
+                className="min-w-0 flex-1 bg-transparent text-[24px] font-bold text-navy outline-none placeholder:text-[#cbd5e1]"
               />
               <span className="rounded bg-[#eef2ff] px-2 py-[3px] text-[12px] font-bold text-[#4f46e5]">USD</span>
             </div>

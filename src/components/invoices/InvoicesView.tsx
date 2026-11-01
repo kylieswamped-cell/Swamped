@@ -128,7 +128,7 @@ export default function InvoicesView({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by ID, customer or amount..."
-            className="h-[37px] w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
+            className="h-[37px] w-full rounded-lg border border-line bg-[#f9fafb] pl-10 pr-3 text-[14px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
           />
         </label>
         <div className="flex flex-wrap gap-3 xl:ml-4">

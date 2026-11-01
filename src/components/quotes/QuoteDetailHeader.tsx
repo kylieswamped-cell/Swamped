@@ -191,7 +191,7 @@ export default function QuoteDetailHeader({
           <Link href="/quotes" aria-label="Back to quotes" className="flex size-8 shrink-0 items-center justify-center rounded-lg hover:bg-[#f1f5f9] sm:-ml-[37px]">
             <Image src="/customers/back.svg" alt="" width={16} height={26} />
           </Link>
-          <h2 className="truncate text-[30px] font-bold leading-9 text-[#0f172a]">Quote Details: #{quote.number}</h2>
+          <h2 className="truncate text-[30px] font-bold leading-9 text-navy">Quote Details: #{quote.number}</h2>
         </div>
 
         <div className="flex items-center gap-[7px]">

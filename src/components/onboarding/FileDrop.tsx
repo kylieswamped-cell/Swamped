@@ -41,7 +41,7 @@ export default function FileDrop({
         onChange={(e) => pick(e.target.files?.[0])}
       />
       {file ? (
-        <div className="flex h-12 items-center justify-between gap-3 rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-4 text-[14px] text-[#0f172a]">
+        <div className="flex h-12 items-center justify-between gap-3 rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-4 text-[14px] text-navy">
           <span className="truncate">{file.name}</span>
           <button
             type="button"

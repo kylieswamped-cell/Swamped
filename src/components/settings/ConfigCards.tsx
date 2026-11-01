@@ -38,7 +38,7 @@ function SubHeading({ icon, children }: { icon: { src: string; w: number; h: num
   return (
     <div className="flex items-center gap-3">
       <Image src={icon.src} alt="" width={icon.w} height={icon.h} />
-      <h3 className="text-[18px] font-semibold leading-7 text-[#0f172a]">{children}</h3>
+      <h3 className="text-[18px] font-semibold leading-7 text-navy">{children}</h3>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
     <SettingsCard
       id="quotes"
       title="Quote Configuration"
-      titleClass="text-[24px] font-bold leading-8 text-[#0f172a]"
+      titleClass="text-[24px] font-bold leading-8 text-navy"
       subtitle="Manage global defaults, reminder automation, and customer communication templates."
       className="border-[#f1f5f9]!"
     >
@@ -81,7 +81,7 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
                         onClick={() => set("depositType", t)}
                         className={`rounded-[6px] px-4 py-1.5 text-[12px] leading-4 transition-colors ${
                           v.depositType === t
-                            ? "bg-white font-semibold text-[#0f172a] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+                            ? "bg-white font-semibold text-navy drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
                             : "font-medium text-[#64748b] hover:text-[#334155]"
                         }`}
                       >
@@ -103,7 +103,7 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
                       value={Number.isNaN(v.depositValue) ? "" : v.depositValue}
                       onChange={(e) => set("depositValue", e.target.value === "" ? NaN : Number(e.target.value))}
                       aria-invalid={errors.depositValue ? true : undefined}
-                      className={`h-9 w-full rounded-[8px] border border-line bg-[#f8fafc] pr-8 text-[14px] text-[#0f172a] outline-none focus:border-brand aria-invalid:border-[#ef4444] ${
+                      className={`h-9 w-full rounded-[8px] border border-line bg-[#f8fafc] pr-8 text-[14px] text-navy outline-none focus:border-brand aria-invalid:border-[#ef4444] ${
                         v.depositType === "fixed" ? "pl-6" : "pl-3"
                       }`}
                     />
@@ -193,7 +193,7 @@ function Panel({ icon: Icon, iconClass, title, children }: { icon: LucideIcon; i
         <span className={`flex size-8 items-center justify-center rounded-[8px] ${iconClass}`}>
           <Icon className="size-4" />
         </span>
-        <h3 className="text-[18px] font-semibold leading-7 text-[#0f172a]">{title}</h3>
+        <h3 className="text-[18px] font-semibold leading-7 text-navy">{title}</h3>
       </div>
       <div className="flex flex-col gap-6 p-4 sm:p-6">{children}</div>
     </section>
@@ -204,7 +204,7 @@ function SwitchRow({ title, description, checked, onChange, border }: { title: s
   return (
     <div className={`flex items-center justify-between gap-4 ${border ? "border-b border-[#f1f5f9] pb-6" : ""}`}>
       <div>
-        <p className="text-[14px] font-medium leading-5 text-[#0f172a]">{title}</p>
+        <p className="text-[14px] font-medium leading-5 text-navy">{title}</p>
         <p className="text-[12px] leading-4 text-[#64748b]">{description}</p>
       </div>
       <Toggle checked={checked} onChange={onChange} label={title} />
@@ -213,7 +213,7 @@ function SwitchRow({ title, description, checked, onChange, border }: { title: s
 }
 
 const invoiceSelect =
-  "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] text-[#0f172a] outline-none focus:border-brand disabled:opacity-60";
+  "h-11 w-full rounded-[12px] border border-line bg-white px-3 text-[14px] text-navy outline-none focus:border-brand disabled:opacity-60";
 
 function DaysBox({ id, label, value, options, suffix, disabled, onChange }: { id: string; label: string; value: number; options: number[]; suffix: string; disabled: boolean; onChange: (n: number) => void }) {
   return (
@@ -254,7 +254,7 @@ export function InvoiceConfigCard({ data, templates }: { data: SettingsData["inv
     <SettingsCard
       id="invoices"
       title="Invoice Configuration"
-      titleClass="text-[24px] font-bold leading-8 tracking-[-0.6px] text-[#0f172a]"
+      titleClass="text-[24px] font-bold leading-8 tracking-[-0.6px] text-navy"
       subtitle="Manage defaults, reminders, and email templates for your billing."
     >
       <form onSubmit={form.submit} noValidate className="flex flex-col gap-8">
@@ -283,7 +283,7 @@ export function InvoiceConfigCard({ data, templates }: { data: SettingsData["inv
               value={v.invoiceTerms}
               onChange={(e) => set("invoiceTerms", e.target.value)}
               placeholder="Enter your standard terms..."
-              className="min-h-[104px] w-full resize-y rounded-[12px] border border-line bg-white px-3 py-[11px] text-[14px] leading-5 text-[#0f172a] outline-none placeholder:text-[#9ca3af] focus:border-brand"
+              className="min-h-[104px] w-full resize-y rounded-[12px] border border-line bg-white px-3 py-[11px] text-[14px] leading-5 text-navy outline-none placeholder:text-[#9ca3af] focus:border-brand"
             />
             <p className="flex items-center gap-1.5 text-[12px] leading-4 text-[#64748b]">
               <Info className="size-2.5" strokeWidth={3} />

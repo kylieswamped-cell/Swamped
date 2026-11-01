@@ -24,7 +24,7 @@ const BADGES: Record<"awaiting" | "accepted" | "declined", Badge> = {
 const metaLabel = "text-[12px] font-semibold uppercase leading-4 tracking-[0.4px] text-[#94a3b8]";
 const metaValue = "mt-0 text-[16px] font-medium leading-6 tracking-[-0.4px] text-[#334155]";
 const th = "h-12 text-[12px] font-bold uppercase leading-4 tracking-[0.6px] text-[#94a3b8]";
-const sectionHeading = "text-[14px] font-bold uppercase leading-5 tracking-[0.7px] text-[#0f172a]";
+const sectionHeading = "text-[14px] font-bold uppercase leading-5 tracking-[0.7px] text-navy";
 
 const businessLinesOf = (b: PublicBusiness) => {
   const cityLine = [b.city, [b.state, b.zip].filter(Boolean).join(" ")].filter(Boolean).join(", ");
@@ -51,7 +51,7 @@ function BusinessHeader({ business }: { business: PublicBusiness }) {
 export function ExpiredQuoteView({ quote }: { quote: ExpiredPublicQuote }) {
   const b = quote.business;
   return (
-    <div className="min-h-screen bg-[#f8fafc] px-4 pb-16 pt-6 text-[#0f172a] sm:pt-12">
+    <div className="min-h-screen bg-[#f8fafc] px-4 pb-16 pt-6 text-navy sm:pt-12">
       <article className="mx-auto max-w-[640px] rounded-2xl border border-line bg-white px-5 pb-10 pt-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.05)] sm:px-10">
         <BusinessHeader business={b} />
         <div className="mt-10 rounded-xl border border-[#fef3c7] bg-[#fffbeb] px-5 py-5">
@@ -59,7 +59,7 @@ export function ExpiredQuoteView({ quote }: { quote: ExpiredPublicQuote }) {
             <span className="size-2 rounded-full bg-[#f59e0b]" />
             <span className="text-[12px] font-semibold uppercase leading-4 tracking-[0.6px] text-[#b45309]">Expired</span>
           </span>
-          <h1 className="mt-4 text-[20px] font-bold leading-7 text-[#0f172a]">Quote {quote.number} has expired</h1>
+          <h1 className="mt-4 text-[20px] font-bold leading-7 text-navy">Quote {quote.number} has expired</h1>
           <p className="mt-2 text-[15px] leading-6 text-[#64748b]">
             This quote was valid until {longDate(quote.expiresOn)}. Contact {b.name || "the business"}
             {b.phone || b.email ? ` at ${[b.phone, b.email].filter(Boolean).join(" or ")}` : ""} for an updated quote.
@@ -76,7 +76,7 @@ function TermLine({ line }: { line: string }) {
   if (!m) return <span className="text-[#64748b]">{line}</span>;
   return (
     <>
-      <span className="font-bold text-[#0f172a]">{m[1]}</span> <span className="text-[#64748b]">{m[2]}</span>
+      <span className="font-bold text-navy">{m[1]}</span> <span className="text-[#64748b]">{m[2]}</span>
     </>
   );
 }
@@ -103,7 +103,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] px-4 pb-[120px] pt-6 text-[#0f172a] sm:pt-12 print:bg-white print:p-0">
+    <div className="min-h-screen bg-[#f8fafc] px-4 pb-[120px] pt-6 text-navy sm:pt-12 print:bg-white print:p-0">
       <article className="mx-auto max-w-[1024px] rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] print:border-0 print:shadow-none">
         {/* Business and quote summary */}
         <header className="border-b border-[#f1f5f9] px-5 pb-8 pt-[18px] sm:px-10">
@@ -115,13 +115,13 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                 <span className={`text-[12px] font-semibold uppercase leading-4 tracking-[0.6px] ${badge.text}`}>{badge.label}</span>
               </span>
               <p className="mt-4 text-[14px] font-medium uppercase leading-5 tracking-[1.4px] text-[#64748b]">Total Amount</p>
-              <p className="text-[36px] font-bold leading-10 tracking-[-0.8px] text-[#0f172a]">{formatMoney(t.total)}</p>
+              <p className="text-[36px] font-bold leading-10 tracking-[-0.8px] text-navy">{formatMoney(t.total)}</p>
             </div>
           </div>
 
           <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
-              <h1 className="text-[24px] font-bold leading-8 text-[#0f172a] sm:text-[30px] sm:leading-9">{quote.title || `Quote ${quote.number}`}</h1>
+              <h1 className="text-[24px] font-bold leading-8 text-navy sm:text-[30px] sm:leading-9">{quote.title || `Quote ${quote.number}`}</h1>
               <dl className="mt-2 flex flex-wrap gap-x-6 gap-y-3">
                 <div>
                   <dt className={metaLabel}>Reference</dt>
@@ -141,7 +141,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
             </div>
             <div className="sm:text-right">
               <p className="text-[14px] font-medium leading-5 text-[#64748b]">Billed To:</p>
-              <p className="text-[18px] font-semibold leading-[24.75px] tracking-[0.3px] text-[#0f172a]">{quote.customer.name}</p>
+              <p className="text-[18px] font-semibold leading-[24.75px] tracking-[0.3px] text-navy">{quote.customer.name}</p>
               {quote.customer.address && <p className="text-[14px] leading-5 text-[#64748b]">{quote.customer.address}</p>}
             </div>
           </div>
@@ -181,7 +181,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                           <span className="text-[14px] text-[#94a3b8]">—</span>
                         )}
                       </td>
-                      <td className="py-6 pt-7 text-right text-[16px] font-bold leading-6 tracking-[0.5px] text-[#0f172a]">{formatMoney(lineTotal(item))}</td>
+                      <td className="py-6 pt-7 text-right text-[16px] font-bold leading-6 tracking-[0.5px] text-navy">{formatMoney(lineTotal(item))}</td>
                     </tr>
                   );
                 })}
@@ -209,7 +209,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                 </div>
               )}
               <div className="flex items-center justify-between pt-1">
-                <span className="text-[18px] font-bold leading-7 tracking-[-0.1px] text-[#0f172a]">Grand Total</span>
+                <span className="text-[18px] font-bold leading-7 tracking-[-0.1px] text-navy">Grand Total</span>
                 <span className="text-[24px] font-bold leading-8 tracking-[-0.6px] text-[#059669]">{formatMoney(t.total)}</span>
               </div>
               {t.deposit > 0 && (
@@ -218,7 +218,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
                     {quote.depositReceived ? "Deposit Received" : "Required Deposit"}
                     {!quote.depositReceived && t.depositType === "percent" ? ` (${percent(t.depositValue)})` : ""}
                   </span>
-                  <span className="text-[16px] font-bold leading-6 tracking-[-0.4px] text-[#0f172a]">{formatMoney(quote.depositReceived ?? t.deposit)}</span>
+                  <span className="text-[16px] font-bold leading-6 tracking-[-0.4px] text-navy">{formatMoney(quote.depositReceived ?? t.deposit)}</span>
                 </div>
               )}
             </div>

@@ -58,7 +58,7 @@ export default function ConfirmDialog({
       {variant === "warning" ? (
         <div className="overflow-hidden rounded-xl bg-white shadow-2xl">
           <div className="px-6 pb-5 pt-6">
-            <h2 className="flex items-center gap-2.5 text-[18px] font-semibold text-[#0f172a]">
+            <h2 className="flex items-center gap-2.5 text-[18px] font-semibold text-navy">
               <TriangleAlert className="size-5 fill-[#ea580c] text-white" strokeWidth={2.5} />
               {title}
             </h2>

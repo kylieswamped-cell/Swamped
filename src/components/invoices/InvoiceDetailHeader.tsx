@@ -218,7 +218,7 @@ export default function InvoiceDetailHeader({
           <Link href="/invoices" aria-label="Back to invoices" className="flex size-8 shrink-0 items-center justify-center rounded-lg hover:bg-[#f1f5f9] sm:-ml-[37px]">
             <Image src="/customers/back.svg" alt="" width={16} height={26} />
           </Link>
-          <h2 className="truncate text-[30px] font-bold leading-9 tracking-[-0.75px] text-[#0f172a]">Invoice Details: {invoice.number}</h2>
+          <h2 className="truncate text-[30px] font-bold leading-9 tracking-[-0.75px] text-navy">Invoice Details: {invoice.number}</h2>
         </div>
 
         <div className="flex items-center gap-[7px]">

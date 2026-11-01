@@ -45,7 +45,7 @@ function Meta({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-2">
       <span className="text-[14px] leading-5 text-[#64748b]">{label}</span>
-      <span className="text-right text-[14px] font-medium leading-5 text-[#0f172a]">{children}</span>
+      <span className="text-right text-[14px] font-medium leading-5 text-navy">{children}</span>
     </div>
   );
 }
@@ -103,9 +103,9 @@ export default function QuoteDetailView({
           {quote.customer ? (
             <>
               <div className="mt-5 flex items-start gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#0f172a] text-[13px] font-bold text-white">{initials(quote.customer.name)}</span>
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-navy text-[13px] font-bold text-white">{initials(quote.customer.name)}</span>
                 <div className="min-w-0">
-                  <Link href={`/customers/${quote.customerId}`} className="line-clamp-2 text-[14px] font-bold leading-5 text-[#0f172a] hover:text-brand">
+                  <Link href={`/customers/${quote.customerId}`} className="line-clamp-2 text-[14px] font-bold leading-5 text-navy hover:text-brand">
                     {quote.customer.name}
                   </Link>
                   <p className="flex items-center gap-1.5 truncate text-[12px] leading-4 text-[#64748b]">
@@ -132,14 +132,14 @@ export default function QuoteDetailView({
             </span>
             {quote.job ? (
               <div className="min-w-0">
-                <Link href={`/jobs/${quote.job.id}`} className="text-[14px] font-bold leading-5 text-[#0f172a] hover:text-brand">
+                <Link href={`/jobs/${quote.job.id}`} className="text-[14px] font-bold leading-5 text-navy hover:text-brand">
                   {quote.job.number}
                 </Link>
                 <p className="truncate text-[12px] leading-4 text-[#64748b]" title={quote.job.title}>{quote.job.title}</p>
               </div>
             ) : (
               <div>
-                <p className="text-[14px] font-bold italic leading-5 text-[#0f172a]">Not Linked Yet</p>
+                <p className="text-[14px] font-bold italic leading-5 text-navy">Not Linked Yet</p>
                 <p className="text-[12px] leading-4 text-[#64748b]">{quote.status === "accepted" ? "Ready to convert to a job" : "Pending conversion"}</p>
               </div>
             )}
@@ -154,7 +154,7 @@ export default function QuoteDetailView({
           </span>
           {quote.customerApproval && (
             <p className="mt-3 text-[12px] leading-4 text-[#64748b]" title={quote.customerApproval.userAgent ?? undefined}>
-              Approved online by <span className="font-semibold text-[#0f172a]">{quote.customerApproval.name}</span> on{" "}
+              Approved online by <span className="font-semibold text-navy">{quote.customerApproval.name}</span> on{" "}
               {shortDate(quote.customerApproval.at, local)}
               {quote.customerApproval.ip && <span className="block text-[11px] text-[#94a3b8]">IP {quote.customerApproval.ip}</span>}
             </p>

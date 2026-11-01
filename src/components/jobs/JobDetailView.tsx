@@ -53,7 +53,7 @@ function RefTable({ title, count, columns, empty, children }: { title: string; c
   return (
     <section className="overflow-hidden rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="flex h-16 items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc]/50 px-8">
-        <h3 className="text-[16px] font-bold leading-6 text-[#0f172a]">{title}</h3>
+        <h3 className="text-[16px] font-bold leading-6 text-navy">{title}</h3>
         <span className="text-[12px] font-bold uppercase leading-4 text-[#94a3b8]">{count}</span>
       </div>
       <div className="overflow-x-auto">
@@ -136,7 +136,7 @@ export default function JobDetailView({
         <div className={card}>
           <CardHead icon={<CalendarDays className="size-4" />} title="Job Summary" />
           <p className="mt-6 text-[12px] leading-[18px] text-[#94a3b8]">Total Amount</p>
-          <p className="text-[24px] font-bold leading-9 text-[#0f172a]">{formatMoney(job.totals.total)}</p>
+          <p className="text-[24px] font-bold leading-9 text-navy">{formatMoney(job.totals.total)}</p>
           <p className="mt-1 truncate text-[14px] text-[#475569]" title={job.title}>{job.title}</p>
           <div className="mt-4 grid grid-cols-3 gap-4 border-t border-[#f1f5f9] pt-[15px]">
             {[
@@ -156,7 +156,7 @@ export default function JobDetailView({
           <CardHead icon={<UserRound className="size-4" />} title="Customer Information" />
           {job.customer ? (
             <>
-              <Link href={`/customers/${job.customerId}`} className="mt-6 block truncate text-[18px] font-bold leading-[27px] text-[#0f172a] hover:text-brand">
+              <Link href={`/customers/${job.customerId}`} className="mt-6 block truncate text-[18px] font-bold leading-[27px] text-navy hover:text-brand">
                 {job.customer.name}
               </Link>
               <p className="mt-3 flex items-center gap-2 text-[14px] leading-[21px] text-[#475569]">
@@ -281,7 +281,7 @@ export default function JobDetailView({
                 <Link href={`/quotes/${job.quote.id}`} className="hover:text-brand-dark">{job.quote.number}</Link>
               </td>
               <td className="pl-8 text-[16px] text-[#475569]">{shortDate(job.quote.date, false)}</td>
-              <td className="pr-8 text-right text-[16px] font-bold text-[#0f172a]">{formatMoney(job.quote.total)}</td>
+              <td className="pr-8 text-right text-[16px] font-bold text-navy">{formatMoney(job.quote.total)}</td>
               <td className="text-center">
                 <span className={`inline-flex h-[23px] items-center rounded-full px-3 text-[12px] font-bold ${quotePill.className}`}>{quotePill.label}</span>
               </td>
@@ -302,7 +302,7 @@ export default function JobDetailView({
                   <Link href={`/invoices/${inv.id}`} className="hover:text-brand-dark">{inv.number}</Link>
                 </td>
                 <td className="pl-8 text-[16px] text-[#475569]">{shortDate(`${inv.dueOn}T00:00:00Z`, false)}</td>
-                <td className="pr-8 text-right text-[16px] font-bold text-[#0f172a]">{formatMoney(inv.total)}</td>
+                <td className="pr-8 text-right text-[16px] font-bold text-navy">{formatMoney(inv.total)}</td>
                 <td className="text-center">
                   <InvoiceStatusBadge state={inv.state} />
                 </td>

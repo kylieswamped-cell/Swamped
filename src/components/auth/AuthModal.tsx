@@ -30,7 +30,7 @@ export default function AuthModal({ open, onClose, children, className, label }:
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#0f172a]/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-navy/60 p-4 backdrop-blur-sm"
         >
           <motion.div
             role="dialog"

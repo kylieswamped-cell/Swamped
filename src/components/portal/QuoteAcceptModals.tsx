@@ -10,7 +10,7 @@ import { formatMoney } from "@/lib/quotes/totals";
 const primaryButton =
   "flex h-[52px] w-full items-center justify-center rounded-lg bg-brand text-[16px] font-semibold leading-6 tracking-[0.2px] text-white shadow-[0_2px_4px_-2px_#b4d8ff,0_4px_6px_-1px_#b4d8ff] transition-colors hover:bg-[#047857] disabled:cursor-wait disabled:opacity-70";
 const nameField =
-  "mt-2 h-12 w-full rounded-lg border border-line bg-white px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand";
+  "mt-2 h-12 w-full rounded-lg border border-line bg-white px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand";
 const cancelButton =
   "flex h-12 w-full items-center justify-center rounded-lg bg-white text-[16px] font-medium leading-6 text-[#475569] transition-colors hover:bg-[#f8fafc] disabled:opacity-50";
 
@@ -57,7 +57,7 @@ export function ApproveQuoteModal({
         <button type="button" onClick={close} disabled={pending} aria-label="Close" className="absolute right-8 top-8 rounded p-1 opacity-100 hover:opacity-70">
           <Image src="/portal/close.svg" alt="" width={13} height={13} />
         </button>
-        <h2 className="pr-8 text-[24px] font-bold leading-8 text-[#0f172a]">Approve Quote</h2>
+        <h2 className="pr-8 text-[24px] font-bold leading-8 text-navy">Approve Quote</h2>
         <p className="mt-[17px] text-[15px] leading-[24.38px] text-[#64748b]">
           {depositDue > 0
             ? `You are about to formally accept this quote. A deposit of ${formatMoney(depositDue)} is due before work begins; ${business} will be in touch to collect it.`
@@ -70,19 +70,19 @@ export function ApproveQuoteModal({
               <Image src="/portal/check-small.svg" alt="" width={14} height={10} />
             </span>
             <span className="min-w-0">
-              <span className="block text-[14px] font-semibold leading-5 tracking-[-0.5px] text-[#0f172a]">Quote {quote.number}</span>
+              <span className="block text-[14px] font-semibold leading-5 tracking-[-0.5px] text-navy">Quote {quote.number}</span>
               {quote.title && <span className="block truncate text-[12px] leading-4 tracking-[0.1px] text-[#64748b]">{quote.title}</span>}
             </span>
           </div>
           <span className="shrink-0 text-right">
-            <span className="block text-[14px] font-bold leading-5 tracking-[0.8px] text-[#0f172a]">{formatMoney(quote.totals.total)}</span>
+            <span className="block text-[14px] font-bold leading-5 tracking-[0.8px] text-navy">{formatMoney(quote.totals.total)}</span>
             <span className="block text-[12px] font-medium leading-4 text-[#059669]">Ready to start</span>
           </span>
         </div>
 
         {/* Not in Figma: the customer signs with their name, kept as the business's record of who approved. */}
         <div className="mt-6">
-          <label htmlFor="approve-name" className="text-[14px] font-semibold leading-5 text-[#0f172a]">
+          <label htmlFor="approve-name" className="text-[14px] font-semibold leading-5 text-navy">
             Type your full name to approve
           </label>
           <input
@@ -127,7 +127,7 @@ export function QuoteAcceptedModal({ open, onClose }: { open: boolean; onClose: 
         <span className="flex size-20 items-center justify-center rounded-full bg-[#ecfdf5] shadow-[0_0_0_8px_rgba(236,253,245,0.5)]">
           <Image src="/portal/circle-check.svg" alt="" width={36} height={36} />
         </span>
-        <h2 className="mt-6 text-[26px] font-bold leading-9 tracking-[-0.8px] text-[#0f172a] sm:text-[30px]">Quote Accepted Successfully!</h2>
+        <h2 className="mt-6 text-[26px] font-bold leading-9 tracking-[-0.8px] text-navy sm:text-[30px]">Quote Accepted Successfully!</h2>
         <p className="mt-3 max-w-[350px] text-[16px] leading-[26px] tracking-[-0.1px] text-[#64748b]">
           Thank you for accepting our quote.
           <br />

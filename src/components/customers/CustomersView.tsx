@@ -27,7 +27,7 @@ const badge: Record<CustomerStatus, string> = {
 };
 
 const filterClass =
-  "h-9 rounded-lg border border-line bg-[#f9fafb] text-[14px] text-[#0f172a] outline-none transition-colors focus:border-brand";
+  "h-9 rounded-lg border border-line bg-[#f9fafb] text-[14px] text-navy outline-none transition-colors focus:border-brand";
 
 // Fixed zone so the server render and the browser agree on the date.
 const shortDate = (iso: string) =>

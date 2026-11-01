@@ -91,7 +91,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] px-4 py-6 text-[#0f172a] sm:py-12 print:bg-white print:p-0">
+    <div className="min-h-screen bg-[#f8fafc] px-4 py-6 text-navy sm:py-12 print:bg-white print:p-0">
       <article
         className={`mx-auto max-w-[896px] overflow-hidden rounded-2xl border bg-white shadow-[0_8px_10px_-6px_rgba(0,0,0,0.1),0_20px_25px_-5px_rgba(0,0,0,0.1)] print:shadow-none ${
           invoice.state === "past_due" ? "border-2 border-[#ef4444]" : "border-[#f1f5f9]"
@@ -133,7 +133,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
           <p className={`text-[14px] uppercase leading-5 tracking-[1.4px] ${s.amountLabelClass}`}>{s.amountLabel}</p>
           <p
             className={`mt-0 text-[40px] font-extrabold leading-[48px] tracking-[-1.8px] sm:text-[48px] ${
-              invoice.state === "void" ? "text-[#d1d5db] line-through" : "text-[#0f172a]"
+              invoice.state === "void" ? "text-[#d1d5db] line-through" : "text-navy"
             }`}
           >
             {formatMoney(invoice.state === "void" ? t.total : invoice.balance)}

@@ -60,7 +60,7 @@ function FilterSelect<T extends string>({
           selected.length ? "border-brand bg-brand-light" : "border-line bg-[#f8fafc] hover:bg-white"
         }`}
       >
-        <span className={`truncate text-[11px] font-semibold uppercase leading-[16.5px] tracking-[0.55px] ${selected.length ? "text-[#0f172a]" : "text-[#9ca3af]"}`}>
+        <span className={`truncate text-[11px] font-semibold uppercase leading-[16.5px] tracking-[0.55px] ${selected.length ? "text-navy" : "text-[#9ca3af]"}`}>
           {label}
           {selected.length > 0 && ` (${selected.length})`}
         </span>
@@ -245,7 +245,7 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by ID, customer or amount..."
-              className="h-[38px] w-full rounded-lg border border-line bg-[#f9fafb] pl-[39px] pr-3 text-[14px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
+              className="h-[38px] w-full rounded-lg border border-line bg-[#f9fafb] pl-[39px] pr-3 text-[14px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand"
             />
           </label>
           <div className="flex flex-wrap gap-[7px]">

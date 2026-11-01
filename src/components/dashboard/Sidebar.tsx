@@ -117,7 +117,7 @@ export default function Sidebar() {
         {open && (
           <>
             <motion.div
-              className="fixed inset-0 z-50 bg-[#0f172a]/40 lg:hidden"
+              className="fixed inset-0 z-50 bg-navy/40 lg:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

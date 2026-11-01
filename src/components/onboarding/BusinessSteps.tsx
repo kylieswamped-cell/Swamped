@@ -55,7 +55,7 @@ export function BusinessDetailsStep({ defaults: d, onDone }: StepProps) {
         className="flex flex-col gap-8"
       >
         <section>
-          <h3 className="text-[16px] font-semibold text-[#0f172a]">Business Details</h3>
+          <h3 className="text-[16px] font-semibold text-navy">Business Details</h3>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <TextField label="Legal Business Name" name="legalBusinessName" required defaultValue={d.legalBusinessName} placeholder="e.g. Acme Corporation Inc." error={fe.legalBusinessName} autoComplete="organization" />
             <div className="hidden sm:block" />
@@ -67,7 +67,7 @@ export function BusinessDetailsStep({ defaults: d, onDone }: StepProps) {
         </section>
 
         <section className="border-t border-line pt-8">
-          <h3 className="text-[16px] font-semibold text-[#0f172a]">Registered Address</h3>
+          <h3 className="text-[16px] font-semibold text-navy">Registered Address</h3>
           <p className="mt-1 text-[13px] text-[#64748b]">This address will be used for billing and tax purposes.</p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <TextField label="Street Address" name="streetAddress" defaultValue={d.streetAddress} placeholder="123 Innovation Drive, Suite 100" autoComplete="street-address" />
@@ -218,7 +218,7 @@ export function BusinessDefaultsStep({ defaults: d, onDone }: StepProps) {
               type="button"
               disabled={pending}
               onClick={() => run(() => saveBusinessDefaults(null), onDone)}
-              className="text-[14px] font-semibold text-[#334155] transition-colors hover:text-[#0f172a] disabled:opacity-60"
+              className="text-[14px] font-semibold text-[#334155] transition-colors hover:text-navy disabled:opacity-60"
             >
               Skip for Now
             </button>

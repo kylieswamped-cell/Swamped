@@ -81,7 +81,7 @@ export default function RevenueChart({ data }: { data: RevenuePoint[] }) {
     <section className="flex flex-col gap-6 rounded-lg border border-line bg-white p-6 drop-shadow-[0_0.63px_0.63px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-[16px] font-bold leading-[19.2px] tracking-[0.031px] text-[#0f172a]">Revenue Performance</h2>
+          <h2 className="text-[16px] font-bold leading-[19.2px] tracking-[0.031px] text-navy">Revenue Performance</h2>
           <p className="mt-[3px] text-[13px] leading-[15.6px] text-[#64748b]">Last 12 months overview</p>
         </div>
         <p className="flex items-center gap-2 text-[12px] font-medium leading-[18px] tracking-[0.059px] text-[#475569]">
@@ -134,7 +134,7 @@ export default function RevenueChart({ data }: { data: RevenuePoint[] }) {
             style={{ left: Math.min(Math.max(x(hover), 70), width - 70), top: y(active.revenue) - 10 }}
           >
             <p className="font-medium text-[#64748b]">{active.label}</p>
-            <p className="mt-0.5 text-[14px] font-bold text-[#0f172a]">{formatMoney(active.revenue)}</p>
+            <p className="mt-0.5 text-[14px] font-bold text-navy">{formatMoney(active.revenue)}</p>
           </div>
         )}
 

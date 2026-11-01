@@ -54,7 +54,7 @@ export default function DashboardShell({
         <div className="min-w-0 flex-1">
           <header className="flex h-[83px] items-center justify-between border-b border-line bg-white pl-16 pr-6 sm:pr-10 lg:pl-10">
             <div className="min-w-0">
-              <h1 className="text-[20px] font-bold leading-8 tracking-[0.047px] text-[#0f172a] sm:text-[24px]">
+              <h1 className="text-[20px] font-bold leading-8 tracking-[0.047px] text-navy sm:text-[24px]">
                 {title}
               </h1>
               {subtitle && (

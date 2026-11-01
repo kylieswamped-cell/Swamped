@@ -37,7 +37,7 @@ export default function JobFileCard({
           <Icon className={`size-5 ${color}`} />
         </span>
         <div className="min-w-0">
-          <p className={`truncate text-[14px] leading-5 ${compact ? "font-semibold text-[#0f172a]" : "font-bold text-navy"}`} title={name}>
+          <p className={`truncate text-[14px] leading-5 ${compact ? "font-semibold text-navy" : "font-bold text-navy"}`} title={name}>
             {name}
           </p>
           <p className={`truncate text-[12px] leading-4 ${compact ? "text-[#94a3b8]" : "text-[#64748b]"}`}>{meta}</p>

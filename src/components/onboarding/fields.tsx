@@ -5,7 +5,7 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
 import type { AmountType } from "@/lib/quotes/totals";
 
 export const inputClass =
-  "h-12 w-full rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-4 text-[16px] text-[#0f172a] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
+  "h-12 w-full rounded-lg border border-[#e4e4e7] bg-[#fafafa] px-4 text-[16px] text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white aria-invalid:border-[#ef4444]";
 
 type FieldProps = {
   label: string;
@@ -129,7 +129,7 @@ export function AmountInput({
         inputMode="decimal"
         value={value}
         onChange={(e) => onValue(e.target.value)}
-        className="h-full min-w-0 flex-1 bg-transparent px-4 text-[16px] text-[#0f172a] outline-none"
+        className="h-full min-w-0 flex-1 bg-transparent px-4 text-[16px] text-navy outline-none"
       />
       <div className="mr-1.5 flex rounded-md bg-white p-0.5 text-[12px] font-semibold">
         {(["fixed", "percent"] as const).map((t) => (

@@ -115,7 +115,7 @@ export default function InvoiceSendFlow({ invoiceId, invoiceNumber, onClose }: {
             <span className="flex size-16 items-center justify-center rounded-full bg-[#fee2e2]">
               <XCircle className="size-8 fill-[#ef4444] text-white" />
             </span>
-            <h2 className="mt-6 text-[24px] font-bold leading-8 text-[#0f172a]">Failed to Send Invoice</h2>
+            <h2 className="mt-6 text-[24px] font-bold leading-8 text-navy">Failed to Send Invoice</h2>
             <p className="mt-2 text-[15px] leading-6 text-[#4b5563]">Please check the email and try again.</p>
             <p className="mt-1 text-[13px] leading-5 text-[#6b7280]">{step.error}</p>
           </div>

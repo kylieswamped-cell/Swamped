@@ -87,7 +87,7 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
   return (
     <>
       <div className="mt-6 text-center">
-        <h1 className="text-[30px] font-bold leading-[40px] tracking-[-0.9px] text-[#0f172a] sm:text-[36px]">
+        <h1 className="text-[30px] font-bold leading-[40px] tracking-[-0.9px] text-navy sm:text-[36px]">
           Welcome Back
         </h1>
         <p className="mt-3 text-[14px] leading-[20px] text-[#64748b]">

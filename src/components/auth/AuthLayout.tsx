@@ -26,7 +26,7 @@ export default function AuthLayout({ children, aside, asideRight = false }: Auth
         initial={{ x: asideRight ? 80 : -80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: authEase }}
-        className={`relative hidden min-h-screen shrink-0 items-center justify-center bg-[#0f172a] lg:flex ${
+        className={`relative hidden min-h-screen shrink-0 items-center justify-center bg-navy lg:flex ${
           asideRight ? "w-[54%] rounded-l-[2000px]" : "w-[52%] rounded-r-[512px]"
         }`}
       >

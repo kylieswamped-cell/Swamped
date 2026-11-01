@@ -13,7 +13,7 @@ export default function ShellSkeleton({ title, cards = 4 }: { title: string; car
       <Sidebar />
       <div className="min-w-0 flex-1" aria-busy="true" aria-label={`Loading ${title}`}>
         <header className="flex h-[83px] items-center justify-between border-b border-line bg-white pl-16 pr-6 sm:pr-10 lg:pl-10">
-          <h1 className="text-[20px] font-bold leading-8 tracking-[0.047px] text-[#0f172a] sm:text-[24px]">{title}</h1>
+          <h1 className="text-[20px] font-bold leading-8 tracking-[0.047px] text-navy sm:text-[24px]">{title}</h1>
           <div className="flex shrink-0 items-center gap-3.5">
             <span className="p-2">
               <Image src="/onboarding/bell.svg" alt="" width={18} height={20} />

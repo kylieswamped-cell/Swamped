@@ -175,7 +175,7 @@ export default function JobItemsCard({ job }: { job: JobDetail }) {
                       step="any"
                       value={l.quantity}
                       onChange={(e) => update(i, { quantity: e.target.value })}
-                      className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-[#0f172a] outline-none focus:border-brand"
+                      className="h-[34px] w-20 rounded-md border border-line bg-[#f8fafc] px-2 text-center text-[16px] text-navy outline-none focus:border-brand"
                     />
                   </td>
                   <td className="pr-[21px]">

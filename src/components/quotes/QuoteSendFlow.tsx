@@ -79,7 +79,7 @@ export default function QuoteSendFlow({ quoteId, quoteNumber, onClose }: { quote
       <Modal open onClose={onClose} label="Quote Sent Successfully!" className="max-w-[450px]">
         <div className="flex flex-col items-center rounded-xl bg-white px-8 pb-10 pt-[51px] text-center shadow-2xl">
           <Image src="/images/logo.png" alt="" width={71} height={57} className="h-[57px] w-[71px] object-contain mix-blend-multiply" />
-          <h2 className="mt-5 text-[24px] font-bold leading-8 text-[#0f172a]">Quote Sent Successfully!</h2>
+          <h2 className="mt-5 text-[24px] font-bold leading-8 text-navy">Quote Sent Successfully!</h2>
           <p className="mt-2 text-[14px] leading-5 text-[#64748b]">
             Quote #{quoteNumber} has been successfully emailed to
             <br />
