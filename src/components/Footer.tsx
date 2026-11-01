@@ -72,12 +72,12 @@ export default function Footer() {
             © 2026 Swamped Inc. All rights reserved.
           </p>
           <div className="flex gap-8">
-            <a href="#" className="text-[12px] font-semibold text-muted-light hover:text-brand">
+            <Link href="/terms" className="text-[12px] font-semibold text-muted-light hover:text-brand">
               Terms of Service
-            </a>
-            <a href="#" className="text-[12px] font-semibold text-muted-light hover:text-brand">
+            </Link>
+            <Link href="/privacy" className="text-[12px] font-semibold text-muted-light hover:text-brand">
               Privacy Policy
-            </a>
+            </Link>
           </div>
         </div>
       </Reveal>
