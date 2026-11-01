@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, type FormEvent } from "react";
+import { useEffect, useState, useTransition, type FormEvent } from "react";
 import type { SettingsResult } from "@/lib/settings/actions";
 import type { Status } from "./ui";
 
@@ -21,6 +21,14 @@ export function useSettingsForm<T>(
   const [pending, startTransition] = useTransition();
 
   const dirty = JSON.stringify(values) !== JSON.stringify(saved);
+
+  // Warn before a refresh or tab close throws away unsaved edits.
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
 
   function set<K extends keyof T>(key: K, value: T[K]) {
     setValues((v) => ({ ...v, [key]: value }));

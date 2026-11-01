@@ -167,6 +167,9 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
           </div>
         </div>
 
+        {/* Saves the defaults and reminders above; each template below has its own Save. */}
+        <CardFooter pending={form.pending} dirty={form.dirty} onCancel={form.cancel} status={form.status} bordered className="" />
+
         <QuoteTemplateCard
           {...templateProps(form, "quote")}
           title="Initial Quote Template"
@@ -177,8 +180,6 @@ export function QuoteConfigCard({ data, templates }: { data: SettingsData["quote
           title="Deposit Receipt Template"
           icon={{ src: "/settings/icon-receipt.svg", w: 10.5, h: 14 }}
         />
-
-        <CardFooter pending={form.pending} dirty={form.dirty} onCancel={form.cancel} status={form.status} bordered className="" />
       </form>
     </SettingsCard>
   );
@@ -335,13 +336,14 @@ export function InvoiceConfigCard({ data, templates }: { data: SettingsData["inv
           />
         </Panel>
 
+        {/* Saves the defaults and reminders above; each template below has its own Save. */}
+        <CardFooter pending={form.pending} dirty={form.dirty} onCancel={form.cancel} status={form.status} bordered className="" />
+
         <InvoiceTemplateCard {...templateProps(form, "invoice")} title="Invoice Email Template" icon={Mail} iconClass="bg-[#eff6ff] text-[#3b82f6]" />
         <InvoiceTemplateCard {...templateProps(form, "invoice_receipt")} title="Invoice Receipt Template" icon={ReceiptText} iconClass={teal} />
         <InvoiceTemplateCard {...templateProps(form, "invoice_reminder")} title="Invoice Reminder Template" icon={ReceiptText} iconClass={teal} />
         <InvoiceTemplateCard {...templateProps(form, "past_due_notice")} title="Past Due Notice Template" icon={ReceiptText} iconClass={teal} />
         <InvoiceTemplateCard {...templateProps(form, "past_due_reminder")} title="Past Due Reminder Template" icon={ReceiptText} iconClass={teal} />
-
-        <CardFooter pending={form.pending} dirty={form.dirty} onCancel={form.cancel} status={form.status} className="" />
       </form>
     </SettingsCard>
   );
