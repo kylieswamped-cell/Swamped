@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { ActivityItem, ActivityStatus } from "@/lib/dashboard/stats";
 import { formatMoney } from "@/lib/quotes/totals";
 
-const STATUSES: ActivityStatus[] = ["Pending", "Draft", "Accepted", "Declined", "New"];
+const STATUSES: ActivityStatus[] = ["Pending", "Draft", "Accepted", "Declined", "Paid", "New"];
 
 const DATE_RANGES = [
   { value: "", label: "Creation Date" },
@@ -20,6 +22,7 @@ const badge: Record<ActivityStatus, string> = {
   Draft: "bg-[#f8fafc] text-[#94a3b8]",
   Accepted: "text-[#059669]",
   Declined: "bg-[#fef2f2] text-[#ef4444]",
+  Paid: "bg-[#ecfdf5] text-[#059669]",
   New: "bg-[#eff6ff] text-[#3b82f6]",
 };
 
@@ -44,13 +47,14 @@ function timeAgo(iso: string, now: number) {
 }
 
 const filterClass =
-  "h-9 rounded-lg border border-line bg-[#f9fafb] text-[14px] text-[#0f172a] outline-none transition-colors focus:border-brand";
+  "h-9 rounded-lg border border-line bg-[#f9fafb] text-[14px] text-navy outline-none transition-colors focus:border-brand";
 
 export default function ActivityPanel({ items, now }: { items: ActivityItem[]; now: number }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("");
   const [range, setRange] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const router = useRouter();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -123,7 +127,7 @@ export default function ActivityPanel({ items, now }: { items: ActivityItem[]; n
 
       <section className="overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="flex h-[76px] items-center justify-between border-b border-line px-6 sm:px-8">
-          <h2 className="text-[18px] font-bold leading-7 tracking-[0.018px] text-[#0f172a]">Recent Activity</h2>
+          <h2 className="text-[18px] font-bold leading-7 tracking-[0.018px] text-navy">Recent Activity</h2>
           {filtered.length > COLLAPSED_ROWS && (
             <button
               type="button"
@@ -170,17 +174,28 @@ export default function ActivityPanel({ items, now }: { items: ActivityItem[]; n
               </thead>
               <tbody>
                 {rows.map((item) => (
-                  <tr key={item.id} className="h-[73px] border-t border-[#f1f5f9] first:border-t-0">
+                  <tr
+                    key={item.id}
+                    onClick={() => router.push(item.href)}
+                    className="h-[73px] cursor-pointer border-t border-[#f1f5f9] transition-colors first:border-t-0 hover:bg-[#f8fafc]"
+                  >
                     <td className="pl-[38px]">
                       <div className="flex items-center gap-3">
                         <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#f1f5f9] text-[12px] font-medium leading-4 tracking-[0.7px] text-[#475569]">
                           {initials(item.customer)}
                         </span>
-                        <span className="truncate text-[14px] font-semibold leading-5 text-[#0f172a]">{item.customer}</span>
+                        {/* The link keeps rows reachable by keyboard; the row click covers the mouse. */}
+                        <Link
+                          href={item.href}
+                          onClick={(e) => e.stopPropagation()}
+                          className="truncate text-[14px] font-semibold leading-5 text-navy hover:text-brand focus-visible:text-brand"
+                        >
+                          {item.customer}
+                        </Link>
                       </div>
                     </td>
                     <td className="truncate pl-8 text-[14px] leading-5 tracking-[0.041px] text-[#475569]">{item.type}</td>
-                    <td className="pl-8 text-[14px] font-medium leading-5 tracking-[0.11px] text-[#0f172a]">
+                    <td className="pl-8 text-[14px] font-medium leading-5 tracking-[0.11px] text-navy">
                       {item.amount === null ? "—" : formatMoney(item.amount)}
                     </td>
                     <td className="pl-8">

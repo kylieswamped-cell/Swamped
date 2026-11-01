@@ -12,7 +12,7 @@ export async function getDashboardStats(supabase: SupabaseClient): Promise<Dashb
   return { activeJobs, awaitingPayment: 0, quotesSent30d: count ?? 0, revenue30d: 0 };
 }
 
-export type ActivityStatus = "Pending" | "Draft" | "Accepted" | "Declined" | "New";
+export type ActivityStatus = "Pending" | "Draft" | "Accepted" | "Declined" | "Paid" | "New";
 
 export type ActivityItem = {
   id: string;
@@ -23,6 +23,8 @@ export type ActivityItem = {
   amount: number | null;
   status: ActivityStatus;
   at: string;
+  /** The record this activity opens. */
+  href: string;
 };
 
 const QUOTE_ACTIVITY: Record<string, { type: string; status: ActivityStatus }> = {
@@ -42,15 +44,28 @@ type QuoteRow = {
   customers: { name: string } | null;
 };
 
+type InvoiceRow = {
+  id: string;
+  invoice_number: string;
+  status: string;
+  total: number;
+  created_at: string;
+  sent_at: string | null;
+  paid_at: string | null;
+  customers: { name: string } | null;
+};
+
+type JobRow = { id: string; job_number: string; title: string; total: number; created_at: string; customers: { name: string } | null };
+
 /**
- * Newest-first feed built from quotes and customers (jobs/invoices/payments later).
+ * Newest-first feed built from quotes, invoices, jobs, and customers.
  * `now` is the reference time for "2 hours ago", so server and browser agree.
  */
 export async function getRecentActivity(
   supabase: SupabaseClient,
   limit = 50,
 ): Promise<{ items: ActivityItem[]; now: number }> {
-  const [{ data: quotes }, { data: customers }] = await Promise.all([
+  const [{ data: quotes }, { data: customers }, { data: invoices }, { data: jobs }] = await Promise.all([
     supabase
       .from("quotes")
       .select("id, quote_number, status, total, created_at, sent_at, customers(name)")
@@ -62,6 +77,19 @@ export async function getRecentActivity(
       .select("id, name, created_at")
       .order("created_at", { ascending: false })
       .limit(limit),
+    supabase
+      .from("invoices")
+      .select("id, invoice_number, status, total, created_at, sent_at, paid_at, customers(name)")
+      .neq("status", "void")
+      .order("created_at", { ascending: false })
+      .limit(limit)
+      .returns<InvoiceRow[]>(),
+    supabase
+      .from("jobs")
+      .select("id, job_number, title, total, created_at, customers(name)")
+      .order("created_at", { ascending: false })
+      .limit(limit)
+      .returns<JobRow[]>(),
   ]);
 
   const items: ActivityItem[] = [
@@ -75,8 +103,36 @@ export async function getRecentActivity(
         amount: Number(q.total),
         status: kind.status,
         at: q.sent_at ?? q.created_at,
+        href: `/quotes/${q.id}`,
       };
     }),
+    ...(invoices ?? []).map((i) => {
+      const kind: { type: string; status: ActivityStatus } = i.paid_at
+        ? { type: "Invoice Paid", status: "Paid" }
+        : i.status === "sent"
+          ? { type: "Invoice Sent", status: "Pending" }
+          : { type: "Invoice Saved", status: "Draft" };
+      return {
+        id: `invoice-${i.id}`,
+        reference: i.invoice_number,
+        customer: i.customers?.name ?? "Unknown customer",
+        type: kind.type,
+        amount: Number(i.total),
+        status: kind.status,
+        at: i.paid_at ?? i.sent_at ?? i.created_at,
+        href: `/invoices/${i.id}`,
+      };
+    }),
+    ...(jobs ?? []).map((j) => ({
+      id: `job-${j.id}`,
+      reference: j.job_number,
+      customer: j.customers?.name ?? "Unknown customer",
+      type: "Job Created",
+      amount: Number(j.total),
+      status: "New" as const,
+      at: j.created_at,
+      href: `/jobs/${j.id}`,
+    })),
     ...(customers ?? []).map((c) => ({
       id: `customer-${c.id}`,
       reference: null,
@@ -85,6 +141,7 @@ export async function getRecentActivity(
       amount: null,
       status: "New" as const,
       at: c.created_at as string,
+      href: `/customers/${c.id}`,
     })),
   ];
 
