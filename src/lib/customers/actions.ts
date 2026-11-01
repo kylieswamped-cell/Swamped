@@ -1,5 +1,6 @@
 "use server";
 
+import { fileInUse } from "@/lib/attachments";
 import { revalidatePath } from "next/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
@@ -173,7 +174,8 @@ export async function deleteCustomerFile(attachmentId: string): Promise<Customer
     .select("path, customer_id")
     .maybeSingle();
   if (!data) return { error: "Couldn't delete the file. Please try again." };
-  await ctx.supabase.storage.from("attachments").remove([data.path]);
+  // Keep the stored file while a quote, job, or invoice still attaches it.
+  if (!(await fileInUse(ctx.supabase, data.path))) await ctx.supabase.storage.from("attachments").remove([data.path]);
   revalidatePath(`/customers/${data.customer_id}`);
   return {};
 }
@@ -191,4 +193,21 @@ export async function customerFileUrl(attachmentId: string): Promise<{ url?: str
   const { data, error } = await ctx.supabase.storage.from("attachments").createSignedUrl(row.path, 60);
   if (error || !data) return { error: "Couldn't open the file. Please try again." };
   return { url: data.signedUrl };
+}
+
+export type CustomerFileOption = { path: string; name: string; sizeBytes: number | null; contentType: string | null; createdAt: string };
+
+/** A customer's uploaded files, for attaching to a quote, job, or invoice without uploading again. */
+export async function listCustomerFiles(customerId: string): Promise<{ files?: CustomerFileOption[]; error?: string }> {
+  const ctx = await signedInUser();
+  if ("error" in ctx) return { error: ctx.error };
+  const { data, error } = await ctx.supabase
+    .from("customer_attachments")
+    .select("path, name, size_bytes, content_type, created_at")
+    .eq("customer_id", customerId)
+    .order("created_at", { ascending: false });
+  if (error) return { error: "Couldn't load this customer's files." };
+  return {
+    files: (data ?? []).map((f) => ({ path: f.path, name: f.name, sizeBytes: f.size_bytes, contentType: f.content_type, createdAt: f.created_at })),
+  };
 }

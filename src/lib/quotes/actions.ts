@@ -1,5 +1,6 @@
 "use server";
 
+import { allowedFiles, deletablePaths, isCustomerFile } from "@/lib/attachments";
 import { itemName, MAX_LINE_TEXT } from "@/lib/lineItems";
 import { revalidatePath } from "next/cache";
 import { sendDepositReceipt, sendQuoteEmail } from "@/lib/email/quoteEmail";
@@ -164,9 +165,7 @@ async function replaceItems(supabase: Supabase, id: string, items: ItemRow[]) {
 
 /** Uploaded files must sit in the user's own quotes folder (storage policies enforce it too). */
 async function attach(supabase: Supabase, userId: string, quoteId: string, files: UploadedQuoteFile[] | undefined) {
-  const own = (files ?? []).filter(
-    (f) => typeof f.path === "string" && f.path.startsWith(`${userId}/quotes/`) && !f.path.includes(".."),
-  );
+  const own = await allowedFiles(supabase, userId, "quotes", quoteId, files);
   if (!own.length) return null;
   const { error } = await supabase.from("quote_attachments").insert(
     own.map((f) => ({
@@ -332,7 +331,8 @@ export async function deleteQuote(id: string): Promise<QuoteResult> {
   const { data, error } = await ctx.supabase.from("quotes").delete().eq("id", id).select("id");
   if (error || !data?.length) return { error: "Couldn't delete this quote. Please try again." };
   const paths = [...new Set([...(files ?? []).map((f) => f.path), legacy?.attachment_path].filter((p): p is string => Boolean(p)))];
-  if (paths.length) await ctx.supabase.storage.from("attachments").remove(paths);
+  const deletable = deletablePaths(paths);
+  if (deletable.length) await ctx.supabase.storage.from("attachments").remove(deletable);
   revalidate();
   return {};
 }
@@ -641,7 +641,8 @@ export async function deleteQuoteFile(attachmentId: string): Promise<QuoteResult
     .select("path, quote_id")
     .maybeSingle();
   if (!data) return { error: "Couldn't delete the file. Please try again." };
-  await ctx.supabase.storage.from("attachments").remove([data.path]);
+  // Reused customer files stay with the customer.
+  if (!isCustomerFile(data.path)) await ctx.supabase.storage.from("attachments").remove([data.path]);
   revalidate(data.quote_id);
   return {};
 }

@@ -4,7 +4,9 @@ import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, ChevronDown, CloudUpload, Download, FileText, Info, Link2, LockKeyhole, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
+import CustomerFilesPicker from "@/components/customers/CustomerFilesPicker";
 import CustomerPicker from "@/components/customers/CustomerPicker";
+import type { CustomerFileOption } from "@/lib/customers/actions";
 import Modal from "@/components/customers/Modal";
 import { fileSize, shortDay } from "@/components/jobs/format";
 import { AdjustmentInput } from "@/components/jobs/JobItemsCard";
@@ -206,6 +208,8 @@ export default function InvoiceFormModal({
   const [saved, setSaved] = useState(invoice?.attachments ?? []);
   const [files, setFiles] = useState<File[]>([]);
   const [internalFiles, setInternalFiles] = useState<File[]>([]);
+  // Existing customer files attached without uploading again.
+  const [reused, setReused] = useState<CustomerFileOption[]>([]);
   const [open, setOpen] = useState({ customer: true, terms: true, internal: true });
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -279,6 +283,7 @@ export default function InvoiceFormModal({
             uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal });
           }
         }
+        for (const f of reused) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal: false });
         const result = invoice ? await updateInvoice(invoice.id, input, uploaded) : await createInvoice(input, uploaded);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
@@ -335,7 +340,10 @@ export default function InvoiceFormModal({
                   id="invoice-customer"
                   customers={customers}
                   value={customerId}
-                  onChange={setCustomerId}
+                  onChange={(id) => {
+                    setCustomerId(id);
+                    setReused([]);
+                  }}
                   invalid={invalid("customerId")}
                   disabled={Boolean(invoice?.job || invoice?.quote)}
                   title={invoice?.job || invoice?.quote ? "The customer comes from the linked job or quote." : undefined}
@@ -578,6 +586,7 @@ export default function InvoiceFormModal({
                 onOpen={openFile}
                 onRemoveSaved={removeSaved}
               />
+              <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} />
             </div>
           </Section>
 

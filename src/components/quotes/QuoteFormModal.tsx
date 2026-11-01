@@ -4,7 +4,9 @@ import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, ChevronDown, CloudUpload, Download, FileText, LockKeyhole, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
+import CustomerFilesPicker from "@/components/customers/CustomerFilesPicker";
 import CustomerPicker from "@/components/customers/CustomerPicker";
+import type { CustomerFileOption } from "@/lib/customers/actions";
 import Modal from "@/components/customers/Modal";
 import { fileSize, shortDay } from "@/components/jobs/format";
 import { AdjustmentInput } from "@/components/jobs/JobItemsCard";
@@ -120,6 +122,8 @@ export default function QuoteFormModal({
   const [internalNotes, setInternalNotes] = useState(quote?.internalNotes ?? "");
   const [saved, setSaved] = useState((quote?.attachments ?? []).filter((f) => !f.internal));
   const [files, setFiles] = useState<File[]>([]);
+  // Existing customer files attached without uploading again.
+  const [reused, setReused] = useState<CustomerFileOption[]>([]);
   const [open, setOpen] = useState({ customer: true, terms: true, internal: true });
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -197,6 +201,7 @@ export default function QuoteFormModal({
           const path = await uploadAttachment(file, "quotes");
           uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal: false });
         }
+        for (const f of reused) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal: false });
         const result = quote ? await updateQuote(quote.id, input, uploaded) : await createQuote(input, uploaded);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
@@ -233,7 +238,7 @@ export default function QuoteFormModal({
             <div>
               <label htmlFor="quote-customer" className={labelClass}>Select Customer</label>
               <div className="mt-[9px]">
-                <CustomerPicker id="quote-customer" customers={customers} value={customerId} onChange={setCustomerId} invalid={invalid("customerId")} className={fieldClass} />
+                <CustomerPicker id="quote-customer" customers={customers} value={customerId} onChange={(id) => { setCustomerId(id); setReused([]); }} invalid={invalid("customerId")} className={fieldClass} />
               </div>
               {fieldError("customerId")}
             </div>
@@ -458,6 +463,7 @@ export default function QuoteFormModal({
                   </span>
                   <span className="text-[12px] leading-4 text-[#9ca3af]">(PDF, JPG, PNG up to 10MB)</span>
                 </button>
+                <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} />
                 {(saved.length > 0 || files.length > 0) && (
                   <ul className="mt-3 flex flex-col gap-3">
                     {saved.map((f) => (

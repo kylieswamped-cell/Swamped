@@ -1,5 +1,6 @@
 "use server";
 
+import { allowedFiles, deletablePaths, isCustomerFile } from "@/lib/attachments";
 import { itemName, MAX_LINE_TEXT } from "@/lib/lineItems";
 import { revalidatePath } from "next/cache";
 import { sendInvoiceEmail, sendPaymentReceipt } from "@/lib/email/invoiceEmail";
@@ -180,9 +181,7 @@ async function replaceItems(supabase: Supabase, id: string, items: ItemRow[]) {
 
 /** Uploaded files must sit in the user's own invoices folder (storage policies enforce it too). */
 async function attach(supabase: Supabase, userId: string, invoiceId: string, files: UploadedInvoiceFile[] | undefined) {
-  const own = (files ?? []).filter(
-    (f) => typeof f.path === "string" && f.path.startsWith(`${userId}/invoices/`) && !f.path.includes(".."),
-  );
+  const own = await allowedFiles(supabase, userId, "invoices", invoiceId, files);
   if (!own.length) return null;
   const { error } = await supabase.from("invoice_attachments").insert(
     own.map((f) => ({
@@ -370,7 +369,8 @@ export async function deleteInvoice(id: string): Promise<InvoiceResult> {
   const { data, error } = await ctx.supabase.from("invoices").delete().eq("id", id).eq("status", "draft").select("id");
   if (error || !data?.length) return { error: "Couldn't delete this invoice. Only draft invoices can be deleted." };
   const paths = (files ?? []).map((f) => f.path);
-  if (paths.length) await ctx.supabase.storage.from("attachments").remove(paths);
+  const deletable = deletablePaths(paths);
+  if (deletable.length) await ctx.supabase.storage.from("attachments").remove(deletable);
   revalidate();
   return {};
 }
@@ -669,7 +669,8 @@ export async function deleteInvoiceFile(attachmentId: string): Promise<InvoiceRe
     .select("path, invoice_id")
     .maybeSingle();
   if (!data) return { error: "Couldn't delete the file. Please try again." };
-  await ctx.supabase.storage.from("attachments").remove([data.path]);
+  // Reused customer files stay with the customer.
+  if (!isCustomerFile(data.path)) await ctx.supabase.storage.from("attachments").remove([data.path]);
   revalidate(data.invoice_id);
   return {};
 }

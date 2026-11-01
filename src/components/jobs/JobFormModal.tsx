@@ -4,7 +4,9 @@ import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, Download, Info, LockKeyhole, PencilLine, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
+import CustomerFilesPicker from "@/components/customers/CustomerFilesPicker";
 import CustomerPicker from "@/components/customers/CustomerPicker";
+import type { CustomerFileOption } from "@/lib/customers/actions";
 import Modal from "@/components/customers/Modal";
 import { ACCEPTED_UPLOADS, MAX_UPLOAD_BYTES, uploadAttachment } from "@/components/onboarding/uploadAttachment";
 import { createJob, deleteJobFile, jobFileUrl, updateJob, type JobInput, type UploadedJobFile } from "@/lib/jobs/actions";
@@ -99,6 +101,8 @@ export default function JobFormModal({
   const [saved, setSaved] = useState<(Saved & { internal: boolean })[]>(job?.attachments ?? []);
   const [publicFiles, setPublicFiles] = useState<File[]>([]);
   const [internalFiles, setInternalFiles] = useState<File[]>([]);
+  // Existing customer files attached without uploading again.
+  const [reused, setReused] = useState<CustomerFileOption[]>([]);
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string>();
@@ -170,6 +174,7 @@ export default function JobFormModal({
             uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal });
           }
         }
+        for (const f of reused) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal: false });
         const result = job ? await updateJob(job.id, input, uploaded, sendNow) : await createJob(input, uploaded, sendNow);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
@@ -212,7 +217,7 @@ export default function JobFormModal({
             <div>
               <label htmlFor="job-customer" className={labelClass}>Select Customer</label>
               <div className="mt-2">
-                <CustomerPicker id="job-customer" customers={customers} value={customerId} onChange={setCustomerId} invalid={invalid("customerId")} className={fieldClass} />
+                <CustomerPicker id="job-customer" customers={customers} value={customerId} onChange={(id) => { setCustomerId(id); setReused([]); }} invalid={invalid("customerId")} className={fieldClass} />
               </div>
               {fieldError("customerId")}
             </div>
@@ -397,6 +402,7 @@ export default function JobFormModal({
                 </button>
               </div>
               <input ref={publicPicker} type="file" multiple accept={ACCEPTS} className="sr-only" onChange={(e) => { addFiles(e.target.files, false); e.target.value = ""; }} />
+              <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} />
               <ul className="mt-4 flex flex-col gap-3">
                 {publicSaved.map((f) => (
                   <FileCard

@@ -1,5 +1,6 @@
 "use server";
 
+import { allowedFiles, deletablePaths, isCustomerFile } from "@/lib/attachments";
 import { itemName, MAX_LINE_TEXT } from "@/lib/lineItems";
 import { revalidatePath } from "next/cache";
 import { sendJobEmail } from "@/lib/email/jobEmail";
@@ -121,9 +122,7 @@ type Supabase = Awaited<ReturnType<typeof createClient>>;
 
 /** Uploaded files must sit in the user's own jobs folder (storage policies enforce it too). */
 async function attach(supabase: Supabase, userId: string, jobId: string, files: UploadedJobFile[] | undefined) {
-  const own = (files ?? []).filter(
-    (f) => typeof f.path === "string" && f.path.startsWith(`${userId}/jobs/`) && !f.path.includes(".."),
-  );
+  const own = await allowedFiles(supabase, userId, "jobs", jobId, files);
   if (!own.length) return null;
   const { error } = await supabase.from("job_attachments").insert(
     own.map((f) => ({
@@ -322,7 +321,8 @@ export async function deleteJob(id: string): Promise<JobResult> {
 
   // Item and attachment rows cascade; remove the stored files too.
   const paths = (files ?? []).map((f) => f.path);
-  if (paths.length) await ctx.supabase.storage.from("attachments").remove(paths);
+  const deletable = deletablePaths(paths);
+  if (deletable.length) await ctx.supabase.storage.from("attachments").remove(deletable);
   revalidate();
   return {};
 }
@@ -337,7 +337,8 @@ export async function deleteJobFile(attachmentId: string): Promise<JobResult> {
     .select("path, job_id")
     .maybeSingle();
   if (!data) return { error: "Couldn't delete the file. Please try again." };
-  await ctx.supabase.storage.from("attachments").remove([data.path]);
+  // Reused customer files stay with the customer.
+  if (!isCustomerFile(data.path)) await ctx.supabase.storage.from("attachments").remove([data.path]);
   revalidate(data.job_id);
   return {};
 }
