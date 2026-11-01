@@ -8,7 +8,7 @@ const company = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "Pricing and Fees", href: "#" },
+  { label: "Pricing and Fees", href: "/contact#faq" },
   { label: "Partner Program", href: "/partner" },
 ];
 const account = [
