@@ -44,7 +44,7 @@ export default function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-24 bg-white">
+    <section className="bg-white">
       <div className="mx-auto max-w-[896px] px-6 py-24 sm:px-16">
         <Reveal className="text-center">
           <h2 className="text-[30px] font-extrabold text-navy sm:text-[36px]">

@@ -4,23 +4,36 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "./Reveal";
 
-const company = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-  { label: "Pricing and Fees", href: "/contact#faq" },
-  { label: "Partner Program", href: "/partner" },
-];
-const account = [
-  { label: "Login", href: "/login" },
-  { label: "Create Account", href: "/signup" },
+const columns = [
+  {
+    title: "Company",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Pricing & Fees", href: "/pricing" },
+      { label: "Partner Program", href: "/partner" },
+    ],
+  },
+  {
+    title: "Account",
+    links: [
+      { label: "Login", href: "/login" },
+      { label: "Create Account", href: "/signup" },
+    ],
+  },
 ];
 
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-white">
       <Reveal className="mx-auto max-w-[1440px] px-6 pb-8 pt-16 sm:px-16">
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2">
               <Image src="/images/logo.png" alt="Swamped" width={32} height={32} />
@@ -34,37 +47,23 @@ export default function Footer() {
             </p>
           </div>
 
-          <div>
-            <h4 className="text-[14px] font-bold text-navy">Company</h4>
-            <ul className="mt-5 flex flex-col gap-4">
-              {company.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    href={item.href}
-                    className="text-[12px] font-semibold text-muted-light hover:text-brand"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-[14px] font-bold text-navy">Account</h4>
-            <ul className="mt-5 flex flex-col gap-4">
-              {account.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    href={item.href}
-                    className="text-[12px] font-semibold text-muted-light hover:text-brand"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h4 className="text-[14px] font-bold text-navy">{col.title}</h4>
+              <ul className="mt-5 flex flex-col gap-4">
+                {col.links.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className="text-[12px] font-semibold text-muted-light hover:text-brand"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
