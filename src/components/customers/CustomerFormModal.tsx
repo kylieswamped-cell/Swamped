@@ -32,7 +32,8 @@ export default function CustomerFormModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onSaved: (id: string) => void;
+  /** Gets the saved values too, so callers can show the new customer right away. */
+  onSaved: (id: string, values: CustomerFormValues) => void;
   /** Set when editing an existing customer. */
   customerId?: string;
   initial?: CustomerFormValues;
@@ -88,8 +89,9 @@ export default function CustomerFormModal({
           : await createCustomer(values, uploaded);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
+        const saved = values;
         reset();
-        onSaved(result.id!);
+        onSaved(result.id!, saved);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       }

@@ -6,6 +6,10 @@ import { createPortal } from "react-dom";
 
 const noop = () => () => {};
 
+// Open modals, oldest first. Only the topmost one reacts to Escape, so closing
+// a popup opened from another popup doesn't close both.
+const stack: symbol[] = [];
+
 /** Centered popup over a dimmed page. Escape and backdrop clicks close it unless `busy`. */
 export default function Modal({
   open,
@@ -27,13 +31,16 @@ export default function Modal({
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && !busy && onClose();
+    const id = Symbol("modal");
+    stack.push(id);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && stack.at(-1) === id && !busy && onClose();
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = overflow;
       window.removeEventListener("keydown", onKey);
+      stack.splice(stack.indexOf(id), 1);
     };
   }, [open, busy, onClose]);
 

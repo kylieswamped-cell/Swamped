@@ -4,6 +4,7 @@ import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, ChevronDown, CloudUpload, Download, FileText, LockKeyhole, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
+import CustomerPicker from "@/components/customers/CustomerPicker";
 import Modal from "@/components/customers/Modal";
 import { fileSize, shortDay } from "@/components/jobs/format";
 import { AdjustmentInput } from "@/components/jobs/JobItemsCard";
@@ -231,20 +232,8 @@ export default function QuoteFormModal({
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-x-[130px]">
             <div>
               <label htmlFor="quote-customer" className={labelClass}>Select Customer</label>
-              <div className="relative mt-[9px]">
-                <select
-                  id="quote-customer"
-                  value={customerId}
-                  onChange={(e) => setCustomerId(e.target.value)}
-                  aria-invalid={invalid("customerId")}
-                  className={`${fieldClass} h-11 appearance-none pr-10 ${customerId ? "" : "text-[#9ca3af]"}`}
-                >
-                  <option value="">{customers.length ? "Select a customer" : "Add a customer first"}</option>
-                  {customers.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-                <Image src="/jobs/select-chevron.svg" alt="" width={11} height={6} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2" />
+              <div className="mt-[9px]">
+                <CustomerPicker id="quote-customer" customers={customers} value={customerId} onChange={setCustomerId} invalid={invalid("customerId")} className={fieldClass} />
               </div>
               {fieldError("customerId")}
             </div>

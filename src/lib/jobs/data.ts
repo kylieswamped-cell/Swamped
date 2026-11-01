@@ -107,15 +107,15 @@ export async function listJobs(supabase: SupabaseClient): Promise<{ jobs: JobRow
   };
 }
 
-export type JobCustomerOption = { id: string; name: string };
+export type JobCustomerOption = { id: string; name: string; email?: string | null; phone?: string | null; address?: string | null };
 
 export async function listJobCustomers(supabase: SupabaseClient): Promise<JobCustomerOption[]> {
   const { data } = await supabase
     .from("customers")
-    .select("id, name")
+    .select("id, name, email, phone, full_address")
     .is("archived_at", null)
     .order("name", { ascending: true });
-  return data ?? [];
+  return (data ?? []).map((c) => ({ id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.full_address }));
 }
 
 /** Next number in the J-101, J-102, ... sequence, past any number already used. */

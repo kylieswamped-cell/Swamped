@@ -4,6 +4,7 @@ import LineNameCell from "@/components/jobs/LineNameCell";
 import { CalendarDays, Download, Info, LockKeyhole, PencilLine, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
+import CustomerPicker from "@/components/customers/CustomerPicker";
 import Modal from "@/components/customers/Modal";
 import { ACCEPTED_UPLOADS, MAX_UPLOAD_BYTES, uploadAttachment } from "@/components/onboarding/uploadAttachment";
 import { createJob, deleteJobFile, jobFileUrl, updateJob, type JobInput, type UploadedJobFile } from "@/lib/jobs/actions";
@@ -211,12 +212,7 @@ export default function JobFormModal({
             <div>
               <label htmlFor="job-customer" className={labelClass}>Select Customer</label>
               <div className="mt-2">
-                <SelectField id="job-customer" value={customerId} onChange={setCustomerId} invalid={invalid("customerId")} className="h-11">
-                  <option value="">{customers.length ? "Select a customer" : "Add a customer first"}</option>
-                  {customers.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </SelectField>
+                <CustomerPicker id="job-customer" customers={customers} value={customerId} onChange={setCustomerId} invalid={invalid("customerId")} className={fieldClass} />
               </div>
               {fieldError("customerId")}
             </div>
