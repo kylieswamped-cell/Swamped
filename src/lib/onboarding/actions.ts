@@ -174,6 +174,9 @@ export async function createFirstCustomer(
       email,
       phone: clean(input.phone),
       street_address: clean(input.streetAddress),
+      city: clean(input.city),
+      state: clean(input.state),
+      zip_code: clean(input.zipCode),
       notes: clean(input.notes),
       attachment_path: ownPath(input.attachmentPath, ctx.userId),
     })

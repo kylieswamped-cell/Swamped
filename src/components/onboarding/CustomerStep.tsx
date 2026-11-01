@@ -1,9 +1,10 @@
 "use client";
 
-import { ArrowRight, Mail, MapPin, Phone, User } from "lucide-react";
+import { ArrowRight, Mail, Phone, User } from "lucide-react";
 import { useState } from "react";
+import AddressFields, { type AddressValue } from "@/components/customers/AddressFields";
 import { createFirstCustomer } from "@/lib/onboarding/actions";
-import { Field, FormError, PrimaryButton, TextAreaField, TextField } from "./fields";
+import { Field, FormError, inputClass, PrimaryButton, TextAreaField, TextField } from "./fields";
 import FileDrop from "./FileDrop";
 import StepModal from "./StepModal";
 import { uploadAttachment } from "./uploadAttachment";
@@ -14,6 +15,7 @@ export type CustomerOption = { id: string; name: string; email: string | null };
 export default function CustomerStep({ onDone }: { onDone: (customer: CustomerOption) => void }) {
   const { pending, error, fieldErrors: fe, run } = useStepSubmit();
   const [file, setFile] = useState<File | null>(null);
+  const [address, setAddress] = useState<AddressValue>({ streetAddress: "", city: "", state: "", zipCode: "" });
   const icon = "size-4";
 
   return (
@@ -42,7 +44,7 @@ export default function CustomerStep({ onDone }: { onDone: (customer: CustomerOp
                   return { error: (err as Error).message };
                 }
               }
-              return createFirstCustomer({ ...values, attachmentPath, attachmentName: file?.name ?? "" });
+              return createFirstCustomer({ ...values, ...address, attachmentPath, attachmentName: file?.name ?? "" });
             },
             (result) => result.customer && onDone(result.customer),
           );
@@ -51,7 +53,14 @@ export default function CustomerStep({ onDone }: { onDone: (customer: CustomerOp
       >
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField label="Customer Name" name="name" required icon={<User className={icon} />} placeholder="e.g., John Doe" error={fe.name} autoComplete="off" />
-          <TextField label="Street Address" name="streetAddress" icon={<MapPin className={icon} />} placeholder="e.g., 123 Maple St" autoComplete="off" />
+          <AddressFields
+            idPrefix="first-customer"
+            value={address}
+            onChange={setAddress}
+            inputClass={`${inputClass} pl-10`}
+            plainInputClass={inputClass}
+            labelClass="text-[14px] font-semibold leading-5 text-[#334155]"
+          />
           <TextField label="Phone Number" name="phone" type="tel" icon={<Phone className={icon} />} placeholder="(555) 000-0000" autoComplete="off" />
           <TextField label="Email Address" name="email" type="email" icon={<Mail className={icon} />} placeholder="name@company.com" error={fe.email} hint="Needed to email them quotes." autoComplete="off" />
           <TextAreaField label="Notes" name="notes" rows={2} placeholder="Private notes about this client..." />
