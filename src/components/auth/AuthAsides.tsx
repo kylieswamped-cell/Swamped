@@ -12,7 +12,8 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.6, delay, ease: authEase },
 });
 
-export function LoginAside() {
+/** The partner login (Figma 822:745) swaps the sign-up pitch for "Apply Now". */
+export function LoginAside({ partner = false }: { partner?: boolean }) {
   return (
     <div className="flex max-w-[448px] flex-col items-center px-8 text-center">
       <motion.div
@@ -26,17 +27,18 @@ export function LoginAside() {
 
       <motion.div {...fadeUp(0.45)} className="flex flex-col items-center">
         <h2 className="mt-8 text-[30px] font-bold leading-[36px] tracking-[-0.75px] text-brand">
-          New to Swamped?
+          {partner ? "New to the Partner Program?" : "New to Swamped?"}
         </h2>
         <p className="mt-4 text-[18px] leading-[29.25px] text-[#cbd5e1]">
-          Create your free account and join thousands of professionals managing
-          customers, jobs, quotes, invoices, and payments in one place.
+          {partner
+            ? "Apply for a free partner profile and join agencies, influencers, and contractors earning monthly commissions on Swamped referrals."
+            : "Create your free account and join thousands of professionals managing customers, jobs, quotes, invoices, and payments in one place."}
         </p>
         <Link
-          href="/signup"
+          href={partner ? "/partner/apply" : "/signup"}
           className="group mt-6 inline-flex h-12 items-center gap-2 rounded-full border-[1.5px] border-white/40 px-6 text-[14px] font-semibold text-white backdrop-blur-[2px] transition-colors hover:border-brand hover:bg-brand"
         >
-          Sign Up
+          {partner ? "Apply Now" : "Sign Up"}
           <ArrowRight
             className="size-3.5 transition-transform group-hover:translate-x-1"
             strokeWidth={3}

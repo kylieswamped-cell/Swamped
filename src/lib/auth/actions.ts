@@ -1,9 +1,11 @@
 "use server";
 
 import { createClient as createStatelessClient } from "@supabase/supabase-js";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { homePathFor } from "@/lib/onboarding/server";
+import { PARTNER_TYPES } from "@/lib/partners/options";
+import { REFERRAL_CODE_RE, REFERRAL_COOKIE } from "@/lib/partners/program";
 import { isSupabaseConfigured, supabaseKey, supabaseUrl } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
@@ -43,8 +45,14 @@ function friendlyError(message: string) {
   return message;
 }
 
-async function confirmRedirect() {
-  return `${await siteOrigin()}/auth/confirm?next=/onboarding`;
+async function confirmRedirect(next = "/onboarding") {
+  return `${await siteOrigin()}/auth/confirm?next=${next}`;
+}
+
+/** The partner code from a referral link the visitor opened (set by the proxy). */
+async function referralCode() {
+  const code = (await cookies()).get(REFERRAL_COOKIE)?.value?.toLowerCase();
+  return code && REFERRAL_CODE_RE.test(code) ? code : undefined;
 }
 
 export async function signIn(input: {
@@ -75,13 +83,13 @@ export async function signIn(input: {
   redirect(safeNext(input.next) ?? (await homePathFor(supabase, data.user.id)));
 }
 
-export async function resendConfirmation(email: string): Promise<AuthResult> {
+export async function resendConfirmation(email: string, next?: string): Promise<AuthResult> {
   if (!isSupabaseConfigured) return NOT_CONFIGURED;
   const supabase = await createClient();
   const { error } = await supabase.auth.resend({
     type: "signup",
     email: email.trim(),
-    options: { emailRedirectTo: await confirmRedirect() },
+    options: { emailRedirectTo: await confirmRedirect(safeNext(next) ?? undefined) },
   });
   if (error) return { error: friendlyError(error.message) };
   return {};
@@ -101,7 +109,7 @@ export async function signUp(input: {
     email: input.email.trim(),
     password: input.password,
     options: {
-      data: { full_name: input.fullName.trim(), business_name: input.businessName.trim() },
+      data: { full_name: input.fullName.trim(), business_name: input.businessName.trim(), referral_code: await referralCode() },
       emailRedirectTo: await confirmRedirect(),
     },
   });
@@ -117,6 +125,67 @@ export async function signUp(input: {
   // hands back (only happens if "Confirm email" is turned off).
   if (data.session) await supabase.auth.signOut();
   return { needsVerification: true };
+}
+
+/**
+ * Applying to the Partner Program without a Swamped account: creates the
+ * login and keeps the application on it until the email is confirmed (see
+ * requirePartner). Partners don't go through contractor onboarding.
+ */
+export async function signUpAsPartner(input: {
+  fullName: string;
+  email: string;
+  password: string;
+  businessName: string;
+  partnerType: string;
+  audience: string;
+  agreed: boolean;
+}): Promise<AuthResult & { fieldErrors?: Record<string, string> }> {
+  if (!isSupabaseConfigured) return NOT_CONFIGURED;
+  const fullName = input.fullName.trim().slice(0, 120);
+  const email = input.email.trim();
+  const type = PARTNER_TYPES.find((t) => t.value === input.partnerType);
+  const fieldErrors: Record<string, string> = {};
+  if (fullName.length < 2) fieldErrors.fullName = "Enter your full name.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fieldErrors.email = "Enter a valid email address.";
+  if (input.password.length < 8) fieldErrors.password = "Password must be at least 8 characters.";
+  if (!type) fieldErrors.partnerType = "Choose the option that best describes you.";
+  if (!input.agreed) fieldErrors.terms = "Please agree to the Partner Program terms.";
+  if (Object.keys(fieldErrors).length) return { fieldErrors };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password: input.password,
+    options: {
+      data: {
+        full_name: fullName,
+        business_name: input.businessName.trim().slice(0, 200),
+        partner_application: {
+          fullName,
+          businessName: input.businessName.trim().slice(0, 200),
+          partnerType: type!.value,
+          audience: input.audience.trim().slice(0, 2000),
+        },
+      },
+      emailRedirectTo: await confirmRedirect("/partner/dashboard"),
+    },
+  });
+  if (error) return { error: friendlyError(error.message) };
+  if (data.user && data.user.identities?.length === 0) {
+    return { error: "An account with this email already exists. Log in to the partner portal to apply." };
+  }
+  if (data.session) await supabase.auth.signOut();
+  return { needsVerification: true };
+}
+
+/** Partner portal Log Out goes back to the partner login. */
+export async function signOutPartner() {
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+  }
+  redirect("/partner/login");
 }
 
 export async function requestPasswordReset(email: string): Promise<AuthResult> {

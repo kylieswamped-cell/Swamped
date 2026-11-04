@@ -3,8 +3,8 @@ import Link from "next/link";
 import type { PartnerStatus } from "@/lib/partners/options";
 
 const STATUS_COPY: Record<PartnerStatus, { badge: string; badgeClass: string; cta: string }> = {
-  pending: { badge: "Application Pending", badgeClass: "bg-brand-light text-brand", cta: "View Application" },
-  approved: { badge: "Active Partner", badgeClass: "bg-[#ecfdf5] text-[#059669]", cta: "Open Partner Program" },
+  pending: { badge: "Application Pending", badgeClass: "bg-brand-light text-brand", cta: "Open Partner Portal" },
+  approved: { badge: "Active Partner", badgeClass: "bg-[#ecfdf5] text-[#059669]", cta: "Open Partner Portal" },
   declined: { badge: "Not Approved", badgeClass: "bg-[#f1f5f9] text-[#64748b]", cta: "View Details" },
 };
 
@@ -31,7 +31,7 @@ export default function PartnerCta({ status = null }: { status?: PartnerStatus |
       </div>
 
       <Link
-        href="/partner-program"
+        href={status === "pending" || status === "approved" ? "/partner/dashboard" : "/partner-program"}
         className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-[15px] font-bold text-white transition-colors hover:bg-brand-dark"
       >
         {copy?.cta ?? "Join Program"}

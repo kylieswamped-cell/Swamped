@@ -27,7 +27,9 @@ const notices: Record<string, { tone: "success" | "error"; text: string }> = {
 
 type Banner = { tone: "success" | "error"; text: string };
 
-export default function LoginForm({ next, notice }: { next: string | null; notice: string | null }) {
+/** The partner portal login uses the same form with partner wording and links. */
+export default function LoginForm({ next, notice, partner = false }: { next: string | null; notice: string | null; partner?: boolean }) {
+  const base = partner ? "/partner/login" : "/login";
   const hydrated = useHydrated();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -68,7 +70,7 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
   const handleResend = () => {
     startResend(async () => {
       try {
-        const result = await resendConfirmation(email);
+        const result = await resendConfirmation(email, partner ? "/partner/dashboard" : undefined);
         setUnverified(false);
         setStatus(
           result.error
@@ -91,7 +93,7 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
           Welcome Back
         </h1>
         <p className="mt-3 text-[14px] leading-[20px] text-[#64748b]">
-          Log in to access your Swamped account
+          {partner ? "Log in to access your partner portal dashboard & earnings tracker." : "Log in to access your Swamped account"}
         </p>
       </div>
 
@@ -151,7 +153,7 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
 
         <div className="mt-2 flex justify-end">
           <Link
-            href="/login?view=forgot-password"
+            href={`${base}?view=forgot-password`}
             scroll={false}
             className="text-[14px] font-medium leading-[20px] text-brand transition-colors hover:text-brand-dark"
           >
@@ -166,14 +168,14 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
           whileTap={{ scale: 0.98 }}
           className="mt-6 h-12 w-full rounded-xl bg-brand text-[14px] font-semibold text-white shadow-[0_1px_1px_rgba(0,0,0,0.05)] transition-colors hover:bg-brand-dark disabled:opacity-70"
         >
-          {submitting ? "Logging In…" : "Log In"}
+          {submitting ? "Logging In…" : partner ? "Log In to Partner Portal" : "Log In"}
         </motion.button>
       </form>
 
       <p className="mt-8 text-center text-[14px] text-[#64748b] lg:hidden">
-        New to Swamped?{" "}
-        <Link href="/signup" className="font-semibold text-brand hover:text-brand-dark">
-          Sign Up
+        {partner ? "New to the Partner Program?" : "New to Swamped?"}{" "}
+        <Link href={partner ? "/partner/apply" : "/signup"} className="font-semibold text-brand hover:text-brand-dark">
+          {partner ? "Apply Now" : "Sign Up"}
         </Link>
       </p>
     </>

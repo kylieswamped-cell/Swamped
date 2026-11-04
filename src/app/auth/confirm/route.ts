@@ -29,7 +29,8 @@ export async function GET(request: NextRequest) {
       // PKCE codes only exchange in the browser that made the request. For a
       // sign-up, Supabase has already verified the email by this point, so the
       // user just needs to log in; a reset has to be finished in that browser.
-      target = isReset ? "/login?notice=reset-other-browser" : "/login?notice=email-confirmed";
+      const login = next.startsWith("/partner/") ? "/partner/login" : "/login";
+      target = isReset ? "/login?notice=reset-other-browser" : `${login}?notice=email-confirmed`;
     }
   } else if (tokenHash && type) {
     if (!(await supabase.auth.verifyOtp({ type, token_hash: tokenHash })).error) target = next;

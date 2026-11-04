@@ -23,13 +23,13 @@ const STATUS: Record<PartnerStatus, { icon: typeof Clock; box: string; title: st
     icon: Clock,
     box: "bg-brand-light text-brand",
     title: "Application received",
-    body: "Thanks for applying! Our team is reviewing your application and will email you once it's approved, usually within a few business days.",
+    body: "Thanks for applying! Our team is reviewing your application, usually within a few business days. You can explore your partner portal in the meantime.",
   },
   approved: {
     icon: BadgeCheck,
     box: "bg-[#ecfdf5] text-[#059669]",
     title: "You're an approved partner",
-    body: "Welcome to the Swamped Partner Program! We'll email you your referral link and partner resources.",
+    body: "Welcome to the Swamped Partner Program! Your referral link, resources, and earnings are in your partner portal.",
   },
   declined: {
     icon: XCircle,
@@ -121,6 +121,14 @@ export default async function PartnerProgramPage() {
                     </dd>
                   </div>
                 </dl>
+                {application.status !== "declined" && (
+                  <Link
+                    href="/partner/dashboard"
+                    className="mt-6 flex h-11 w-full items-center justify-center rounded-xl bg-[#10b981] text-[15px] font-semibold text-white transition-colors hover:bg-[#059669]"
+                  >
+                    Open Partner Portal
+                  </Link>
+                )}
                 {application.status === "declined" && (
                   <Link href="/support" className="mt-6 text-[14px] font-semibold text-brand hover:text-brand-dark">
                     Contact support

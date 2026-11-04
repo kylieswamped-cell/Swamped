@@ -22,7 +22,7 @@ export default function PartnerCta() {
           </h2>
 
           <MotionLink
-            href="/contact"
+            href="/partner/apply"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="relative inline-flex items-center justify-center rounded-2xl bg-brand px-10 py-4 text-[18px] font-bold leading-[27px] text-white transition-colors hover:bg-brand-dark"
@@ -32,6 +32,12 @@ export default function PartnerCta() {
 
           <p className="relative text-[12px] font-semibold uppercase leading-[18px] tracking-[1.2px] text-muted">
             • No minimum referral requirements
+          </p>
+          <p className="relative text-[14px] text-[#cbd5e1]">
+            Already a partner?{" "}
+            <Link href="/partner/login" className="font-semibold text-white underline-offset-4 hover:underline">
+              Log in to the partner portal
+            </Link>
           </p>
         </motion.div>
       </Reveal>

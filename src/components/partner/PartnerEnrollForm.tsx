@@ -2,7 +2,8 @@
 
 import { Briefcase, ChevronDown, Mail, User } from "lucide-react";
 import Link from "next/link";
-import { useActionState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, type ReactNode } from "react";
 import { applyToPartnerProgram, type PartnerResult } from "@/lib/partners/actions";
 import { PARTNER_TYPES } from "@/lib/partners/options";
 
@@ -34,10 +35,17 @@ function Field({
 
 export default function PartnerEnrollForm({
   defaults,
+  redirectTo,
 }: {
   defaults: { fullName: string; email: string; businessName: string };
+  /** Where to go once the application is in (the partner portal's apply page). */
+  redirectTo?: string;
 }) {
+  const router = useRouter();
   const [state, action, pending] = useActionState<PartnerResult, FormData>(applyToPartnerProgram, {});
+  useEffect(() => {
+    if (state.ok && redirectTo) router.replace(redirectTo);
+  }, [state.ok, redirectTo, router]);
   const fe = state.fieldErrors ?? {};
 
   return (
