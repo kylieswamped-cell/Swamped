@@ -4,7 +4,8 @@ import { Plus, RotateCcw, Save } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState, useTransition, type ComponentType, type ReactNode } from "react";
 import { saveEmailTemplate } from "@/lib/settings/actions";
-import { DEFAULT_TEMPLATES, TEMPLATE_FIELDS, type EmailTemplate, type TemplateKey } from "@/lib/settings/templates";
+import { DEFAULT_TEMPLATES, FIELD_BY_LABEL, MERGE_FIELD_HELP, TEMPLATE_FIELDS, type EmailTemplate, type TemplateKey } from "@/lib/settings/templates";
+import { PreviewEmailButton } from "./TemplatePreview";
 import { FieldError, StatusLine, type Status } from "./ui";
 
 type Format = "bold" | "italic" | "underline" | "link";
@@ -150,7 +151,7 @@ function Toolbar({ onFormat, icons }: { onFormat: (k: Format) => void; icons?: b
  * The merge field picker, shown the same way in every template editor: a row of
  * chips right above the subject line that insert at the cursor.
  */
-function MergeFieldBar({ fields, onPick }: { fields: string[]; onPick: (f: string) => void }) {
+function MergeFieldBar({ fields, onPick, preview }: { fields: string[]; onPick: (f: string) => void; preview: ReactNode }) {
   return (
     <div className="flex flex-col gap-2 rounded-[12px] border border-line bg-[#f8fafc] p-3">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
@@ -158,8 +159,11 @@ function MergeFieldBar({ fields, onPick }: { fields: string[]; onPick: (f: strin
           <Plus className="size-3" strokeWidth={3} />
           Merge Field Library
         </span>
-        <span className="text-[12px] leading-4 text-[#94a3b8]">Click a field to insert it where your cursor is.</span>
+        {preview}
       </div>
+      <span className="text-[12px] leading-4 text-[#94a3b8]">
+        Click a field to insert it where your cursor is. Hover a field to see what it fills in, or use Preview Email to check the result.
+      </span>
       <div className="flex flex-wrap gap-2">
         {fields.map((f) => (
           <button
@@ -168,6 +172,7 @@ function MergeFieldBar({ fields, onPick }: { fields: string[]; onPick: (f: strin
             // Keep the cursor in the subject or body while clicking.
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onPick(f)}
+            title={FIELD_BY_LABEL[f] ? MERGE_FIELD_HELP[FIELD_BY_LABEL[f]] : undefined}
             className="rounded-[6px] border border-line bg-white px-2.5 py-1 text-[12px] font-medium leading-4 text-[#475569] transition-colors hover:border-brand hover:text-brand"
           >
             {`{{${f}}}`}
@@ -208,7 +213,11 @@ export function QuoteTemplateCard({
         </span>
       </div>
       <div className="flex flex-col gap-6 rounded-[16px] border border-[#f1f5f9] bg-white p-4 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:p-6">
-        <MergeFieldBar fields={TEMPLATE_FIELDS[templateKey]} onPick={insertField} />
+        <MergeFieldBar
+          fields={TEMPLATE_FIELDS[templateKey]}
+          onPick={insertField}
+          preview={<PreviewEmailButton templateKey={templateKey} title={title} value={value} />}
+        />
         <div className="flex flex-col gap-1.5">
           <label htmlFor={`${id}-subject`} className="text-[12px] font-semibold leading-[18px] text-[#64748b]">
             Subject Line
@@ -297,7 +306,11 @@ export function InvoiceTemplateCard({
         </div>
       </div>
       <div className="flex flex-col gap-5 p-4 sm:p-6">
-        <MergeFieldBar fields={TEMPLATE_FIELDS[templateKey]} onPick={insertField} />
+        <MergeFieldBar
+          fields={TEMPLATE_FIELDS[templateKey]}
+          onPick={insertField}
+          preview={<PreviewEmailButton templateKey={templateKey} title={title} value={value} />}
+        />
         <div className="flex flex-col gap-2">
           <label htmlFor={`${id}-subject`} className="text-[14px] font-medium leading-5 text-[#334155]">
             Subject Line
@@ -376,7 +389,11 @@ export function RefundTemplateFields({
   const id = "tpl-refund";
   return (
     <div className="flex flex-col gap-6">
-      <MergeFieldBar fields={TEMPLATE_FIELDS.refund} onPick={insertField} />
+      <MergeFieldBar
+        fields={TEMPLATE_FIELDS.refund}
+        onPick={insertField}
+        preview={<PreviewEmailButton templateKey="refund" title="Refund Receipt" value={value} />}
+      />
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-[9px] pt-[3px]">
           <label htmlFor={`${id}-subject`} className="text-[14px] font-semibold leading-5 text-[#334155]">

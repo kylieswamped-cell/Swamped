@@ -73,7 +73,54 @@ export const MERGE_FIELDS = {
   daysOverdue: "Days Overdue",
 } as const;
 
-type FieldKey = keyof typeof MERGE_FIELDS;
+export type FieldKey = keyof typeof MERGE_FIELDS;
+
+/** What each merge field is replaced with when the email is sent. */
+export const MERGE_FIELD_HELP: Record<FieldKey, string> = {
+  customerFirstName: "The customer's first name, or \"there\" if no name is on file.",
+  customerName: "The customer's full name as saved on their customer record.",
+  businessName: "Your Business Name from Settings → Business Profile.",
+  senderName: "Your Contact Name from Settings → Business Profile (the person sending). Falls back to your Business Name if it's blank.",
+  quoteNumber: "The quote's number, e.g. 1042.",
+  invoiceNumber: "The invoice's number, e.g. INV-1042.",
+  invoiceTotal: "The invoice's total amount.",
+  dueDate: "The invoice's due date.",
+  paymentAmount: "The amount of the payment or deposit received.",
+  paymentDate: "The date the payment was received.",
+  transactionId: "The payment's transaction or reference number.",
+  refundAmount: "The amount refunded.",
+  originalPaymentAmount: "The amount of the payment that was refunded.",
+  daysOverdue: "How many days past the due date the invoice is.",
+};
+
+/** Example values for the template preview. Business and sender come from the user's profile. */
+export function sampleMergeValues(profile: { businessName: string; contactName: string }): Required<MergeValues> {
+  const businessName = profile.businessName.trim() || "Your Business";
+  const due = new Date(Date.now() + 14 * 864e5);
+  const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  return {
+    customerFirstName: "Jordan",
+    customerName: "Jordan Smith",
+    businessName,
+    senderName: profile.contactName.trim() || businessName,
+    quoteNumber: "1042",
+    invoiceNumber: "INV-1042",
+    invoiceTotal: "$1,250.00",
+    dueDate: fmt(due),
+    paymentAmount: "$500.00",
+    paymentDate: fmt(new Date()),
+    transactionId: "TXN-58213",
+    refundAmount: "$150.00",
+    originalPaymentAmount: "$500.00",
+    daysOverdue: "7",
+  };
+}
+
+/** The field keys a template supports, for the preview's field list. */
+export const templateFieldKeys = (key: TemplateKey) => TEMPLATE_FIELD_KEYS[key];
+
+/** The display name typed in a template → its field key. */
+export const FIELD_BY_LABEL = Object.fromEntries(Object.entries(MERGE_FIELDS).map(([k, label]) => [label, k])) as Record<string, FieldKey>;
 
 // Filled in for every email.
 const COMMON: FieldKey[] = ["customerFirstName", "customerName", "businessName", "senderName"];
