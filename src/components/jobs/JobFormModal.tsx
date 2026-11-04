@@ -103,6 +103,7 @@ export default function JobFormModal({
   const [internalFiles, setInternalFiles] = useState<File[]>([]);
   // Existing customer files attached without uploading again.
   const [reused, setReused] = useState<CustomerFileOption[]>([]);
+  const [reusedInternal, setReusedInternal] = useState<CustomerFileOption[]>([]);
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string>();
@@ -174,7 +175,9 @@ export default function JobFormModal({
             uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal });
           }
         }
-        for (const f of reused) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal: false });
+        for (const [list, internal] of [[reused, false], [reusedInternal, true]] as const) {
+          for (const f of list) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal });
+        }
         const result = job ? await updateJob(job.id, input, uploaded, sendNow) : await createJob(input, uploaded, sendNow);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
@@ -402,7 +405,7 @@ export default function JobFormModal({
                 </button>
               </div>
               <input ref={publicPicker} type="file" multiple accept={ACCEPTS} className="sr-only" onChange={(e) => { addFiles(e.target.files, false); e.target.value = ""; }} />
-              <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} />
+              <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} attachedPaths={reusedInternal.map((f) => f.path)} />
               <ul className="mt-4 flex flex-col gap-3">
                 {publicSaved.map((f) => (
                   <FileCard
@@ -510,6 +513,7 @@ export default function JobFormModal({
                   Drag and drop PDFs, images, or documents. Only you can see these.
                 </span>
               </button>
+              <CustomerFilesPicker customerId={customerId} selected={reusedInternal} onChange={setReusedInternal} attachedPaths={reused.map((f) => f.path)} />
               {(internalSaved.length > 0 || internalFiles.length > 0) && (
                 <ul className="mt-3 flex flex-col gap-3">
                   {internalSaved.map((f) => (

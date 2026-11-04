@@ -210,6 +210,7 @@ export default function InvoiceFormModal({
   const [internalFiles, setInternalFiles] = useState<File[]>([]);
   // Existing customer files attached without uploading again.
   const [reused, setReused] = useState<CustomerFileOption[]>([]);
+  const [reusedInternal, setReusedInternal] = useState<CustomerFileOption[]>([]);
   const [open, setOpen] = useState({ customer: true, terms: true, internal: true });
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -283,7 +284,9 @@ export default function InvoiceFormModal({
             uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal });
           }
         }
-        for (const f of reused) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal: false });
+        for (const [list, internal] of [[reused, false], [reusedInternal, true]] as const) {
+          for (const f of list) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal });
+        }
         const result = invoice ? await updateInvoice(invoice.id, input, uploaded) : await createInvoice(input, uploaded);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
@@ -586,7 +589,7 @@ export default function InvoiceFormModal({
                 onOpen={openFile}
                 onRemoveSaved={removeSaved}
               />
-              <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} />
+              <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} attachedPaths={reusedInternal.map((f) => f.path)} />
             </div>
           </Section>
 
@@ -624,20 +627,23 @@ export default function InvoiceFormModal({
             onToggle={() => setOpen({ ...open, internal: !open.internal })}
           >
             <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-[67px]">
-              <FilesField
-                id="invoice-internal-files"
-                label="Internal Attachments"
-                internal
-                title={<span className="font-semibold text-brand">Upload internal files</span>}
-                hint="Costing sheets, private specs, etc."
-                saved={saved.filter((f) => f.internal)}
-                files={internalFiles}
-                pending={pending}
-                onAdd={(list) => pick(list, setInternalFiles)}
-                onRemovePicked={(i) => setInternalFiles(internalFiles.filter((_, j) => j !== i))}
-                onOpen={openFile}
-                onRemoveSaved={removeSaved}
-              />
+              <div>
+                <FilesField
+                  id="invoice-internal-files"
+                  label="Internal Attachments"
+                  internal
+                  title={<span className="font-semibold text-brand">Upload internal files</span>}
+                  hint="Costing sheets, private specs, etc."
+                  saved={saved.filter((f) => f.internal)}
+                  files={internalFiles}
+                  pending={pending}
+                  onAdd={(list) => pick(list, setInternalFiles)}
+                  onRemovePicked={(i) => setInternalFiles(internalFiles.filter((_, j) => j !== i))}
+                  onOpen={openFile}
+                  onRemoveSaved={removeSaved}
+                />
+                <CustomerFilesPicker customerId={customerId} selected={reusedInternal} onChange={setReusedInternal} attachedPaths={reused.map((f) => f.path)} />
+              </div>
               <div>
                 <label htmlFor="invoice-internal" className="text-[14px] font-semibold leading-5 text-[#4b5563]">Internal Notes</label>
                 <textarea

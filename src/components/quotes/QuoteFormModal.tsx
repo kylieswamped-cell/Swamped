@@ -120,17 +120,22 @@ export default function QuoteFormModal({
   const [terms, setTerms] = useState(quote ? (quote.terms ?? "") : defaults.terms);
   const [editingTerms, setEditingTerms] = useState(false);
   const [internalNotes, setInternalNotes] = useState(quote?.internalNotes ?? "");
-  const [saved, setSaved] = useState((quote?.attachments ?? []).filter((f) => !f.internal));
+  const [saved, setSaved] = useState(quote?.attachments ?? []);
   const [files, setFiles] = useState<File[]>([]);
+  const [internalFiles, setInternalFiles] = useState<File[]>([]);
   // Existing customer files attached without uploading again.
   const [reused, setReused] = useState<CustomerFileOption[]>([]);
+  const [reusedInternal, setReusedInternal] = useState<CustomerFileOption[]>([]);
+  const publicSaved = saved.filter((f) => !f.internal);
+  const internalSaved = saved.filter((f) => f.internal);
   const [open, setOpen] = useState({ customer: true, terms: true, internal: true });
   const [lineModal, setLineModal] = useState<{ index: number | null } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string>();
-  const [dragging, setDragging] = useState(false);
+  const [dragging, setDragging] = useState<"public" | "internal" | null>(null);
   const [pending, startTransition] = useTransition();
   const picker = useRef<HTMLInputElement>(null);
+  const internalPicker = useRef<HTMLInputElement>(null);
 
   const totals = quoteTotals(
     lines.map((l) => ({ quantity: Number(l.quantity), unitPrice: Number(l.unitPrice), taxable: l.taxable })),
@@ -146,12 +151,12 @@ export default function QuoteFormModal({
 
   const updateLine = (index: number, patch: Partial<LineDraft>) => setLines((ls) => ls.map((l, i) => (i === index ? { ...l, ...patch } : l)));
 
-  const addFiles = (list: FileList | null) => {
+  const addFiles = (list: FileList | null, internal = false) => {
     if (!list) return;
     const picked = [...list];
     const tooBig = picked.filter((f) => f.size > MAX_UPLOAD_BYTES);
     setError(tooBig.length ? `${tooBig.map((f) => f.name).join(", ")}: files must be 10 MB or smaller.` : undefined);
-    setFiles((current) => [...current, ...picked.filter((f) => f.size <= MAX_UPLOAD_BYTES)]);
+    (internal ? setInternalFiles : setFiles)((current) => [...current, ...picked.filter((f) => f.size <= MAX_UPLOAD_BYTES)]);
   };
 
   const openFile = (id: string) =>
@@ -197,11 +202,15 @@ export default function QuoteFormModal({
     startTransition(async () => {
       try {
         const uploaded: UploadedQuoteFile[] = [];
-        for (const file of files) {
-          const path = await uploadAttachment(file, "quotes");
-          uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal: false });
+        for (const [list, internal] of [[files, false], [internalFiles, true]] as const) {
+          for (const file of list) {
+            const path = await uploadAttachment(file, "quotes");
+            uploaded.push({ path, name: file.name, size: file.size, type: file.type, internal });
+          }
         }
-        for (const f of reused) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal: false });
+        for (const [list, internal] of [[reused, false], [reusedInternal, true]] as const) {
+          for (const f of list) uploaded.push({ path: f.path, name: f.name, size: f.sizeBytes ?? 0, type: f.contentType ?? "", internal });
+        }
         const result = quote ? await updateQuote(quote.id, input, uploaded) : await createQuote(input, uploaded);
         if (result.fieldErrors) return setFieldErrors(result.fieldErrors);
         if (result.error && !result.id) return setError(result.error);
@@ -452,10 +461,10 @@ export default function QuoteFormModal({
                 <button
                   type="button"
                   onClick={() => picker.current?.click()}
-                  onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-                  onDragLeave={() => setDragging(false)}
-                  onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
-                  className={`mt-2 flex h-[142px] w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-line transition-colors hover:border-brand ${dragging ? "bg-brand-light" : "bg-[#f9fafb]"}`}
+                  onDragOver={(e) => { e.preventDefault(); setDragging("public"); }}
+                  onDragLeave={() => setDragging(null)}
+                  onDrop={(e) => { e.preventDefault(); setDragging(null); addFiles(e.dataTransfer.files); }}
+                  className={`mt-2 flex h-[142px] w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-line transition-colors hover:border-brand ${dragging === "public" ? "bg-brand-light" : "bg-[#f9fafb]"}`}
                 >
                   <CloudUpload className="size-9 text-[#d1d5db]" />
                   <span className="mt-2 text-[14px] leading-5 text-[#4b5563]">
@@ -463,10 +472,10 @@ export default function QuoteFormModal({
                   </span>
                   <span className="text-[12px] leading-4 text-[#9ca3af]">(PDF, JPG, PNG up to 10MB)</span>
                 </button>
-                <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} />
-                {(saved.length > 0 || files.length > 0) && (
+                <CustomerFilesPicker customerId={customerId} selected={reused} onChange={setReused} attachedPaths={reusedInternal.map((f) => f.path)} />
+                {(publicSaved.length > 0 || files.length > 0) && (
                   <ul className="mt-3 flex flex-col gap-3">
-                    {saved.map((f) => (
+                    {publicSaved.map((f) => (
                       <FileCard
                         key={f.id}
                         name={f.name}
@@ -538,15 +547,78 @@ export default function QuoteFormModal({
             open={open.internal}
             onToggle={() => setOpen({ ...open, internal: !open.internal })}
           >
-            <div className="mt-6 lg:w-[507px]">
-              <label htmlFor="quote-internal" className="text-[14px] font-semibold leading-5 text-[#4b5563]">Internal Notes</label>
-              <textarea
-                id="quote-internal"
-                value={internalNotes}
-                onChange={(e) => setInternalNotes(e.target.value)}
-                placeholder="Add private notes for your team only. These will not be visible to the customer..."
-                className="mt-2 h-32 w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
-              />
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-[70px]">
+              <div>
+                <label htmlFor="quote-internal" className="text-[14px] font-semibold leading-5 text-[#4b5563]">Internal Notes</label>
+                <textarea
+                  id="quote-internal"
+                  value={internalNotes}
+                  onChange={(e) => setInternalNotes(e.target.value)}
+                  placeholder="Add private notes for your team only. These will not be visible to the customer..."
+                  className="mt-2 h-[142px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-3 text-[16px] leading-6 text-navy outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between">
+                  <span id="quote-internal-files" className="text-[14px] font-semibold leading-5 text-[#4b5563]">Internal Attachments</span>
+                  <span className="flex items-center gap-1 text-[10px] font-bold uppercase leading-[15px] tracking-[2px] text-[#fb923c]">
+                    <LockKeyhole className="size-3" strokeWidth={2.5} />
+                    Private
+                  </span>
+                </div>
+                <input ref={internalPicker} type="file" multiple accept={ACCEPTS} className="sr-only" onChange={(e) => { addFiles(e.target.files, true); e.target.value = ""; }} />
+                <button
+                  type="button"
+                  aria-labelledby="quote-internal-files"
+                  onClick={() => internalPicker.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setDragging("internal"); }}
+                  onDragLeave={() => setDragging(null)}
+                  onDrop={(e) => { e.preventDefault(); setDragging(null); addFiles(e.dataTransfer.files, true); }}
+                  className={`mt-2 flex h-[142px] w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-line transition-colors hover:border-brand ${dragging === "internal" ? "bg-brand-light" : "bg-[#f9fafb]"}`}
+                >
+                  <CloudUpload className="size-9 text-[#d1d5db]" />
+                  <span className="mt-2 text-[14px] leading-5 text-[#4b5563]">
+                    <span className="font-semibold text-brand">Click to upload</span> or drag and drop
+                  </span>
+                  <span className="text-[12px] leading-4 text-[#9ca3af]">Only you can see these. (PDF, JPG, PNG up to 10MB)</span>
+                </button>
+                <CustomerFilesPicker customerId={customerId} selected={reusedInternal} onChange={setReusedInternal} attachedPaths={reused.map((f) => f.path)} />
+                {(internalSaved.length > 0 || internalFiles.length > 0) && (
+                  <ul className="mt-3 flex flex-col gap-3">
+                    {internalSaved.map((f) => (
+                      <FileCard
+                        key={f.id}
+                        name={f.name}
+                        type={f.contentType}
+                        meta={[fileSize(f.sizeBytes), shortDay(f.createdAt)].filter(Boolean).join(" • ")}
+                        action={
+                          <>
+                            <button type="button" onClick={() => openFile(f.id)} aria-label={`Download ${f.name}`} className="rounded p-1 text-[#cbd5e1] hover:text-[#475569]">
+                              <Download className="size-4" />
+                            </button>
+                            <button type="button" onClick={() => removeSaved(f.id)} disabled={pending} aria-label={`Delete ${f.name}`} className="rounded p-1 text-[#cbd5e1] hover:text-[#ef4444]">
+                              <Trash2 className="size-4" />
+                            </button>
+                          </>
+                        }
+                      />
+                    ))}
+                    {internalFiles.map((f, i) => (
+                      <FileCard
+                        key={`${f.name}-${i}`}
+                        name={f.name}
+                        type={f.type}
+                        meta={`${fileSize(f.size)} • Not uploaded yet`}
+                        action={
+                          <button type="button" onClick={() => setInternalFiles(internalFiles.filter((_, j) => j !== i))} aria-label={`Remove ${f.name}`} className="rounded p-1 text-[#cbd5e1] hover:text-[#ef4444]">
+                            <Trash2 className="size-4" />
+                          </button>
+                        }
+                      />
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </Section>
 
