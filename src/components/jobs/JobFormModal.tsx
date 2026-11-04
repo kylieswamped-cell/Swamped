@@ -1,7 +1,7 @@
 "use client";
 
 import LineNameCell from "@/components/jobs/LineNameCell";
-import { CalendarDays, Download, Info, LockKeyhole, PencilLine, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
+import { CalendarDays, Download, Info, LockKeyhole, Plus, Trash2, UserRoundCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition, type ReactNode } from "react";
 import CustomerFilesPicker from "@/components/customers/CustomerFilesPicker";
@@ -96,7 +96,6 @@ export default function JobFormModal({
   );
   const [notes, setNotes] = useState(job?.notes ?? "");
   const [terms, setTerms] = useState(job ? (job.terms ?? "") : defaultTerms);
-  const [editingTerms, setEditingTerms] = useState(false);
   const [internalNotes, setInternalNotes] = useState(job?.internalNotes ?? "");
   const [saved, setSaved] = useState<(Saved & { internal: boolean })[]>(job?.attachments ?? []);
   const [publicFiles, setPublicFiles] = useState<File[]>([]);
@@ -447,30 +446,18 @@ export default function JobFormModal({
             </div>
           </div>
 
-          <div className="relative mt-[91px] rounded-3xl border border-[#f3f4f6] bg-white px-8 py-8 shadow-[0_4px_20px_rgba(0,0,0,0.02)] lg:ml-8">
-            <h3 className="text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#9ca3af]">Terms and Conditions</h3>
-            <button
-              type="button"
-              onClick={() => setEditingTerms(!editingTerms)}
-              aria-label={editingTerms ? "Done editing terms" : "Edit terms"}
-              aria-pressed={editingTerms}
-              className="absolute right-[30px] top-[22px] rounded p-1.5 text-[#000] hover:bg-[#f1f5f9]"
-            >
-              <PencilLine className="size-4" />
-            </button>
-            {editingTerms ? (
-              <textarea
-                autoFocus
-                value={terms}
-                onChange={(e) => setTerms(e.target.value)}
-                rows={3}
-                className="mt-[15px] w-full resize-y rounded-lg border border-line p-3 text-[14px] leading-[22.8px] text-[#475569] outline-none focus:border-brand"
-              />
-            ) : (
-              <p className="mt-[15px] whitespace-pre-line text-[14px] leading-[22.8px] text-[#475569]">
-                {terms || <span className="text-[#94a3b8]">No terms. Click the pencil to add them.</span>}
-              </p>
-            )}
+          <div className="mt-[91px] rounded-3xl border border-[#f3f4f6] bg-white px-8 py-8 shadow-[0_4px_20px_rgba(0,0,0,0.02)] lg:ml-8">
+            <label htmlFor="job-terms" className="text-[12px] font-bold uppercase leading-4 tracking-[1.2px] text-[#9ca3af]">
+              Terms and Conditions
+            </label>
+            <textarea
+              id="job-terms"
+              value={terms}
+              onChange={(e) => setTerms(e.target.value)}
+              rows={3}
+              placeholder="Add terms and conditions for this job..."
+              className="mt-[15px] w-full resize-y rounded-lg border border-line p-3 text-[14px] leading-[22.8px] text-[#475569] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-brand"
+            />
           </div>
 
           <div className="mt-5 flex items-center justify-center gap-3">

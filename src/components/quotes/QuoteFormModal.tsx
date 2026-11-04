@@ -118,7 +118,6 @@ export default function QuoteFormModal({
   });
   const [message, setMessage] = useState(quote?.message ?? "");
   const [terms, setTerms] = useState(quote ? (quote.terms ?? "") : defaults.terms);
-  const [editingTerms, setEditingTerms] = useState(false);
   const [internalNotes, setInternalNotes] = useState(quote?.internalNotes ?? "");
   const [saved, setSaved] = useState(quote?.attachments ?? []);
   const [files, setFiles] = useState<File[]>([]);
@@ -520,22 +519,14 @@ export default function QuoteFormModal({
               </button>
             </div>
             {open.terms && (
-              <div className="relative mt-2">
+              <div className="mt-2">
                 <textarea
                   aria-label="Terms and conditions"
                   value={terms}
-                  readOnly={!editingTerms}
                   onChange={(e) => setTerms(e.target.value)}
-                  placeholder="No terms yet. Click Edit to add them."
-                  className={`h-[110px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] py-4 pl-1 pr-20 text-[12px] leading-[19.5px] text-[#64748b] outline-none placeholder:text-[#9ca3af] ${editingTerms ? "focus:border-brand focus:bg-white" : "cursor-default"}`}
+                  placeholder="Add terms and conditions for this quote..."
+                  className="h-[110px] w-full resize-y rounded-xl border border-line bg-[#f9fafb] px-4 py-4 text-[12px] leading-[19.5px] text-[#64748b] outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand focus:bg-white"
                 />
-                <button
-                  type="button"
-                  onClick={() => setEditingTerms(!editingTerms)}
-                  className="absolute right-[38px] top-3 rounded bg-[#f1f5f9] px-2 py-1 text-[10px] leading-[15px] text-[#64748b] hover:bg-line"
-                >
-                  {editingTerms ? "Done" : "Edit"}
-                </button>
               </div>
             )}
           </section>
