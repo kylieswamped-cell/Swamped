@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition, type RefObject } from "react";
+import ResultTotals from "@/components/dashboard/ResultTotals";
 import { useLocalTime } from "@/components/jobs/format";
+import { presetDates } from "@/lib/dateRanges";
 import { resendReceipt } from "@/lib/payments/actions";
 import {
   METHOD_FILTERS,
@@ -158,9 +160,33 @@ const tone = (name: string) => AVATAR_TONES[[...name].reduce((sum, c) => sum + c
 const dayLabel = (d: string, withYear = false) =>
   new Date(`${d}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: withYear ? "numeric" : undefined, timeZone: "UTC" });
 
+const PRESETS = [
+  { value: "30", label: "Last 30 days" },
+  { value: "90", label: "Last 90 days" },
+  { value: "this_year", label: "This year" },
+  { value: "last_year", label: "Last year" },
+];
+
+/** Money actually received in the listed rows: payments and deposits, less refunds. */
+function paymentTotals(rows: TransactionRow[]) {
+  const received = rows.filter((r) => (r.type === "payment" || r.type === "deposit") && r.status !== "processing");
+  const refunds = rows.filter((r) => r.type === "refund");
+  const awaiting = rows.filter((r) => r.type === "invoice");
+  const sum = (list: TransactionRow[]) => list.reduce((s, r) => s + Math.abs(r.amount), 0);
+  const collected = sum(received);
+  const refunded = sum(refunds);
+  return [
+    { label: "Net Collected", value: formatMoney(collected - refunded), tone: "good" as const },
+    { label: "Payments Received", value: formatMoney(collected), sub: `${received.length} payment${received.length === 1 ? "" : "s"}` },
+    { label: "Refunded", value: refunded ? `-${formatMoney(refunded)}` : formatMoney(0), sub: `${refunds.length} refund${refunds.length === 1 ? "" : "s"}`, tone: refunded ? ("bad" as const) : undefined },
+    { label: "Transactions", value: String(received.length + refunds.length) },
+    ...(awaiting.length ? [{ label: "Awaiting Payment", value: formatMoney(sum(awaiting)), sub: `${awaiting.length} invoice${awaiting.length === 1 ? "" : "s"}`, tone: "warn" as const }] : []),
+  ];
+}
+
 const statCard = "flex h-[144px] flex-col rounded-[24px] border border-[#f3f4f6] bg-white px-[31px] pt-[31px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.03)]";
 
-export default function PaymentsView({ transactions, stats }: { transactions: TransactionRow[]; stats: PaymentStats; now: number }) {
+export default function PaymentsView({ transactions, stats, now }: { transactions: TransactionRow[]; stats: PaymentStats; now: number }) {
   const router = useRouter();
   const local = useLocalTime();
   const [query, setQuery] = useState("");
@@ -189,7 +215,12 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
   }, [transactions, query, types, methods, statuses, from, to]);
 
   const labelOf = <T extends string>(options: { value: T; label: string }[], values: T[]) => values.map((v) => options.find((o) => o.value === v)?.label).join(", ");
-  const range = from || to ? `${from ? dayLabel(from) : "Any"} - ${to ? dayLabel(to) : "Today"}` : "";
+  const activePreset = PRESETS.find((p) => {
+    const d = presetDates(p.value, now);
+    return d.from === from && d.to === to;
+  });
+  const filtering = Boolean(query) || types.length + methods.length + statuses.length > 0 || Boolean(from || to);
+  const range = activePreset ? activePreset.label : from || to ? `${from ? dayLabel(from) : "Any"} - ${to ? dayLabel(to) : "Today"}` : "";
   const chips = [
     ...(types.length ? [{ key: "t", label: "Type", value: labelOf(TYPE_FILTERS, types), remove: () => setTypes([]) }] : []),
     ...(methods.length ? [{ key: "m", label: "Method", value: labelOf(METHOD_FILTERS, methods), remove: () => setMethods([]) }] : []),
@@ -262,6 +293,29 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
           </span>
           {dateBox(to, setTo, toInput, "End date", "To date")}
         </div>
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Quick date ranges">
+          {PRESETS.map((p) => {
+            const active = activePreset?.value === p.value;
+            return (
+              <button
+                key={p.value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => {
+                  if (active) return (setFrom(""), setTo(""));
+                  const d = presetDates(p.value, now);
+                  setFrom(d.from);
+                  setTo(d.to);
+                }}
+                className={`h-8 rounded-full border px-3 text-[12px] font-semibold transition-colors ${
+                  active ? "border-brand bg-brand-light text-navy" : "border-line bg-white text-[#64748b] hover:border-brand hover:text-brand"
+                }`}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {chips.length > 0 && (
@@ -292,7 +346,15 @@ export default function PaymentsView({ transactions, stats }: { transactions: Tr
         </p>
       )}
 
-      <section className="mt-[18px] overflow-hidden rounded-[24px] border border-[#f3f4f6] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
+      {transactions.length > 0 && (
+        <ResultTotals
+          className="mt-[18px]"
+          scope={filtering ? `${filtered.length} matching transaction${filtered.length === 1 ? "" : "s"}${range ? ` · ${range}` : ""}` : "All transactions"}
+          items={paymentTotals(filtered)}
+        />
+      )}
+
+      <section className="mt-4 overflow-hidden rounded-[24px] border border-[#f3f4f6] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
         <div className="border-b border-[#f3f4f6] px-8 pb-[15px] pt-8">
           <h2 className="text-[21px] font-extrabold leading-[30px] text-navy">Recent Transactions</h2>
         </div>

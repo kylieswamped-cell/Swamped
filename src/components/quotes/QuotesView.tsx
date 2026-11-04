@@ -5,23 +5,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Chip, FilterMenu } from "@/components/dashboard/FilterMenu";
+import ResultTotals from "@/components/dashboard/ResultTotals";
 import { shortDate, useLocalTime } from "@/components/jobs/format";
+import { DATE_RANGES as RANGES, rangeLabel, withinRange as inRange } from "@/lib/dateRanges";
 import type { JobCustomerOption } from "@/lib/jobs/data";
 import { QUOTE_FILTERS, type QuoteRow, type QuoteState, type QuoteStats } from "@/lib/quotes/data";
 import { formatMoney } from "@/lib/quotes/totals";
 import QuoteFormModal, { type QuoteDefaults } from "./QuoteFormModal";
 import QuoteStatusBadge from "./QuoteStatusBadge";
 
-const DAY = 24 * 60 * 60 * 1000;
-const RANGES = [
-  { value: "7", label: "Last 7 days" },
-  { value: "30", label: "Last 30 days" },
-  { value: "90", label: "Last 90 days" },
-  { value: "365", label: "Last 12 months" },
-];
-
-const inRange = (iso: string | null, days: string, now: number) =>
-  !days || Boolean(iso && new Date(iso).getTime() >= now - Number(days) * DAY);
+function quoteTotals(rows: QuoteRow[]) {
+  const sum = (list: QuoteRow[]) => list.reduce((s, r) => s + r.total, 0);
+  // Accepted quotes were sent, even if the send date is missing.
+  const sent = rows.filter((r) => r.sentAt || r.state === "accepted");
+  const accepted = rows.filter((r) => r.state === "accepted");
+  return [
+    { label: "Quotes", value: String(rows.length), sub: formatMoney(sum(rows)) },
+    { label: "Sent", value: String(sent.length), sub: formatMoney(sum(sent)) },
+    { label: "Accepted", value: String(accepted.length), sub: formatMoney(sum(accepted)), tone: "good" as const },
+    { label: "Close Rate", value: sent.length ? `${((accepted.length / sent.length) * 100).toFixed(1)}%` : "—" },
+  ];
+}
 
 const statCard = "h-[113px] rounded-xl border border-line bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 
@@ -64,7 +68,6 @@ export default function QuotesView({
     });
   }, [quotes, query, states, created, sent, now]);
 
-  const rangeLabel = (v: string) => RANGES.find((r) => r.value === v)?.label ?? "";
   const chips = [
     ...states.map((s) => ({ key: s, label: `Status: ${QUOTE_FILTERS.find((o) => o.value === s)?.label}`, remove: () => setStates(toggle(states, s)) })),
     ...(created ? [{ key: "c", label: `Created: ${rangeLabel(created)}`, remove: () => setCreated("") }] : []),
@@ -144,7 +147,15 @@ export default function QuotesView({
         </div>
       )}
 
-      <section className={`${chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
+      {quotes.length > 0 && (
+        <ResultTotals
+          className={chips.length ? "mt-[23px]" : "mt-6"}
+          scope={filtering ? `${filtered.length} matching quote${filtered.length === 1 ? "" : "s"}` : "All active quotes"}
+          items={quoteTotals(filtered)}
+        />
+      )}
+
+      <section className={`${quotes.length > 0 ? "mt-4" : chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">{quotes.length === 0 ? "No quotes yet" : filtering ? "No matching quotes" : "No active quotes"}</h2>

@@ -7,18 +7,14 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { setCustomerArchived } from "@/lib/customers/actions";
 import type { CustomerRow, CustomerStatus } from "@/lib/customers/data";
+import ResultTotals from "@/components/dashboard/ResultTotals";
+import { DATE_RANGES as RANGES, rangeLabel, withinRange } from "@/lib/dateRanges";
 import ConfirmDialog from "./ConfirmDialog";
 import CustomerFormModal from "./CustomerFormModal";
 
 const STATUSES: CustomerStatus[] = ["Active", "Pending", "Completed"];
 
-const DATE_RANGES = [
-  { value: "", label: "Creation Date" },
-  { value: "7", label: "Last 7 days" },
-  { value: "30", label: "Last 30 days" },
-  { value: "90", label: "Last 90 days" },
-  { value: "365", label: "Last 12 months" },
-];
+const DATE_RANGES = [{ value: "", label: "Creation Date" }, ...RANGES];
 
 const badge: Record<CustomerStatus, string> = {
   Active: "border-[#dbeafe] bg-[#eff6ff] text-[#1d4ed8]",
@@ -55,10 +51,9 @@ export default function CustomersView({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const since = range ? now - Number(range) * 24 * 60 * 60 * 1000 : null;
     return customers.filter((c) => {
       if (!archived && status && c.status !== status) return false;
-      if (since !== null && new Date(c.createdAt).getTime() < since) return false;
+      if (!withinRange(c.createdAt, range, now)) return false;
       if (!q) return true;
       return [c.name, c.email, c.phone, c.address].some((v) => v?.toLowerCase().includes(q));
     });
@@ -145,7 +140,24 @@ export default function CustomersView({
         )}
       </div>
 
-      <section className="mt-[19px] overflow-hidden rounded-[11px] border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      {customers.length > 0 && (
+        <ResultTotals
+          className="mt-[19px]"
+          scope={
+            filtering
+              ? `${filtered.length} matching customer${filtered.length === 1 ? "" : "s"}${range ? ` · added ${rangeLabel(range).toLowerCase()}` : ""}`
+              : archived
+                ? "All archived customers"
+                : "All active customers"
+          }
+          items={[
+            { label: range ? `Added ${rangeLabel(range).toLowerCase()}` : "Customers", value: String(filtered.length) },
+            ...(archived ? [] : STATUSES.map((st) => ({ label: st, value: String(filtered.filter((c) => c.status === st).length) }))),
+          ]}
+        />
+      )}
+
+      <section className="mt-4 overflow-hidden rounded-[11px] border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">

@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Chip, FilterMenu } from "@/components/dashboard/FilterMenu";
+import ResultTotals from "@/components/dashboard/ResultTotals";
 import { shortDate, useLocalTime } from "@/components/jobs/format";
+import { DATE_RANGES as RANGES, rangeLabel, withinRange as inRange } from "@/lib/dateRanges";
 import { INVOICE_FILTERS, todayIso, type InvoiceRow, type InvoiceState, type InvoiceStats } from "@/lib/invoices/data";
 import type { JobCustomerOption } from "@/lib/jobs/data";
 import { formatMoney } from "@/lib/quotes/totals";
@@ -14,20 +16,25 @@ import InvoiceFormModal, { type InvoiceDefaults } from "./InvoiceFormModal";
 import InvoiceStatusBadge from "./InvoiceStatusBadge";
 
 const DAY = 24 * 60 * 60 * 1000;
-const RANGES = [
-  { value: "7", label: "Last 7 days" },
-  { value: "30", label: "Last 30 days" },
-  { value: "90", label: "Last 90 days" },
-  { value: "365", label: "Last 12 months" },
-];
 const DUE_RANGES = [
   { value: "past", label: "Past due" },
   { value: "7", label: "Due in 7 days" },
   { value: "30", label: "Due in 30 days" },
 ];
 
-const inRange = (iso: string | null, days: string, now: number) =>
-  !days || Boolean(iso && new Date(iso).getTime() >= now - Number(days) * DAY);
+// Drafts haven't been billed and void invoices are cancelled, so neither counts toward totals.
+const billed = (r: InvoiceRow) => r.state !== "draft" && r.state !== "void";
+
+function invoiceTotals(rows: InvoiceRow[]) {
+  const live = rows.filter(billed);
+  const sum = (list: InvoiceRow[], f: (r: InvoiceRow) => number) => list.reduce((s, r) => s + f(r), 0);
+  return [
+    { label: "Invoices", value: String(rows.length) },
+    { label: "Invoiced", value: formatMoney(sum(live, (r) => r.total)), sub: `${live.length} billed` },
+    { label: "Paid", value: formatMoney(sum(live, (r) => r.amountPaid)), tone: "good" as const },
+    { label: "Outstanding", value: formatMoney(sum(live, (r) => r.balance)), tone: "warn" as const },
+  ];
+}
 
 function dueMatches(dueOn: string, range: string, now: number) {
   if (!range) return true;
@@ -83,7 +90,6 @@ export default function InvoicesView({
     });
   }, [invoices, query, states, created, sent, due, now]);
 
-  const rangeLabel = (v: string) => RANGES.find((r) => r.value === v)?.label ?? "";
   const chips = [
     ...states.map((s) => ({ key: s, label: `Status: ${INVOICE_FILTERS.find((o) => o.value === s)?.label}`, remove: () => setStates(toggle(states, s)) })),
     ...(created ? [{ key: "c", label: `Created: ${rangeLabel(created)}`, remove: () => setCreated("") }] : []),
@@ -167,7 +173,15 @@ export default function InvoicesView({
         </div>
       )}
 
-      <section className={`${chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
+      {invoices.length > 0 && (
+        <ResultTotals
+          className={chips.length ? "mt-[23px]" : "mt-6"}
+          scope={filtering ? `${filtered.length} matching invoice${filtered.length === 1 ? "" : "s"}` : "All active invoices"}
+          items={invoiceTotals(filtered)}
+        />
+      )}
+
+      <section className={`${invoices.length > 0 ? "mt-4" : chips.length ? "mt-[23px]" : "mt-[38px]"} overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)]`}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-16 text-center">
             <h2 className="text-[16px] font-bold text-[#1e293b]">{invoices.length === 0 ? "No invoices yet" : filtering ? "No matching invoices" : "No active invoices"}</h2>
