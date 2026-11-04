@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { PROGRAM } from "@/lib/partners/program";
 import Reveal, { Stagger, StaggerItem } from "../Reveal";
 
 const benefits = [
   {
     icon: "/partner/commissions-icon.svg",
     title: "Generous Commissions",
-    body: "Earn 20% recurring revenue for every contractor you refer for their first 12 months. No caps on earnings.",
+    body: `Earn ${PROGRAM.commissionRate}% of qualifying Swamped revenue from every contractor you refer for ${PROGRAM.commissionMonths} months after they activate. No caps on earnings.`,
   },
   {
     icon: "/partner/support-icon.svg",

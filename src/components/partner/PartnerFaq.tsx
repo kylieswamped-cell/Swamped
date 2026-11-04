@@ -1,11 +1,12 @@
 "use client";
 
+import { PROGRAM } from "@/lib/partners/program";
 import Reveal, { Stagger, StaggerItem } from "../Reveal";
 
 const faqs = [
   {
     q: "How much can I earn as a partner?",
-    a: "Partners earn 20% of the subscription revenue for every client they refer. For a typical contractor team, this can range from $200 to $1,000+ per year per referral.",
+    a: `Partners earn ${PROGRAM.commissionRate}% of the qualifying revenue Swamped earns from every contractor they refer, for ${PROGRAM.commissionMonths} months from the date each referral activates their account. There are no caps on earnings.`,
   },
   {
     q: "Is there a cost to join the program?",
@@ -13,7 +14,7 @@ const faqs = [
   },
   {
     q: "When do I get paid?",
-    a: "Commissions are calculated monthly and paid out via Stripe within the first 10 days of the following month.",
+    a: `Payouts are sent through Stripe on the ${PROGRAM.payoutDay}th of each month once your eligible balance reaches $${PROGRAM.minimumPayout}. New commissions are held for ${PROGRAM.holdingDays} days first to allow for refunds and processing.`,
   },
 ];
 
