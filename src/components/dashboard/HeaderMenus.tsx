@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, BadgeCheck, Bell, Clock, DollarSign, Handshake, LifeBuoy, LogOut, Settings, X } from "lucide-react";
+import { AlertTriangle, BadgeCheck, Bell, Clock, DollarSign, Handshake, Library, LifeBuoy, LogOut, Settings, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
@@ -210,6 +210,9 @@ function ProfileMenu({ name, email }: { name: string; email: string }) {
             <div className="flex flex-col py-2" onClick={() => setOpen(false)}>
               <Link href="/settings" role="menuitem" className={menuItem}>
                 <Settings className="size-4" /> Account Settings
+              </Link>
+              <Link href="/settings#line-items" role="menuitem" className={menuItem}>
+                <Library className="size-4" /> Line Item Library
               </Link>
               <Link href="/partner-program" role="menuitem" className={menuItem}>
                 <Handshake className="size-4" /> Partner Program

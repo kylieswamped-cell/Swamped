@@ -1,10 +1,18 @@
+import type { LibraryItem } from "@/lib/lineLibrary";
 import type { SettingsData } from "@/lib/settings/data";
 import { InvoiceConfigCard, QuoteConfigCard } from "./ConfigCards";
+import { LineItemLibraryCard } from "./LineItemLibraryCard";
 import { OperatingHoursCard, TaxCard } from "./HoursTaxCards";
 import { CommunicationCard, NotificationsCard, PayoutCard, RefundCard, StripeStatusCard } from "./OtherCards";
 import { BusinessProfileCard, PersonalInfoCard } from "./ProfileCards";
 
-export default function SettingsView({ data }: { data: SettingsData }) {
+export default function SettingsView({
+  data,
+  library,
+}: {
+  data: SettingsData;
+  library: { items?: LibraryItem[]; error?: string };
+}) {
   return (
     <div className="flex flex-col gap-6 px-4 pb-16 pt-6 sm:gap-8 sm:px-7 sm:pt-10">
       <StripeStatusCard connected={data.stripe.connected} />
@@ -12,6 +20,7 @@ export default function SettingsView({ data }: { data: SettingsData }) {
       <BusinessProfileCard data={data.business} />
       <OperatingHoursCard data={data.hours} />
       <TaxCard data={data.tax} />
+      <LineItemLibraryCard initial={library.items ?? []} loadError={library.error} />
       <QuoteConfigCard data={data.quote} templates={data.templates} />
       <InvoiceConfigCard data={data.invoice} templates={data.templates} />
       <RefundCard template={data.templates.refund} />

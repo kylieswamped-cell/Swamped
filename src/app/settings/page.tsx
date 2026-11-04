@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import SettingsView from "@/components/settings/SettingsView";
 import { requireOnboardingUser } from "@/lib/onboarding/server";
+import { listLibraryItems } from "@/lib/lineLibrary";
 import { loadSettings } from "@/lib/settings/data";
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export default async function SettingsPage() {
   const { supabase, user, profile } = await requireOnboardingUser("/settings");
   if (!profile.onboarding_completed_at) redirect("/onboarding");
 
-  const data = await loadSettings(supabase, user, profile);
+  const [data, library] = await Promise.all([loadSettings(supabase, user, profile), listLibraryItems()]);
 
   return (
     <DashboardShell
@@ -21,7 +22,7 @@ export default async function SettingsPage() {
       title="Settings"
       subtitle="Manage business information, communication preferences, payment settings, and system defaults"
     >
-      <SettingsView data={data} />
+      <SettingsView data={data} library={library} />
     </DashboardShell>
   );
 }
