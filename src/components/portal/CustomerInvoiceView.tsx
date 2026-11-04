@@ -5,6 +5,8 @@ import { useState, useTransition, type ReactNode } from "react";
 import { publicFileUrl } from "@/lib/portal/actions";
 import type { PublicInvoice, PublicInvoiceState } from "@/lib/portal/invoices";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
+import type { CustomerPreview } from "./CustomerQuoteView";
+import PreviewBanner from "./PreviewBanner";
 
 const shortDate = (isoDate: string) =>
   new Date(`${isoDate.slice(0, 10)}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -62,7 +64,7 @@ function TotalRow({ label, value, labelClass = "", valueClass = "" }: { label: R
   );
 }
 
-export default function CustomerInvoiceView({ token, invoice }: { token: string; invoice: PublicInvoice }) {
+export default function CustomerInvoiceView({ token, invoice, preview }: { token: string; invoice: PublicInvoice; preview?: CustomerPreview }) {
   const [fileError, setFileError] = useState<string>();
   const [opening, startOpening] = useTransition();
 
@@ -83,6 +85,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
 
   const openFile = (path: string) => {
     setFileError(undefined);
+    if (preview) return setFileError("File downloads are turned off in the preview. Your customer can open them from their link.");
     startOpening(async () => {
       const result = await publicFileUrl("invoice", token, path);
       if (result.error || !result.url) return setFileError(result.error ?? "Couldn't open the file.");
@@ -92,6 +95,7 @@ export default function CustomerInvoiceView({ token, invoice }: { token: string;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] px-4 py-6 text-navy sm:py-12 print:bg-white print:p-0">
+      {preview && <PreviewBanner backHref={preview.backHref} backLabel="Back to invoice" draft={preview.draft} />}
       <article
         className={`mx-auto max-w-[896px] overflow-hidden rounded-2xl border bg-white shadow-[0_8px_10px_-6px_rgba(0,0,0,0.1),0_20px_25px_-5px_rgba(0,0,0,0.1)] print:shadow-none ${
           invoice.state === "past_due" ? "border-2 border-[#ef4444]" : "border-[#f1f5f9]"

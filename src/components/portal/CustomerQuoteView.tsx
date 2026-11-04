@@ -6,7 +6,11 @@ import { useState, useTransition } from "react";
 import { publicFileUrl } from "@/lib/portal/actions";
 import type { ExpiredPublicQuote, PublicBusiness, PublicQuote } from "@/lib/portal/quotes";
 import { formatMoney, lineTotal } from "@/lib/quotes/totals";
+import PreviewBanner from "./PreviewBanner";
 import { ApproveQuoteModal, QuoteAcceptedModal } from "./QuoteAcceptModals";
+
+/** Set when the business owner previews the page: nothing acts on the quote. */
+export type CustomerPreview = { backHref: string; draft: boolean };
 
 const longDate = (isoDate: string) =>
   new Date(`${isoDate.slice(0, 10)}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -81,7 +85,7 @@ function TermLine({ line }: { line: string }) {
   );
 }
 
-export default function CustomerQuoteView({ token, quote }: { token: string; quote: PublicQuote }) {
+export default function CustomerQuoteView({ token, quote, preview }: { token: string; quote: PublicQuote; preview?: CustomerPreview }) {
   const router = useRouter();
   const [dialog, setDialog] = useState<"approve" | "accepted" | null>(null);
   const [fileError, setFileError] = useState<string>();
@@ -95,6 +99,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
 
   const openFile = (path: string) => {
     setFileError(undefined);
+    if (preview) return setFileError("File downloads are turned off in the preview. Your customer can open them from their link.");
     startOpening(async () => {
       const result = await publicFileUrl("quote", token, path);
       if (result.error || !result.url) return setFileError(result.error ?? "Couldn't open the file.");
@@ -104,6 +109,7 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
 
   return (
     <div className="min-h-screen bg-[#f8fafc] px-4 pb-[120px] pt-6 text-navy sm:pt-12 print:bg-white print:p-0">
+      {preview && <PreviewBanner backHref={preview.backHref} backLabel="Back to quote" draft={preview.draft} />}
       <article className="mx-auto max-w-[1024px] rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] print:border-0 print:shadow-none">
         {/* Business and quote summary */}
         <header className="border-b border-[#f1f5f9] px-5 pb-8 pt-[18px] sm:px-10">
@@ -298,8 +304,10 @@ export default function CustomerQuoteView({ token, quote }: { token: string; quo
         {state === "awaiting" && (
           <button
             type="button"
-            onClick={() => setDialog("approve")}
-            className="flex h-[54px] w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 text-[16px] font-bold leading-6 tracking-[0.4px] text-white shadow-[0_4px_6px_-4px_rgba(4,129,255,0.2),0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark sm:w-[286px]"
+            onClick={() => !preview && setDialog("approve")}
+            disabled={Boolean(preview)}
+            title={preview ? "Your customer clicks this to approve the quote" : undefined}
+            className="flex h-[54px] w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 text-[16px] font-bold leading-6 tracking-[0.4px] text-white shadow-[0_4px_6px_-4px_rgba(4,129,255,0.2),0_10px_15px_-3px_rgba(4,129,255,0.2)] transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-80 sm:w-[286px]"
           >
             <Image src="/portal/approve.svg" alt="" width={14} height={14} />
             Approve Quote

@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArchiveRestore, BriefcaseBusiness, CircleCheck, Copy, CreditCard, Download, FileText, HandCoins, Link2, Mail, RefreshCw, RotateCw, Send, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, BriefcaseBusiness, CircleCheck, Copy, CreditCard, Download, Eye, FileText, HandCoins, Link2, Mail, RefreshCw, RotateCw, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -140,7 +140,13 @@ export default function QuoteDetailHeader({
   const archive = item(<Archive className={gray} />, "Archive Quote", () => open("archive"), { tone: "text-[#6b7280]" });
   const remove = item(<Trash2 className="size-3.5 text-[#dc2626]" />, "Delete Quote", () => open("delete"), { tone: "text-[#dc2626]" });
 
-  const menuItems: ReactNode[] =
+  // Opens what the customer sees on their link, in a new tab. Works for drafts too.
+  const previewItem = item(<Eye className={gray} />, "Preview as Customer", () => {
+    setMenuOpen(false);
+    window.open(`/quotes/${quote.id}/preview`, "_blank", "noopener");
+  });
+
+  const stateItems: ReactNode[] =
     quote.state === "archived"
       ? [item(<ArchiveRestore className={gray} />, "Unarchive Quote", () => open("unarchive")), download, divider("d1"), remove]
       : quote.state === "draft"
@@ -183,6 +189,8 @@ export default function QuoteDetailHeader({
               archive,
               remove,
             ];
+  // Preview sits right after the main action (Send/Resend/Copy Link).
+  const menuItems: ReactNode[] = quote.state === "archived" ? stateItems : [stateItems[0], previewItem, ...stateItems.slice(1)];
 
   return (
     <>

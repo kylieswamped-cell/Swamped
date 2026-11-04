@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArchiveRestore, Ban, CreditCard, Download, ExternalLink, HandCoins, Link2, Mail, RefreshCw, RotateCcw, RotateCw, Send, Trash2, Undo2 } from "lucide-react";
+import { Archive, ArchiveRestore, Ban, CreditCard, Download, ExternalLink, Eye, HandCoins, Link2, Mail, RefreshCw, RotateCcw, RotateCw, Send, Trash2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -195,7 +195,13 @@ export default function InvoiceDetailHeader({
   const voidItem = item(<Ban className="size-3.5 text-[#ea580c]" />, "Void Invoice", () => open("void"), { tone: "text-[#ea580c]" });
   const archive = item(<Archive className={gray} />, "Archive Invoice", () => open("archive"));
 
-  const menuItems: ReactNode[] = {
+  // Opens what the customer sees on their link, in a new tab. Works for drafts too.
+  const previewItem = item(<Eye className={gray} />, "Preview as Customer", () => {
+    setMenuOpen(false);
+    window.open(`/invoices/${invoice.id}/preview`, "_blank", "noopener");
+  });
+
+  const stateItems: ReactNode[] = {
     draft: [
       item(<Send className="size-3.5 text-[#2563eb]" />, "Send Invoice", () => open("send")),
       item(<Mail className={gray} />, "Mark as Sent", () => run(() => markInvoiceSent(invoice.id))),
@@ -210,6 +216,8 @@ export default function InvoiceDetailHeader({
     void: [item(<RotateCcw className={gray} />, "Unvoid Invoice", () => run(() => setInvoiceVoid(invoice.id, false))), copyLink, resetLink, download, archive],
     archived: [item(<ArchiveRestore className={gray} />, "Unarchive Invoice", () => open("unarchive")), download],
   }[invoice.state];
+  // Preview sits right after the main action (Send/Resend/Copy Link).
+  const menuItems: ReactNode[] = invoice.state === "archived" ? stateItems : [stateItems[0], previewItem, ...stateItems.slice(1)];
 
   return (
     <>
