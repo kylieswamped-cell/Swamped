@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useId, useRef, useState } from "react";
+import { type InputHTMLAttributes, useEffect, useId, useRef, useState } from "react";
 
 export type AddressValue = { streetAddress: string; city: string; state: string; zipCode: string };
 
@@ -51,21 +51,34 @@ async function fetchAddress(placeId: string, sessionToken: string): Promise<Addr
 
 const newSessionToken = () => crypto.randomUUID();
 
-export default function AddressFields({
+/** Whether address suggestions are available (a Maps key is configured). */
+export const HAS_ADDRESS_AUTOCOMPLETE = Boolean(API_KEY);
+
+/** One line, e.g. "123 Maple St, Springfield, IL 62704". */
+export function formatAddress(a: AddressValue): string {
+  const stateZip = [a.state, a.zipCode].filter(Boolean).join(" ");
+  return [a.streetAddress, a.city, stateZip].filter((p) => p.trim()).join(", ");
+}
+
+/**
+ * A text input that suggests Google addresses as you type. Typing calls onChange;
+ * picking a suggestion calls onSelect with the address split into parts.
+ */
+export function AddressAutocomplete({
   value,
   onChange,
-  inputClass,
-  plainInputClass,
-  labelClass,
-  idPrefix,
-}: {
-  value: AddressValue;
-  onChange: (next: AddressValue) => void;
-  /** Input style with room for the pin icon. */
-  inputClass: string;
-  plainInputClass: string;
-  labelClass: string;
-  idPrefix: string;
+  onSelect,
+  className,
+  placeholder,
+  showPin = true,
+  pinClassName = "left-3.5",
+  ...input
+}: Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "onSelect"> & {
+  value: string;
+  onChange: (text: string) => void;
+  onSelect: (address: AddressValue) => void;
+  showPin?: boolean;
+  pinClassName?: string;
 }) {
   const listId = useId();
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -75,7 +88,7 @@ export default function AddressFields({
   const session = useRef(newSessionToken());
   const box = useRef<HTMLDivElement>(null);
 
-  // Debounced lookups while typing in the street field.
+  // Debounced lookups while typing.
   useEffect(() => {
     if (!API_KEY || query.trim().length < 3) return;
     const ctrl = new AbortController();
@@ -110,15 +123,95 @@ export default function AddressFields({
     setSuggestions([]);
     try {
       const address = await fetchAddress(s.placeId, session.current);
-      onChange({ ...address, streetAddress: address.streetAddress || s.main });
+      onSelect({ ...address, streetAddress: address.streetAddress || s.main });
     } catch (err) {
       console.warn(err);
-      onChange({ ...value, streetAddress: s.main });
+      onChange(s.main);
     }
     // A session ends with the details lookup; the next search starts a new one.
     session.current = newSessionToken();
   };
 
+  return (
+    <div ref={box} className="relative">
+      {showPin && <Image src="/customers/field-pin.svg" alt="" width={11} height={14} className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${pinClassName}`} />}
+      <input
+        type="text"
+        {...input}
+        autoComplete="off"
+        role={API_KEY ? "combobox" : undefined}
+        aria-autocomplete={API_KEY ? "list" : undefined}
+        aria-expanded={API_KEY ? open : undefined}
+        aria-controls={API_KEY ? listId : undefined}
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setQuery(e.target.value);
+          if (e.target.value.trim().length < 3) setOpen(false);
+        }}
+        onKeyDown={(e) => {
+          if (!open || !suggestions.length) return;
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setActive((i) => (i + 1) % suggestions.length);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setActive((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+          } else if (e.key === "Enter" && active >= 0) {
+            e.preventDefault();
+            choose(suggestions[active]);
+          } else if (e.key === "Escape") {
+            setOpen(false);
+          }
+        }}
+        placeholder={API_KEY ? "Start typing an address…" : placeholder}
+        className={className}
+      />
+      {open && suggestions.length > 0 && (
+        <ul
+          id={listId}
+          role="listbox"
+          className="absolute left-0 right-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-lg border border-line bg-white py-1 shadow-[0_12px_24px_-8px_rgba(8,39,65,0.2)]"
+        >
+          {suggestions.map((s, i) => (
+            <li
+              key={s.placeId}
+              role="option"
+              aria-selected={i === active}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => choose(s)}
+              onMouseEnter={() => setActive(i)}
+              className={`cursor-pointer px-3.5 py-2.5 text-[14px] leading-5 ${i === active ? "bg-brand-light" : ""}`}
+            >
+              <span className="block font-semibold text-navy">{s.main}</span>
+              <span className="block text-[12px] text-muted">{s.secondary}</span>
+            </li>
+          ))}
+          <li aria-hidden className="px-3.5 pb-1 pt-2 text-right text-[10px] text-[#94a3b8]">
+            Powered by Google
+          </li>
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export default function AddressFields({
+  value,
+  onChange,
+  inputClass,
+  plainInputClass,
+  labelClass,
+  idPrefix,
+}: {
+  value: AddressValue;
+  onChange: (next: AddressValue) => void;
+  /** Input style with room for the pin icon. */
+  inputClass: string;
+  plainInputClass: string;
+  labelClass: string;
+  idPrefix: string;
+}) {
   const set = (key: keyof AddressValue, v: string) => onChange({ ...value, [key]: v });
 
   return (
@@ -127,66 +220,14 @@ export default function AddressFields({
         <label htmlFor={`${idPrefix}-street`} className={labelClass}>
           Street Address
         </label>
-        <div ref={box} className="relative">
-          <Image src="/customers/field-pin.svg" alt="" width={11} height={14} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            id={`${idPrefix}-street`}
-            type="text"
-            autoComplete="off"
-            role={API_KEY ? "combobox" : undefined}
-            aria-autocomplete={API_KEY ? "list" : undefined}
-            aria-expanded={API_KEY ? open : undefined}
-            aria-controls={API_KEY ? listId : undefined}
-            value={value.streetAddress}
-            onChange={(e) => {
-              set("streetAddress", e.target.value);
-              setQuery(e.target.value);
-              if (e.target.value.trim().length < 3) setOpen(false);
-            }}
-            onKeyDown={(e) => {
-              if (!open || !suggestions.length) return;
-              if (e.key === "ArrowDown") {
-                e.preventDefault();
-                setActive((i) => (i + 1) % suggestions.length);
-              } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                setActive((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
-              } else if (e.key === "Enter" && active >= 0) {
-                e.preventDefault();
-                choose(suggestions[active]);
-              } else if (e.key === "Escape") {
-                setOpen(false);
-              }
-            }}
-            placeholder={API_KEY ? "Start typing an address…" : "e.g., 123 Maple St"}
-            className={inputClass}
-          />
-          {open && suggestions.length > 0 && (
-            <ul
-              id={listId}
-              role="listbox"
-              className="absolute left-0 right-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-lg border border-line bg-white py-1 shadow-[0_12px_24px_-8px_rgba(8,39,65,0.2)]"
-            >
-              {suggestions.map((s, i) => (
-                <li
-                  key={s.placeId}
-                  role="option"
-                  aria-selected={i === active}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => choose(s)}
-                  onMouseEnter={() => setActive(i)}
-                  className={`cursor-pointer px-3.5 py-2.5 text-[14px] leading-5 ${i === active ? "bg-brand-light" : ""}`}
-                >
-                  <span className="block font-semibold text-navy">{s.main}</span>
-                  <span className="block text-[12px] text-muted">{s.secondary}</span>
-                </li>
-              ))}
-              <li aria-hidden className="px-3.5 pb-1 pt-2 text-right text-[10px] text-[#94a3b8]">
-                Powered by Google
-              </li>
-            </ul>
-          )}
-        </div>
+        <AddressAutocomplete
+          id={`${idPrefix}-street`}
+          value={value.streetAddress}
+          onChange={(v) => set("streetAddress", v)}
+          onSelect={onChange}
+          placeholder="e.g., 123 Maple St"
+          className={inputClass}
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">

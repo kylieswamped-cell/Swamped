@@ -4,7 +4,8 @@ import { ArrowRight, Info, Lightbulb, Percent, Receipt, FileText } from "lucide-
 import { useState } from "react";
 import { saveBusinessAbout, saveBusinessDefaults, saveBusinessDetails } from "@/lib/onboarding/actions";
 import type { AmountType } from "@/lib/quotes/totals";
-import { AmountInput, Field, FormError, PrimaryButton, SelectField, TextAreaField, TextField } from "./fields";
+import { AddressAutocomplete, type AddressValue } from "@/components/customers/AddressFields";
+import { AmountInput, Field, FormError, PrimaryButton, SelectField, TextAreaField, TextField, inputClass } from "./fields";
 import StepModal from "./StepModal";
 import { formValues, useStepSubmit } from "./useStepSubmit";
 
@@ -37,6 +38,8 @@ type StepProps = { defaults: BusinessProfileDefaults; onDone: () => void };
 
 export function BusinessDetailsStep({ defaults: d, onDone }: StepProps) {
   const { pending, error, fieldErrors: fe, run } = useStepSubmit();
+  const [address, setAddress] = useState<AddressValue>({ streetAddress: d.streetAddress, city: d.city, state: d.state, zipCode: d.zipCode });
+  const setAddr = (key: keyof AddressValue, v: string) => setAddress((a) => ({ ...a, [key]: v }));
 
   return (
     <StepModal
@@ -70,10 +73,21 @@ export function BusinessDetailsStep({ defaults: d, onDone }: StepProps) {
           <h3 className="text-[16px] font-semibold text-navy">Registered Address</h3>
           <p className="mt-1 text-[13px] text-[#64748b]">This address will be used for billing and tax purposes.</p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
-            <TextField label="Street Address" name="streetAddress" defaultValue={d.streetAddress} placeholder="123 Innovation Drive, Suite 100" autoComplete="street-address" />
-            <TextField label="City" name="city" defaultValue={d.city} placeholder="San Francisco" autoComplete="address-level2" />
-            <TextField label="State / Province" name="state" defaultValue={d.state} placeholder="CA" autoComplete="address-level1" />
-            <TextField label="Zip Code" name="zipCode" defaultValue={d.zipCode} placeholder="10001" autoComplete="postal-code" />
+            <Field label="Street Address" name="streetAddress">
+              <AddressAutocomplete
+                id="streetAddress"
+                name="streetAddress"
+                value={address.streetAddress}
+                onChange={(v) => setAddress((a) => ({ ...a, streetAddress: v }))}
+                onSelect={setAddress}
+                placeholder="123 Innovation Drive, Suite 100"
+                className={`${inputClass} pl-10`}
+                pinClassName="left-4"
+              />
+            </Field>
+            <TextField label="City" name="city" value={address.city} onChange={(e) => setAddr("city", e.target.value)} placeholder="San Francisco" autoComplete="address-level2" />
+            <TextField label="State / Province" name="state" value={address.state} onChange={(e) => setAddr("state", e.target.value)} placeholder="CA" autoComplete="address-level1" />
+            <TextField label="Zip Code" name="zipCode" value={address.zipCode} onChange={(e) => setAddr("zipCode", e.target.value)} placeholder="10001" autoComplete="postal-code" />
           </div>
         </section>
 

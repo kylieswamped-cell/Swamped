@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
+import { AddressAutocomplete, HAS_ADDRESS_AUTOCOMPLETE, formatAddress } from "@/components/customers/AddressFields";
 import { uploadAttachment } from "@/components/onboarding/uploadAttachment";
 import { saveBusinessProfile, savePersonalInfo, setProfileImage } from "@/lib/settings/actions";
 import type { SettingsData } from "@/lib/settings/data";
@@ -145,6 +146,7 @@ export function BusinessProfileCard({ data }: { data: SettingsData["business"] }
   const form = useSettingsForm(initial, saveBusinessProfile);
   const logo = useImageUpload("logo", logoUrl);
   const { values: v, set, errors } = form;
+  const [addressSearch, setAddressSearch] = useState("");
 
   const logoButton = "h-9 rounded-[8px] border border-line bg-white px-3 text-[14px] font-semibold text-[#334155] transition-colors hover:bg-[#f8fafc] disabled:opacity-60";
 
@@ -210,6 +212,19 @@ export function BusinessProfileCard({ data }: { data: SettingsData["business"] }
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">
             <FieldLabel htmlFor="address">Business Address</FieldLabel>
+            {HAS_ADDRESS_AUTOCOMPLETE && (
+              <AddressAutocomplete
+                aria-label="Search for an address"
+                value={addressSearch}
+                onChange={setAddressSearch}
+                onSelect={(a) => {
+                  set("address", formatAddress(a));
+                  setAddressSearch("");
+                }}
+                className={`${fieldInput} pl-10`}
+                pinClassName="left-4"
+              />
+            )}
             <textarea
               id="address"
               rows={3}
